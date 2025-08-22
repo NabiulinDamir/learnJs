@@ -44,7 +44,7 @@ const task4 = () => {
     let a = prompt("Первое число?", 1);
     let b = prompt("Второе число?", 2);
 
-    alert(+a + +b); // 12 стало 3
+    alert(+a + +b); // ,было Comparison operators12 стало 3
 }
 
 
