@@ -60,15 +60,14 @@ const task4 = () =>{
 
 
 //Задание 5
-const getMaxSubSum = (arr) =>{
-    let maxSum = 0
-    for (let i = 0; i < arr.length; i++) {
-        for (let j = i; j < arr.length; j++) {
-            
-        }
+const getMaxSubSum = (arr) => {
+    let maxSum = 0;
+    let currentSum = 0;
+    for (let num of arr) {
+        currentSum = Math.max(0, currentSum + num);
+        maxSum = Math.max(maxSum, currentSum);
     }
-    //доделать
-    //нужно меньше вложенности
+    return maxSum;
 }
 
 const task5 = () =>{
