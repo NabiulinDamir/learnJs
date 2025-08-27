@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <HEAd>
+        <style lang="css">
+            #field {
+                width: 200px;
+                border: 10px groove black;
+                background-color: #00FF00;
+                position: relative;
+            }
+
+            #ball {
+                position: absolute;
+                
+            }
+        </style>
+    </HEAd>
+    <BODy>
+
+          <div id="field">
+            <img src="https://en.js.cx/clipart/ball.svg" id="ball"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+            . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+        </div>
+
+        <button id="run_task">Запустить</button>
+
+
+
+        <script>
+
+
+
+            const task = () => { 
+                const field = document.getElementById("field")
+                const ball  = document.getElementById("ball")
+                let newX = field.clientWidth / 2
+                let newY = field.clientHeight / 2
+                ball.style.top =  (newY - ball.offsetWidth / 2) + 'px'
+                ball.style.left = (newX - ball.offsetHeight / 2) + 'px'
+            }
+
+            document.getElementById("run_task").addEventListener("click", task)
+        </script>
+    </BODy>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <HEAd>
+        <style lang="css">
+            tr{
+                height: 20px;
+                
+                display: flex;
+                margin: 3px;
+            }
+            td{
+                width: 20px;
+                height: 20px;
+                border: 1px solid black;
+                display: flex;
+            }
+            th{
+                width: 20px;
+                height: 20px;
+                border: 1px solid black;
+                display: flex;    
+            }
+        </style>
+    </HEAd>
+    <BODy>
+        <div id="cal">
+
+        </div>
+
+        <button id="run_task_1">Выполнить</button>
+
+        <script>
+                
+            const createCalendar = (container, year, month) => {
+                let d = new Date(year, month - 1)
+
+                let table = `<table>
+                                <tr>
+                                    <th>пн</th>
+                                    <th>вт</th>
+                                    <th>ср</th>
+                                    <th>чт</th>
+                                    <th>пт</th>
+                                    <th>сб</th>
+                                    <th>вс</th>
+                                </tr>
+                                <tr>`
+                for (let i = 0; i < d.getDay(); i++) {
+                    table += '<td></td>';
+                }
+
+                while (d.getMonth() == month-1) {
+                    table += '<td>' + d.getDate() + '</td>'
+                    
+                    if(d.getDay() % 7 == 6){
+                        table += '</tr><tr>';
+                    }
+                    d.setDate(d.getDate() + 1);
+                }
+                    
+                console.log(table)
+                container.innerHTML = table;
+            }
+
+
+
+
+
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+            const task = () =>{
+                const cal = document.getElementById("cal")
+                createCalendar(cal, 2012, 9)
+            }
+
+            document.getElementById("run_task_1").addEventListener("click", () => task())
+            const cal = document.getElementById("cal")
+            createCalendar(cal, 2012, 9)
+
+        </script>
+    </BODy>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <HEAd>
+
+    </HEAd>
+    <BODy>
+        <ol id="elem">
+            <li>Привет</li>
+            <li>Мир</li>
+        </ol>
+
+        <button id="run_task_1">Выполнить</button>
+
+        <script>
+            const clear = (elem) => { 
+                for (let i=0; i < elem.childNodes.length; i++) {
+                    elem.childNodes[i].textContent = "";
+                }
+            }
+
+            const button = document.getElementById("run_task_1")
+            const elem = document.getElementById("elem")
+            button.addEventListener("click", () => clear(elem))
+
+        </script>
+    </BODy>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <HEAd>
+        <style lang="css">
+            #notification{
+                opacity: 0;
+                top: 10px;
+                right: 10px;
+                position: absolute;
+                width: 123px;
+                height: 50px;
+                background-color: rgba(14, 192, 82, 0.555);
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                place-content: center;
+                transition: 200ms;
+
+            }
+        </style>
+    </HEAd>
+    <BODy>
+
+        <div id="notification">
+
+        </div>
+
+        <button id="run_task">Показать</button>
+
+
+
+        <script>
+
+            const showNotification = (options) => {
+
+                const notification = document.getElementById('notification')
+                notification.style.opacity = 1;
+                notification.textContent = options.html
+                setTimeout(() => {notification.style.opacity = 0}, 2000)
+            } 
+            
+
+            const task = () => { 
+                showNotification({
+                    top: 10, // 10px от верхней границы окна (по умолчанию 0px)
+                    right: 10, // 10px от правого края окна (по умолчанию 0px)
+                    html: "Hello!", // HTML-уведомление
+                    className: "welcome" // дополнительный класс для div (необязательно)
+                });
+            }
+
+            document.getElementById("run_task").addEventListener("click", task)
+        </script>
+    </BODy>
+</html>

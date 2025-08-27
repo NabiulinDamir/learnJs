@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <HEAd>
+
+    </HEAd>
+    <BODy>
+        <ui id="data_list">
+
+        </ui>
+
+        <button id="run_task_1">Выполнить</button>
+
+        <script>
+            
+            const startFill = () => {
+                let newText
+                do{
+                    newText = prompt("Что записываем?")
+                    if(newText){
+                        let newLi = document.createElement('li');
+                        newLi.textContent = newText
+                        document.getElementById("data_list").append(newLi)
+                    }
+                }while(newText)
+            }
+            
+            const task = () => { 
+                startFill()
+            }
+
+            document.getElementById("run_task_1").addEventListener("click", () => task())
+
+
+        </script>
+    </BODy>
+</html>

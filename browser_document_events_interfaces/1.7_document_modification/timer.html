@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <HEAd>
+        <style lang="css">
+            .hours{
+                color: red;
+            }
+            .minutes{
+                color: green;
+            }
+            .seconds{
+                color: blue;
+            }
+        </style>
+    </HEAd>
+    <BODy>
+        <div id="clock">
+            <span id="hou">hh</span> :
+            <span id="min">mm</span> :
+            <span id="sec">ss</span>
+        </div>
+
+        <button id= "run_clock_1">старт</button>
+        <button id="stop_clock_1">стоп</button>
+    
+
+        <script>
+
+            const timer = {
+                h: 0,
+                m: 0,
+                s: 0,
+
+                stephours(){
+                    this.h++
+                },
+
+                stepMinute(){
+                    if(this.m + 1 > 59){
+                        stepMinute()
+                        this.m = 0
+                    }else this.m++
+                },
+
+                stepSecond(){
+                    if(this.s + 1 > 59){
+                        stepMinute()
+                        this.s = 0
+                    }else this.s++
+                }
+            }
+            const updateTime = () => {
+                document.getElementById('hou').textContent = timer.h
+                document.getElementById('min').textContent = timer.m
+                document.getElementById('sec').textContent = timer.s
+                timer.stepSecond()
+                
+            }
+
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+            
+            
+
+            let timerid
+            const run = () =>{
+                timerid = setInterval(() => updateTime(), 1000)
+            }
+
+            const stop = () =>{
+                clearInterval(timerid)
+            }
+
+            document.getElementById("run_clock_1").addEventListener("click", () => run())
+            document.getElementById("stop_clock_1").addEventListener("click", () => stop())
+
+        </script>
+    </BODy>
+</html>
