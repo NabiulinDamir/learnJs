@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<HEAd>
+    <style lang="css">
+        #container {
+            border: 1px solid black;
+            width: 470px;
+            height: 200px;
+            overflow-y: scroll;
+        }
+
+        #to_up_button {
+            position: absolute;
+            width: 40px;
+            display: flex;
+            place-content: center;
+            top: -20px;
+            transition: all 200ms ease;
+            left: calc(50% - 20px);
+            background-color: rgba(107, 103, 96, 0.5);
+            border-radius: 20px;
+            user-select: none;
+
+        }
+        #to_up_button:hover{
+            scale: 1.2;
+        }
+
+    </style>
+</HEAd>
+
+<BODy>
+    <div style="width: min-content; position: relative; overflow: hidden;;">
+        <div id="to_up_button" onclick="toUp()">↑</div>
+        <div id="container" onscroll="containerScroll()"></div>
+    </div>
+
+
+    <script>
+        container.innerHTML += "Нельзя предотвратить прокрутку, используя event.preventDefault()<br><br>".repeat(6)
+
+        const containerScroll = () => {
+            if ((container.scrollHeight - container.scrollTop - container.clientHeight) < 30) {
+                container.insertAdjacentHTML("beforeend", "Нельзя предотвратить прокрутку, используя event.preventDefault()<br><br>");
+            }
+            if (container.scrollTop > 20) {
+                to_up_button.style.top = "15px"
+            }
+            else {
+                to_up_button.style.top = "-20px"
+            }
+        }
+
+        const toUp = () => {
+            container.scrollTop = 0
+        }
+
+    </script>
+</BODy>
+
+</html>
