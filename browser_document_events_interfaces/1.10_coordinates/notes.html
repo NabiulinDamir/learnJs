@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style lang="css">
+            .note {
+                position: fixed;
+                z-index: 1000;
+                padding: 5px;
+                border: 1px solid black;
+                background: white;
+                text-align: center;
+                font: italic 14px serif;
+            }
+
+            blockquote {
+                background: #f9f9f9;
+                border-left: 10px solid #ccc;
+                margin: 0 0 0 100px;
+                padding: 0.5em 10px;
+                quotes: "\201C""\201D""\2018""\2019";
+                display: inline-block;
+                white-space: pre;
+            }
+
+            blockquote:before {
+                color: #ccc;
+                content: open-quote;
+                font-size: 4em;
+                line-height: 0.1em;
+                margin-right: 0.25em;
+                vertical-align: -0.4em;
+            }
+        </style>
+    </head>
+    <body>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            Reprehenderit sint atque dolorum fuga ad incidunt voluptatum error
+            fugiat animi amet! Odio temporibus nulla id unde quaerat dignissimos
+            enim nisi rem provident molestias sit tempore omnis recusandae esse
+            sequi officia sapiente.
+        </p>
+
+        <blockquote>
+            Teacher: Why are you late? Student: There was a man who lost a
+            hundred dollar bill. Teacher: That's nice. Were you helping him look
+            for it? Student: No. I was standing on it.
+        </blockquote>
+
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+            Reprehenderit sint atque dolorum fuga ad incidunt voluptatum error
+            fugiat animi amet! Odio temporibus nulla id unde quaerat dignissimos
+            enim nisi rem provident molestias sit tempore omnis recusandae esse
+            sequi officia sapiente.
+        </p>
+
+        <div id="coords">(координаты покажутся здесь)</div>
+
+        <button id="run_task">Запустить</button>
+
+        <script>
+            function positionAt(anchor, position, elem) {
+                const parrentPositionX = anchor.getBoundingClientRect().left;
+                const parrentPositionY = anchor.getBoundingClientRect().top;
+
+                switch (position) {
+                    case "top":
+                        elem.style.top = (parrentPositionY - elem.offsetHeight) + 'px'
+                        elem.style.left = parrentPositionX + 'px'
+                        break;
+                    case "right":
+                        elem.style.top  = (parrentPositionY) + 'px'
+                        elem.style.left = (parrentPositionX + anchor.offsetWidth) + 'px'
+                        break;
+                    case "bottom":
+                        elem.style.top  = (parrentPositionY + anchor.offsetHeight) + 'px'
+                        elem.style.left = (parrentPositionX) + 'px'
+                        break;
+                }
+            }
+
+            function showNote(anchor, position, html) {
+                let note = document.createElement("div");
+                note.className = "note";
+                note.innerHTML = html;
+                document.body.append(note);
+
+                positionAt(anchor, position, note);
+            }
+
+            const task = () => {
+                let blockquote = document.querySelector("blockquote");
+
+                showNote(blockquote, "top", "note above");
+                setTimeout(() => {
+                    showNote(blockquote, "right", "note at the right");
+                    setTimeout(() => {
+                        showNote(blockquote, "bottom", "note below");
+                    }, 1000);
+                }, 1000);
+
+            };
+
+            document.getElementById("run_task").addEventListener("click", task);
+        </script>
+
+        <script>
+            document.onclick = function (e) {
+                // показывает координаты точки клика
+                coords.innerHTML = e.clientX + ":" + e.clientY;
+            };
+        </script>
+    </body>
+</html>

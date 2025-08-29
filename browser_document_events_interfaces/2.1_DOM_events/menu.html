@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style lang="css">
+            .btn{
+                display:flex;
+                user-select: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="btn" onclick="toggleMenu()">
+            <div id="closedIndicator" style="display: none;">▶</div>
+            <div id="openedIndicator">▼</div>
+            Сладости (нажми меня)!
+        </div>
+
+        <ul id="body">
+            <li>Пирожное</li>
+            <li>Пончик</li>
+            <li>Мёд</li>
+        </ul>
+
+        <script>
+            let isOpen = true
+
+            const toggleMenu = () => {
+                if(isOpen){
+                    openedIndicator.style.display = "none"
+                    closedIndicator.style.display = "flex"
+                    body.style.display = "none"
+                }
+                else{
+                    closedIndicator.style.display = "none"
+                    openedIndicator.style.display = "flex"
+                    body.style.display = "block"
+                }
+                isOpen = !isOpen
+            };
+        </script>
+    </body>
+</html>

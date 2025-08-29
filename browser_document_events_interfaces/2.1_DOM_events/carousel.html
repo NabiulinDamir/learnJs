@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style lang="css">
+            .container {
+                width: min-content;
+                height: 150px;
+                background-color: antiquewhite;
+                display: flex;
+            }
+            .arrow {
+                width: 30px;
+            }
+            #content {
+                width: 300px;
+                display: flex;
+                overflow: hidden;
+                align-items: center;
+            }
+            img {
+                height: 100px;
+                display: inline-block;
+                transition: all 200ms;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <button class="arrow" onclick="pushLeft()"><</button>
+            <div id="content">
+                <img src="https://ru.js.cx/carousel/1.png" />
+                <img src="https://ru.js.cx/carousel/2.png" />
+                <img src="https://ru.js.cx/carousel/3.png" />
+                <img src="https://ru.js.cx/carousel/4.png" />
+                <img src="https://ru.js.cx/carousel/5.png" />
+                <img src="https://ru.js.cx/carousel/6.png" />
+                <img src="https://ru.js.cx/carousel/7.png" />
+                <img src="https://ru.js.cx/carousel/8.png" />
+                <img src="https://ru.js.cx/carousel/9.png" />
+                <img src="https://ru.js.cx/carousel/10.png" />
+            </div>
+            <button class="arrow" onclick="pushRight()">></button>
+        </div>
+
+        <script>
+            let position = 0;
+            const pushLeft = () => {
+                if (position > 0) {
+                    position--;
+                    shift(position)
+                }
+            };
+
+            const pushRight = () => {
+                if (position < 7) {
+                    position++;
+                    shift(position)
+                }
+            };
+
+            const shift = (position) => {
+                for (let i = 0; i < content.children.length; i++) {
+                    content.children[i].style.transform = `translateX(-${
+                        position * 100
+                    }px)`;
+                }
+            };
+        </script>
+    </body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <HEAd>
+        <style lang="css">
+
+        </style>
+    </HEAd>
+    <BODy>
+
+        <button onclick="task()">Скрыть надпись</button>
+        <div id="text">Текст</div>
+        <button onclick="hideSelf(this)">Скрыть кнопку</button>
+
+        <script>
+
+
+
+            const task = () => { 
+                text.style.opacity = 0
+            }
+
+            const hideSelf = (btn) => {
+                btn.style.opacity = 0
+            }
+
+        </script>
+    </BODy>
+</html>

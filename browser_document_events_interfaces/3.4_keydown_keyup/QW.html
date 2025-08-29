@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style lang="css"></style>
+    </head>
+    <body onkeydown="down(event)" onkeyup="up(event)">
+        <div>"Q" и "W"</div>
+
+        <script>
+            let presHistory = [];
+
+            const down = (event) => {
+                if (!presHistory.includes(event.code)) {
+                    presHistory.push(event.code);
+                    console.log(presHistory);
+                }
+
+                if (
+                    presHistory.includes("KeyQ") &&
+                    presHistory.includes("KeyW")
+                ) {
+                    alert("W и Q нажаты");
+                    presHistory = []
+                }
+            };
+
+            const up = (event) => {
+                presHistory = presHistory.filter((item) => item !== event.code);
+                console.log(presHistory);
+            };
+        </script>
+    </body>
+</html>

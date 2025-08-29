@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <style>
+            .selected {
+                background: #0f0;
+            }
+
+            li {
+                cursor: pointer;
+            }
+
+            #ui {
+                user-select: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        Кликни на элемент списка, чтобы выделить его.
+        <br />
+
+        <ul id="ul">
+            <li>Кристофер Робин</li>
+            <li>Винни Пух</li>
+            <li>Тигра</li>
+            <li>Кенга</li>
+            <li>Кролик. Просто Кролик.</li>
+        </ul>
+
+        <script>
+            // const lis = ul.querySelectorAll("li");
+            // lis.forEach((li) => {
+            //     let span = document.createElement("span");
+            //     li.prepend(span);
+            //     span.append(span.nextSibling);
+            // });
+
+            ul.onclick = (event) => {
+                if (event.target.tagName !== "LI") return;
+
+                if (event.ctrlKey || event.metaKey) {
+                    event.target.classList.toggle("selected");
+                } else {
+                    let selected = ul.querySelectorAll(".selected");
+                    for (let elem of selected) {
+                        elem.classList.remove("selected");
+                    }
+                    event.target.classList.add("selected");
+                }
+            };
+        </script>
+    </body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style lang="css">
+            #mainContainer {
+                width: 300px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                background-color: bisque;
+                position: relative;
+            }
+            #line {
+                width: 100%;
+                height: 10px;
+                background-color: rgb(46, 46, 46);
+                border-radius: 5px;
+            }
+            #level {
+                position: absolute;
+                height: 70%;
+                background-color: blue;
+                width: 10px;
+                z-index: +1;
+
+            }
+        </style>
+    </head>
+    <body>
+        <div id="power">Power: 50%</div>
+        <div id="mainContainer">
+            <div id="line"></div>
+            <div id="level" onmousedown=""></div>
+        </div>
+
+        <script>
+            let powerValue = 0;
+            level.style.left = `calc(${50}% - ${level.offsetWidth / 2}px)`;
+
+            level.onmousedown = (event) => {
+                event.preventDefault();
+
+                let shiftX = event.clientX - level.getBoundingClientRect().left;
+                 
+
+                document.addEventListener("mousemove", onMouseMove);
+                document.addEventListener("mouseup", onMouseUp);
+
+                function onMouseMove(event) {
+                    let newLeft = event.clientX - shiftX - mainContainer.getBoundingClientRect().left;
+
+                    if (newLeft < 0) newLeft = 0
+
+                    let rightEdge = mainContainer.offsetWidth - level.offsetWidth;
+
+                    if (newLeft > rightEdge) {
+                        newLeft = rightEdge;
+                    }
+
+                    level.style.left = newLeft + "px";
+
+                    powerValue = (Math.floor(newLeft / 2.9))
+                    power.innerHTML = "Power: " + (Math.floor(newLeft / 2.9)) + "%"
+                }
+
+                function onMouseUp() {
+                    document.removeEventListener("mouseup", onMouseUp);
+                    document.removeEventListener("mousemove", onMouseMove);
+                }
+            };
+        </script>
+    </body>
+</html>
