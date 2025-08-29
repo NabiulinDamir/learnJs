@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <HEAd>
+        <style lang="css">
+
+        </style>
+    </HEAd>
+    <BODy>
+
+        <textarea name="" id="textArea" oninput="saveChange(event)"></textarea>
+
+        <script>
+
+            alert(localStorage.getItem("areaValue"))
+
+            const saveChange = (event) => {
+                localStorage.setItem("areaValue", event.target.value)
+            }
+
+        </script>
+    </BODy>
+</html>

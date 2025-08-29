@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style lang="css">
+            #options_table {
+                width: 500px;
+                display: grid;
+                grid-row: 3;
+                grid-column: 2;
+                grid-template-columns: 50% 50%;
+                gap: 8px;
+                padding: 20px;
+            }
+            #heading {
+                padding: 0 auto;
+            }
+
+            #result_table {
+                width: 150px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: min-content min-content 150px;
+                padding: 20px;
+                align-items: end;
+            }
+
+
+            #was_result_indicator{
+                background-color: red;
+                height: 100%;
+                width: 40px;
+            }
+
+            #become_result_indicator{
+                background-color: green;
+                height: 100%;
+                width: 40px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="heading">Депозитный кулькуятор</div>
+
+        <div id="options_table">
+            <div>Первоначальный депозит</div>
+            <input
+                oninput="calcResult()"
+                type="number"
+                id="start_deposit"
+                value="10000"
+            />
+
+            <div>Срок вклада?</div>
+            <select oninput="calcResult()" id="period_selecter">
+                <option value="3">3 (минимум)</option>
+                <option value="6" selected>6 (полгода)</option>
+                <option value="12">12 (год)</option>
+                <option value="18">18 (1.5 года)</option>
+                <option value="24">24 (2 года)</option>
+                <option value="30">30 (2.5 года)</option>
+                <option value="36">36 (3 года)</option>
+                <option value="60">60 (5 лет)</option>
+            </select>
+
+            <div>Годовая процентная ставка?</div>
+            <input
+                oninput="calcResult()"
+                id="annual_interest_rate_input"
+                type="number"
+                value="10"
+            />
+        </div>
+
+        <div id="result_table">
+
+                <b>Было:</b>
+                <b>Станет:</b>
+
+                <b id="was_result"></b>
+                <b id="become_result"></b>
+
+                <div id="was_result_indicator"></div>
+                <div id="become_result_indicator"></div>
+
+        </div>
+
+        <script>
+            const calcResult = () => {
+                const deposit = parseInt(start_deposit.value, 10);
+                const period = parseInt(period_selecter.value, 10);
+                const annual_interest_rate = parseInt(annual_interest_rate_input.value, 10);
+                was_result.innerHTML = deposit;
+                const result = Math.round(
+                    deposit * (1 + annual_interest_rate / 100) ** (period / 12)
+                );
+                become_result.innerHTML = result
+                was_result_indicator.style.height =     ((deposit < result) ? (deposit / result * 100 ) : 100) + '%'
+                become_result_indicator.style.height =  ((deposit > result) ? (result / deposit * 100 ) : 100) + '%'
+            };
+
+            calcResult();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style lang="css">
+            #main_div {
+                padding: 50px;
+                width: min-content;
+                height: min-content;
+                margin: 0 auto;
+                border: 1px solid black;
+                user-select: none;
+            }
+            .focused {
+                background-color: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main_div">Hello<br />World</div>
+
+        <script>
+            let textarea;
+            let div = document.getElementById("main_div");
+
+            div.onclick = () => {
+                textarea = document.createElement("textarea");
+                textarea.id = "main_div";
+                textarea.value = div.innerHTML;
+
+                textarea.onkeydown = (event) => {
+                    if (event.key == "Enter") {
+                        this.blur();
+                    }
+                };
+
+                textarea.onblur = () => {
+                    editEnd();
+                };
+
+                div.replaceWith(textarea);
+                textarea.focus();
+            };
+
+            function editEnd() {
+                div.innerHTML = textarea.value;
+                textarea.replaceWith(div);
+            }
+        </script>
+    </body>
+</html>
