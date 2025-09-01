@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style lang="css"></style>
+    </head>
+    <body>
+        <div id="data"></div>
+        <button id="data_pull" onclick="requestAllUsers()">
+            Загрузить данные
+        </button>
+        <script>
+            const requestAllUsers = async () => {
+                let namesArray = [
+                    "NabiulinDamir",
+                    "AlexNakaryakov",
+                    "DmitryErmakoff",
+                    "AlexeyZhulanov",
+                    "brbrpatapimd",
+                ];
+                let dataArray = [];
+                for (let userName of namesArray) {
+                    const userData = await requestData(userName);
+                    dataArray.push(userData);
+                }
+
+                dataArray.forEach((user) => {
+                    data.innerHTML += user
+                        ? `login: ${user.login};
+                    id: ${user.id};
+                    bio: ${user.bio};
+                    created_at: ${user.created_at};
+                    <br>`
+                        : "null<br>";
+                });
+            };
+            const requestData = async (userName) => {
+                try {
+                    let response = await fetch(
+                        `https://api.github.com/users/${userName}`,
+                        {
+                            method: "GET"
+                        }
+                    );
+
+                    if (!response.ok) return null;
+
+                    let result = await response.json();
+
+                    return result || null;
+                } catch (err) {
+                    return null;
+                }
+            };
+        </script>
+    </body>
+</html>
