@@ -1,51 +1,159 @@
-
-BODy{
+BODy {
     margin: 0;
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+        sans-serif;
 }
 
-
-
-
-
-
-#main_up_container{
+#main_up_container {
     height: 400px;
     background-color: antiquewhite;
 }
 
-
-#main_bottom_container{
-    height: 400px;
-    background-color:rgb(240, 222, 195);
-    display: flex;
-    place-content: center;
-    flex-direction: row;
+#main_bottom_container {
+    background-color: rgb(240, 222, 195);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr max-content;
+    place-items: center;
+    /* gap: 20px; */
+    /* padding: 10px; */
 }
 
+/* //////////////////////////////////////////////////////////////////////////////////////// */
+.outer_frame_table {
+    height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* border: 1px solid #000; */
+}
+::-webkit-scrollbar {
+    width: 4px;
+    /* background-color: rgba(199, 161, 161, 0);
+    color: aqua; */
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgb(83, 83, 83);
+    border-radius: 3px;
+}
 
-
-
-#main_table{
+table {
     border-collapse: collapse;
-}
+    height: min-content;
 
-th, td{
+    width: 400px;
+}
+td {
     /* background-color: antiquewhite; */
     border: 1px solid black;
     padding: 9px;
-    width: 25%;
+    width: auto;
+    height: 40px;
+}
+td:not(:first-of-type) {
+    max-width: 100px;
+    /* min-width: 100px; */
+    width: 100px;
 }
 
-th:first-child{
-    /* background-color: antiquewhite; */
-}
-
-tbody{
+/* tbody{
     gap: 0px;
-}
+    height: 200px;
+    overflow: scroll;
+} */
 
 thead,
 tfoot {
+    background-color: rgb(177, 177, 177);
+}
 
-  background-color: rgb(177, 177, 177);
+/* //////////////////////////////////////////////////////////////////////////////////////// */
+
+.table_manager_container {
+    height: 30px;
+    margin: 5px;
+    width: 400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table_manager_button {
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////// */
+#prompt_form {
+    display: inline-block;
+    padding: 10px;
+    width: 300px;
+    border-radius: 11px;
+    border: 1px solid rgb(121, 121, 121);
+    background-color: aliceblue;
+
+
+
+}
+
+#prompt_form_container {
+    background-color: rgba(0, 0, 0, 0.356);
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    z-index: 9999;
+    visibility: hidden;
+
+}
+
+#prompt_form_container:before {
+    display: inline-block;
+    height: 100%;
+    content: "";
+    vertical-align: middle;
+}
+
+#prompt-form input[name="text"] {
+    display: block;
+    margin: 5px;
+    width: 180px;
+}
+
+.prompt_form_bottom{
+    display: flex;
+    height: 30px;
+    justify-content: end;
+    gap: 5px;
+
+}
+
+datalist{
+    padding-top: 25px;
+}
+
+
+
+/* #save_form_button, #hide_form_button{
+    border-radius: 4px;
+    border: 1px solid #a3a3a3;
+    cursor: pointer;
+
+} */
+
+
+/* #save_form_button{
+    background-color: #76e78f;
+} */
+
+.inputs{
+    width: 100%;
+    padding: 2px;
+    height: 30px;
+    box-sizing: border-box; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.err{
+    border: 1px solid red
 }
