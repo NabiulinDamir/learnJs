@@ -44,16 +44,39 @@ table {
 }
 td {
     /* background-color: antiquewhite; */
-    border: 1px solid black;
+    border: 1px solid rgb(172, 172, 172);
     padding: 9px;
     width: auto;
     height: 40px;
 }
-td:not(:first-of-type) {
-    max-width: 100px;
+td:not(:last-of-type) {
+    max-width: 110px;
     /* min-width: 100px; */
-    width: 100px;
+    width: 110px;
 }
+td:last-of-type{
+    
+}
+
+/* последняя ячейка не в хеад */
+tr:not(thead tr) td:last-of-type {
+    padding: 0px;
+}
+/* кнопка последней ячейки не в хеад
+tr:not(thead tr) td:last-of-type > *{
+    background-color: rgb(233, 233, 233);
+    height: 20px;
+    width: 20px;
+    border: 1px solid rgb(172, 172, 172);
+    border-radius: 3px;
+    padding: 0;
+    transition: all 200ms;
+}
+/* кнопка последней ячейки не в хеад ховер 
+tr:not(thead tr) td:last-of-type:hover > *{
+    background-color: #dfdfdf;
+} */
+
 
 /* tbody{
     gap: 0px;
@@ -63,9 +86,24 @@ td:not(:first-of-type) {
 
 thead,
 tfoot {
-    background-color: rgb(177, 177, 177);
+    background-color: rgb(223, 163, 94);
 }
 
+
+/* .button_cell{
+    padding: 0;
+    display: flex;
+    place-content: center;
+    height: 100%;
+    flex-direction: column;
+
+    
+}
+
+.button_cell > * {
+    
+    
+} */
 /* //////////////////////////////////////////////////////////////////////////////////////// */
 
 .table_manager_container {
@@ -81,7 +119,7 @@ tfoot {
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////// */
-#prompt_form {
+#create_form {
     display: inline-block;
     padding: 10px;
     width: 300px;
@@ -93,7 +131,7 @@ tfoot {
 
 }
 
-#prompt_form_container {
+#create_form_container {
     background-color: rgba(0, 0, 0, 0.356);
     position: fixed;
     width: 100%;
@@ -104,20 +142,20 @@ tfoot {
 
 }
 
-#prompt_form_container:before {
+#create_form_container:before {
     display: inline-block;
     height: 100%;
     content: "";
     vertical-align: middle;
 }
 
-#prompt-form input[name="text"] {
+#create-form input[name="text"] {
     display: block;
     margin: 5px;
     width: 180px;
 }
 
-.prompt_form_bottom{
+.create_form_bottom{
     display: flex;
     height: 30px;
     justify-content: end;

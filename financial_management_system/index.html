@@ -5,25 +5,23 @@
         <style lang="css"></style>
     </head>
     <body>
-        <div id="prompt_form_container">
-            <div id="prompt_form">
-                <div id="prompt_message"></div>
+        <div id="create_form_container">
+            <div id="create_form">
+                <div id="create_message"></div>
                 <input type="number" id="value_input"  class="inputs" placeholder="9999"/>
                 <input list="category_select" id="category_input" class="inputs" placeholder="Выберите или введите">
                 <datalist id="category_select"></datalist>
                 <input type="date" id="date_selector" class="inputs"/>
-
-
-
-
-
-                <div class="prompt_form_bottom">
+                <div class="create_form_bottom">
                     <button type="button" id="save_form_button">Сохранить</button>
                     <button type="button" id="hide_form_button">Отмена</button>
                 </div>
             </div>
         </div>
 
+
+
+        
         <div id="main_up_container"></div>
 
         <div id="main_bottom_container">
@@ -49,10 +47,10 @@
                 <table id="main_table_income">
                     <thead>
                         <tr>
-                            <td>0</td>
                             <td>Категория</td>
                             <td>Сумма</td>
                             <td>Дата</td>
+                            <td></td>
                         </tr>
                     </thead>
 
@@ -64,10 +62,10 @@
                 <table id="main_table_expens">
                     <thead>
                         <tr>
-                            <td>0</td>
                             <td>Категория</td>
                             <td>Сумма</td>
                             <td>Дата</td>
+                            <td></td>
                         </tr>
                     </thead>
 
