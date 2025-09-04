@@ -8,69 +8,84 @@
         <div id="create_form_container">
             <div id="create_form">
                 <div id="create_message"></div>
-                <input type="number" id="value_input"  class="inputs" placeholder="9999"/>
-                <input list="category_select" id="category_input" class="inputs" placeholder="Выберите или введите">
+                <input
+                    type="number"
+                    id="value_input"
+                    min="0"
+                    class="inputs"
+                    placeholder="9999"
+                />
+                <input
+                    list="category_select"
+                    id="category_input"
+                    class="inputs"
+                    placeholder="Выберите или введите"
+                />
                 <datalist id="category_select"></datalist>
-                <input type="date" id="date_selector" class="inputs"/>
+                <input type="date" id="date_selector" class="inputs" />
                 <div class="create_form_bottom">
-                    <button type="button" id="save_form_button">Сохранить</button>
-                    <button type="button" id="hide_form_button">Отмена</button>
+                    <button type="button" id="save_form_button" class="flat_button">
+                        Сохранить
+                    </button>
+                    <button type="button" id="hide_form_button" class="flat_button">Отмена</button>
                 </div>
             </div>
         </div>
 
-
-
-        
         <div id="main_up_container"></div>
 
+    
         <div id="main_bottom_container">
-            <div class="table_manager_container">
-                <div>Доходы</div>
-                <button
-                    class="table_manager_button"
-                    id="table_manager_button_income"
-                >
-                    Добавить
-                </button>
+
+
+            <div class="border_table">
+                <div class="table_manager_container">
+                    <div>Доходы</div>
+                    <button class="flat_button" id="table_manager_button_income">
+                        Добавить
+                    </button>
+                </div>
+                <div class="outer_frame_table">
+                    <table id="main_table_income">
+                        <thead>
+                            <tr>
+                                <td>Категория</td>
+                                <td>Сумма</td>
+                                <td>Дата</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
+            
 
-            <div
-                class="table_manager_container"
-                id="table_manager_button_expens"
-            >
-                <div>Расходы</div>
-                <button class="table_manager_button">Добавить</button>
-            </div>
+            <div class="border_table"  >
+                <div class="table_manager_container">
+                    <div>Расходы</div>
+                    <button
+                        class="flat_button"
+                        id="table_manager_button_expens"
+                    >
+                        Добавить
+                    </button>
+                </div>
+                <div class="outer_frame_table">
+                    <table id="main_table_expens">
+                        <thead>
+                            <tr>
+                                <td>Категория</td>
+                                <td>Сумма</td>
+                                <td>Дата</td>
+                                <td></td>
+                            </tr>
+                        </thead>
 
-            <div class="outer_frame_table">
-                <table id="main_table_income">
-                    <thead>
-                        <tr>
-                            <td>Категория</td>
-                            <td>Сумма</td>
-                            <td>Дата</td>
-                            <td></td>
-                        </tr>
-                    </thead>
-
-                    <tbody></tbody>
-                </table>
-            </div>
-
-            <div class="outer_frame_table">
-                <table id="main_table_expens">
-                    <thead>
-                        <tr>
-                            <td>Категория</td>
-                            <td>Сумма</td>
-                            <td>Дата</td>
-                            <td></td>
-                        </tr>
-                    </thead>
-
-                    <tbody></tbody>
-                </table>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <script type="module" src="./main.js"></script>
