@@ -10,6 +10,7 @@ const localDB = {
                 if (!db.objectStoreNames.contains('categories')) {
                     db.createObjectStore('categories', { keyPath: 'id', autoIncrement: true });
                 }
+
             };
 
             openRequest.onsuccess = () => {
@@ -19,15 +20,14 @@ const localDB = {
         });
     },
 
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////Основные
 
     //Добавление
     //name = "operations" || "categories"
     add: async (name, object) => {
         const db = await localDB.open();
-        let transaction = db.transaction(name, "readwrite");
-        let store = transaction.objectStore(name);
+        const transaction = db.transaction(name, "readwrite");
+        const store = transaction.objectStore(name);
         return new Promise((resolve, reject) => {
             let request = store.add(object);
 
@@ -41,11 +41,12 @@ const localDB = {
         });
     },
 
-
+    //Вернуть всё
+    //name = "operations" || "categories"
     getAll: async (name) => {
         const db = await localDB.open();
-        let transaction = db.transaction(name, "readonly");
-        let store = transaction.objectStore(name);
+        const transaction = db.transaction(name, "readonly");
+        const store = transaction.objectStore(name);
 
         return new Promise((resolve, reject) => {
             let request = store.getAll();
@@ -54,11 +55,12 @@ const localDB = {
         });
     },
 
-
+    //Вернуть по id
+    //name = "operations" || "categories"
     get: async (name, id) => {
         const db = await localDB.open();
-        let transaction = db.transaction(name, "readonly");
-        let store = transaction.objectStore(name);
+        const transaction = db.transaction(name, "readonly");
+        const store = transaction.objectStore(name);
 
         return new Promise((resolve, reject) => {
             let request = store.get(id);
@@ -67,23 +69,41 @@ const localDB = {
         });
     },
 
-    update: async (name, id, newObject) => {
+    //Редактировать по Id
+    //name = "operations" || "categories"
+    set: async (name, id, newObject) => {
+        console.log('hui')
+        const oldData = await localDB.get(name, id)
+        const type = oldData.type
+        const db = await localDB.open();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(name, "readwrite");
+            const store = transaction.objectStore(name);
+
+            const putRequest = store.put({type, ...newObject, id }); 
+
+            putRequest.onsuccess = () => resolve(putRequest.result);
+            putRequest.onerror = () => reject(putRequest.error);
+        });
+        
+    },
+
+    //Удалить по Id
+    //name = "operations" || "categories"
+    delete: async (name, id) => {
         const db = await localDB.open();
         const transaction = db.transaction(name, "readwrite");
         const store = transaction.objectStore(name);
 
-        const data = await localDB.get(name, id);
-        if (!data) throw new Error("Объект не найден");
-
-        return await new Promise((resolve, reject) => {
-            const request = store.put({ ...data, ...newObject });
+        return new Promise((resolve, reject) => {
+            let request = store.delete(id);
             request.onsuccess = () => resolve(request.result);
             request.onerror = () => reject(request.error);
         });
     },
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////Вспомогалки
+    ////////////////////////////////////////////////////////////////////////////////////////////////////Вспомогашки
 
     getCategoryIdForName: async (categoryName) => {
         const allCategories = await localDB.getAll("categories")

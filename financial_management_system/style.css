@@ -16,7 +16,8 @@ BODy {
     display: flex;
     place-items: center;
     justify-content: space-around;
-    /* gap: 20px; */
+    gap: 20px;
+    padding: 20px;
     /* padding: 10px; */
 }
 
@@ -50,30 +51,46 @@ table {
     border-collapse: collapse;
     height: min-content;
     border-style: hidden;
-    /* width: 400px; */
+    width: 100%;
     overflow: hidden;
+    
 }
 td {
     border: 1px solid rgb(172, 172, 172);
     padding: 9px;
-    width: auto;
-    height: 40px;
+    height: 35px;
+    
 }
 td:not(:last-of-type) {
-    max-width: 110px;
-    width: 110px;
-}
-td:last-of-type {
+    /* max-width: 110px;
+    width: 110px; */
+    width: 31%;
 }
 
-/* последняя ячейка не в хеад */
+
 tr:not(thead tr) td:last-of-type {
-    padding: 0px;
+    padding: 5px;
+    width: 20px;
 }
 
-/* tr:not(thead tr):hover{
-    background-color: #cacad1;
-} */
+/* /////////////////////////////////////////// */
+tr:not(thead tr) {
+    /* background-color: #9a9aa1; */
+}
+
+tr:not(thead tr):hover {
+    background-color: #cfcfd1;
+}
+
+tr.select {
+    background-color: #bcbdc2;
+}
+
+tr:not(thead tr).select:hover {
+    background-color: #9a9a9e;
+}
+/* /////////////////////////////////////////// */
+
 /* кнопка последней ячейки не в хеад
 tr:not(thead tr) td:last-of-type > *{
     background-color: rgb(233, 233, 233);
@@ -100,6 +117,17 @@ tfoot {
     background-color: #233446;
     color: #e8e8e8;
     font-weight: 600;
+    user-select: none;
+
+}
+
+
+thead td:not(:last-of-type):hover {
+    background-color: #2c4157;
+}
+
+thead td:not(:last-of-type).select {
+    background-color: #344b63;
 }
 
 /* .button_cell{
@@ -121,7 +149,7 @@ tfoot {
 .table_manager_container {
     height: 30px;
     margin: 5px;
-    width: 400px;
+    /* width: 400px; */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -137,10 +165,11 @@ tfoot {
     border-left: 1px solid black;
     border-top: 1px solid black;
     border-radius: 7px; */
+    width: 100%;
 }
 
 /* //////////////////////////////////////////////////////////////////////////////////////// */
-#create_form {
+#create_form, #confirm_form {
     display: inline-block;
     padding: 10px;
     width: 300px;
@@ -149,7 +178,7 @@ tfoot {
     background-color: aliceblue;
 }
 
-#create_form_container {
+#create_form_container, #confirm_form_container{
     background-color: rgba(0, 0, 0, 0.356);
     position: fixed;
     width: 100%;
@@ -159,7 +188,7 @@ tfoot {
     visibility: hidden;
 }
 
-#create_form_container:before {
+#create_form_container:before, #confirm_form_container:before {
     display: inline-block;
     height: 100%;
     content: "";
@@ -172,7 +201,7 @@ tfoot {
     width: 180px;
 }
 
-.create_form_bottom {
+.create_form_bottom, #confirm_form_bottom {
     display: flex;
     height: 30px;
     justify-content: end;
@@ -215,11 +244,25 @@ datalist {
     background-color: #233446;
     color: #e8e8e8;
     border: 0;
-    border-radius: 2px;
+    border-radius: 5px;
     padding: 4px;
 
     /* transition: color 200ms ease; */
 }
 .flat_button:hover {
     background-color: #6c6b77;
+}
+
+.default_size{
+    width: 70px;
+    height: 30px;
+    margin: 10px;
+}
+
+#table_manager_button_delete_expens{
+    visibility: hidden;
+}
+
+#table_manager_button_delete_income{
+    visibility: hidden;
 }

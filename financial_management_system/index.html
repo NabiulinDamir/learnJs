@@ -5,6 +5,9 @@
         <style lang="css"></style>
     </head>
     <body>
+
+<!-- ///////////////////////////////////////////////////Форма создания\редактирования///////////////////////////////////////////////////// -->
+        
         <div id="create_form_container">
             <div id="create_form">
                 <div id="create_message"></div>
@@ -24,34 +27,81 @@
                 <datalist id="category_select"></datalist>
                 <input type="date" id="date_selector" class="inputs" />
                 <div class="create_form_bottom">
-                    <button type="button" id="save_form_button" class="flat_button">
+                    <button
+                        type="button"
+                        id="save_form_button"
+                        class="flat_button"
+                    >
                         Сохранить
                     </button>
-                    <button type="button" id="hide_form_button" class="flat_button">Отмена</button>
+                    <button
+                        type="button"
+                        id="hide_form_button"
+                        class="flat_button"
+                    >
+                        Отмена
+                    </button>
                 </div>
             </div>
         </div>
 
+<!-- /////////////////////////////////////////////////Форма подтверждения/////////////////////////////////////////////////////// -->
+
+        <div id="confirm_form_container">
+            <div id="confirm_form">
+                <div id="confirm_message">
+                    
+                </div>
+                    <button
+                        type="button"
+                        id="confirm_form_button"
+                        class="flat_button default_size"
+                    >
+                        Да
+                    </button>
+                    <button
+                        type="button"
+                        id="hide_confirm_form_button"
+                        class="flat_button default_size"
+                    >
+                        Нет
+                    </button>
+                </div>
+            </div>
+        </div>
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
         <div id="main_up_container"></div>
 
-    
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
         <div id="main_bottom_container">
-
-
             <div class="border_table">
                 <div class="table_manager_container">
                     <div>Доходы</div>
-                    <button class="flat_button" id="table_manager_button_income">
-                        Добавить
-                    </button>
+                    <div>
+                        <button
+                            class="flat_button"
+                            id="table_manager_button_delete_income"
+                        >
+                            Удалить
+                        </button>
+                        <button
+                            class="flat_button"
+                            id="table_manager_button_income"
+                        >
+                            Добавить
+                        </button>
+                    </div>
                 </div>
                 <div class="outer_frame_table">
                     <table id="main_table_income">
                         <thead>
                             <tr>
-                                <td>Категория</td>
-                                <td>Сумма</td>
-                                <td>Дата</td>
+                                <td id="top_cell_income_category">Категория</td>
+                                <td id="top_cell_income_value">Сумма</td>
+                                <td id="top_cell_income_date">Дата</td>
                                 <td></td>
                             </tr>
                         </thead>
@@ -60,25 +110,34 @@
                     </table>
                 </div>
             </div>
-            
 
-            <div class="border_table"  >
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+            <div class="border_table">
                 <div class="table_manager_container">
                     <div>Расходы</div>
-                    <button
-                        class="flat_button"
-                        id="table_manager_button_expens"
-                    >
-                        Добавить
-                    </button>
+                    <div>
+                        <button
+                            class="flat_button"
+                            id="table_manager_button_delete_expens"
+                        >
+                            Удалить
+                        </button>
+                        <button
+                            class="flat_button"
+                            id="table_manager_button_expens"
+                        >
+                            Добавить
+                        </button>
+                    </div>
                 </div>
                 <div class="outer_frame_table">
                     <table id="main_table_expens">
                         <thead>
                             <tr>
-                                <td>Категория</td>
-                                <td>Сумма</td>
-                                <td>Дата</td>
+                                <td id="top_cell_expens_category">Категория</td>
+                                <td id="top_cell_expens_value">Сумма</td>
+                                <td id="top_cell_expens_date">Дата</td>
                                 <td></td>
                             </tr>
                         </thead>
@@ -88,6 +147,10 @@
                 </div>
             </div>
         </div>
+
+
+<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
         <script type="module" src="./main.js"></script>
         <script></script>
     </body>
