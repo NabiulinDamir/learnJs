@@ -8,33 +8,14 @@ async function setDataForTable() {
     let expensData = allOperations.filter(op => op.type < 0)
     let allCategories = await localDB.getAll("categories")
 
+    const incomeSortedOptions = await localDB.get("sortOption", "incomeSortedOptions")
+    const expensSortedOptions = await localDB.get("sortOption", "expensSortedOptions")
 
-
-    let incomeSortedOptions = { factor: "category", increasing: false }
-    incomeSortedOptions = { factor: "value", increasing: false }
-    // incomeSortedOptions = { factor: "date", increasing: false }
-    // incomeSortedOptions = { factor: "id", increasing: true }
-
-    let expensSortedOptions = { factor: "category", increasing: false }
-    expensSortedOptions = { factor: "value", increasing: false }
-    // expensSortedOptions = { factor: "date", increasing: false }
-    // expensSortedOptions = { factor: "id", increasing: true }
-
-    incomeData.sort((a, b) => b.value - a.value)
-
-    incomeData.sort((a, b) => b.date.getTime() - a.date.getTime())
-
-    incomeData.sort((a, b) => {
-        const categotyAtext = allCategories.find(category => category.id === a.categoryId).name
-        const categotyBtext = allCategories.find(category => category.id === b.categoryId).name 
-        return categotyAtext.localeCompare(categotyBtext)
-        
-    })
-
+    sort(incomeData, incomeSortedOptions?.factor, incomeSortedOptions?.increasing)
+    sort(expensData, expensSortedOptions?.factor, expensSortedOptions?.increasing)
     // localDB.add("operations", {type: 1, value: 140,  date: new Date, categoryId: 1})
     // localDB.add("operations", {type: 1, value: 2500, date: new Date, categoryId: 2})
     // localDB.add("operations", {type: 1, value: 230, date: new Date, categoryId: 1})
-
 
     // localDB.add("operations", {type: -1, value: 140, date: new Date, categoryId: 3})
     // localDB.add("operations", {type: -1, value: 1300, date: new Date, categoryId: 4})
@@ -58,10 +39,9 @@ async function setDataForTable() {
 
         dataArray.forEach(data => {
             const row = document.createElement('tr');
-            const category = allCategories.find(category => category.id === data.categoryId);
             const date = new Date(data.date);
             row.innerHTML = `
-            <td>${category?.name || 'Unknown'}</td>
+            <td>${data.category || 'Unknown'}</td>
             <td>${data.value}</td>
             <td>${formatDate(date)}</td>
             <td>
@@ -81,8 +61,30 @@ async function setDataForTable() {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//array = [obj]
+//factor = "value" || "date" || "category" || "id"
+//increasing = true || false
+//categoties = [obj]
+async function sort(array, factor, increasing) {
+    switch (factor) {
+        case "value":
+            array.sort((a, b) => b.value - a.value)
+            break
+        case "date":
+            array.sort((a, b) => b.date.getTime() - a.date.getTime())
+            break
+        case "category":
+            array.sort((a, b) => {
+                return b.category.localeCompare(a.category)
+            })
+            break
+        case "id":
+            break
+    }
+    if (increasing) array.reverse()
+}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////автоматическая работа с форомй
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////работа с форомй
 
 //установка значений в селекторе категорий
 //categoryType = 'income' || 'expens'
@@ -103,14 +105,13 @@ function setDefaultValuesForAddForm() {
     value_input.value = ""
     value_input.classList.remove("err")
     category_input.classList.remove("err")
+    console.log(formatDate(new Date))
 }
 
 //установка значений по id операции для формы редактирования
 async function setValuesForEditForm(dataObject) {
     value_input.value = dataObject.value
-    await updateSelectorValues(dataObject.type > 0 ? 'income' : 'expens')
-    const categoryData = await localDB.get("categories", dataObject.categoryId)
-    category_input.value = categoryData.name
+    category_input.value = dataObject.category
     date_selector.value = formatDate(dataObject.date)
 }
 
@@ -129,8 +130,9 @@ function isFormValid() {
 async function getObjectForm() {
     const value = +value_input.value
     const date = new Date(date_selector.value)
-    const categoryId = await localDB.getCategoryIdForName(category_input.value)
-    return { value, date, categoryId }
+    const category = category_input.value
+    console.log(date_selector.value)
+    return { value, date, category }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////ивенты
@@ -139,7 +141,7 @@ async function getObjectForm() {
 table_manager_button_income.addEventListener("click", async () => {
     await updateSelectorValues("income")
     setDefaultValuesForAddForm()
-    save_form_button.addEventListener("click", createIncomeOperation, { once: true })
+    save_form_button.addEventListener("click", createIncomeOperation)
     create_form_container.style.visibility = 'visible'
 })
 
@@ -147,18 +149,20 @@ table_manager_button_income.addEventListener("click", async () => {
 table_manager_button_expens.addEventListener("click", async () => {
     await updateSelectorValues("expens")
     setDefaultValuesForAddForm()
-    save_form_button.addEventListener("click", createExpensOperation, { once: true })
+    save_form_button.addEventListener("click", createExpensOperation)
     create_form_container.style.visibility = 'visible'
 })
 
 //кнопка ОТМЕНА
 hide_form_button.addEventListener("click", () => {
     create_form_container.style.visibility = 'hidden'
+
+    clearAllEvents(save_form_button)
 })
 
 //Кнопка нет в форме подтверждения
 hide_confirm_form_button.addEventListener("click", () => {
-    clearEventsForConfirmButton()
+    confirm_form_button.removeEventListener("click", deleteSelectedOperations)
     clearSelectsForTable(main_table_income)
     clearSelectsForTable(main_table_expens)
     selectedIncomeObjects.clear()
@@ -175,13 +179,14 @@ table_manager_button_delete_income.addEventListener("click", showConfirmForm)
 
 //показать окно с редактированием дохода
 async function showEditForm(dataObject) {
+    console.log(dataObject)
     await setValuesForEditForm(dataObject)
-    save_form_button.addEventListener("click", () => { editOperation(dataObject.id) }, { once: true })
+    save_form_button.addEventListener("click", () => { editOperation(dataObject) })
     create_form_container.style.visibility = 'visible'
 }
 
-//показать окно с редактированием дохода
-async function showConfirmForm(dataObject) {
+//показать окно с подтверждением удаления
+async function showConfirmForm() {
     confirm_message.innerHTML = "Вы действительно хотите удалить выбранные операции?"
     confirm_form_button.addEventListener("click", deleteSelectedOperations)
     confirm_form_container.style.visibility = 'visible'
@@ -192,22 +197,25 @@ async function showConfirmForm(dataObject) {
 //ивент создания дохода
 async function createIncomeOperation() {
     if (!isFormValid()) return
-    const value = +value_input.value
-    const categoryId = await findCategory(category_input.value, 'income')
-    createOperation(value, categoryId, new Date(date_selector.value), 1)
+    const newObj = await getObjectForm()
+    // const value = +value_input.value
+    await checkCategory(category_input.value, 'income')
+    await createOperation(newObj, 1)
+    save_form_button.removeEventListener("click", createIncomeOperation)
 }
 
 //ивент создания расхода
 async function createExpensOperation() {
     if (!isFormValid()) return
-    const value = +value_input.value
-    const categoryId = await findCategory(category_input.value, 'expens')
-    createOperation(value, categoryId, new Date(date_selector.value), -1)
+    const newObj = await getObjectForm()
+    await checkCategory(category_input.value, 'expens')
+    await createOperation(newObj, -1)
+    save_form_button.removeEventListener("click", createExpensOperation)
 }
 
 //создание операции
-async function createOperation(value, categoryId, date, type) {
-    await localDB.add("operations", { value, date, categoryId, type });
+async function createOperation(newObj, type) {
+    await localDB.add("operations", { type, ...newObj });
     setDataForTable()
     create_form_container.style.visibility = 'hidden'
 }
@@ -215,11 +223,13 @@ async function createOperation(value, categoryId, date, type) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////редактирование операций
 
 //редактирование операции(расхода или дохода)
-async function editOperation(operationId) {
+async function editOperation(operationObj) {
     if (!isFormValid()) return
     const newObj = await getObjectForm()
-    await localDB.set("operations", operationId, newObj)
+    await checkCategory(newObj.category, ((operationObj.type > 0) ? "income" : "expens"))
+    await localDB.setOperation(operationObj.id, newObj)
     create_form_container.style.visibility = 'hidden'
+    clearAllEvents(save_form_button)
     setDataForTable()
 }
 
@@ -233,7 +243,7 @@ async function deleteSelectedOperations() {
     table_manager_button_delete_income.style.visibility = "hidden"
     table_manager_button_delete_expens.style.visibility = "hidden"
     confirm_form_container.style.visibility = 'hidden'
-    clearEventsForConfirmButton()
+    confirm_form_button.removeEventListener("click", deleteSelectedOperations)
     setDataForTable()
 
 }
@@ -242,27 +252,25 @@ async function deleteSelectedOperations() {
 
 //если нету категории, то создаёт
 //type === 'income' || 'expens'
-async function findCategory(name, type) {
+async function checkCategory(name, type) {
+    console.log(name)
     const allCategories = await localDB.getAll("categories")
     const categories = allCategories.filter(category => category.type === type)
-    let findCategoryId = categories.find(category => category.name === name)?.id
-    if (!findCategoryId) {
-        findCategoryId = await localDB.add("categories", { name, type })
-    }
-    return findCategoryId
-}
-
-function clearEventsForConfirmButton() {
-    confirm_form_button.removeEventListener("click", deleteSelectedOperations)
+    if (!(categories.map(c => c.name).includes(name))) await localDB.add("categories", { name, type })
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////Вспомогашки
 
 const formatDate = (dateObj) => {
-    const addNul = (number) => number < 9 ? `0${number}` : number
-    return `${addNul(dateObj.getFullYear())}-${addNul(dateObj.getMonth())}-${addNul(dateObj.getDate())}`
+    const addNul = (number) => number < 10 ? `0${number}` : number
+    return `${addNul(dateObj.getFullYear())}-${addNul(dateObj.getMonth() + 1)}-${addNul(dateObj.getDate())}`
 }
 
+function clearAllEvents(element) {
+    const newElement = element.cloneNode(true);
+    element.replaceWith(newElement);
+    return newElement;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////Клики по линиям
 let selectedIncomeObjects = new Set()
@@ -308,18 +316,64 @@ function clearSelectsForTable(table) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////Сортировочки
 
 //сортировка по категории
-top_cell_income_category.addEventListener("click", setSortedIndicator)
+top_cell_income_category.addEventListener("click", async (event) => {
+    await setSortOption("incomeSortedOptions", "category")
+    updateSortMarker(event, "incomeSortedOptions")
+})
 //сортировка по сумме
-top_cell_income_value.addEventListener("click", setSortedIndicator)
+top_cell_income_value.addEventListener("click", async (event) => {
+    await setSortOption("incomeSortedOptions", "value")
+    updateSortMarker(event, "incomeSortedOptions")
+})
 //сортировка по дате
-top_cell_income_date.addEventListener("click", setSortedIndicator)
+top_cell_income_date.addEventListener("click", async (event) => {
+    await setSortOption("incomeSortedOptions", "date")
+    updateSortMarker(event, "incomeSortedOptions")
+})
 
 //сортировка по категории
-top_cell_expens_category.addEventListener("click", setSortedIndicator)
+top_cell_expens_category.addEventListener("click", async (event) => {
+    await setSortOption("expensSortedOptions", "category")
+    updateSortMarker(event, "expensSortedOptions")
+})
 //сортировка по сумме
-top_cell_expens_value.addEventListener("click", setSortedIndicator)
+top_cell_expens_value.addEventListener("click", async (event) => {
+    await setSortOption("expensSortedOptions", "value")
+    updateSortMarker(event, "expensSortedOptions")
+})
 //сортировка по дате
-top_cell_expens_date.addEventListener("click", setSortedIndicator)
+top_cell_expens_date.addEventListener("click", async (event) => {
+    await setSortOption("expensSortedOptions", "date")
+    updateSortMarker(event, "expensSortedOptions")
+})
+
+//установка настроек сортировки
+//optionName = "expensSortedOptions" || "incomeSortedOptions"
+//sortFactor = "value" || "date" || "category" || "id"
+async function setSortOption(optionName, sortFactor) {
+    let oldOption = await localDB.get("sortOption", optionName)
+    if (!oldOption) { await localDB.setSortOption(optionName, { factor: sortFactor, increasing: true }); return }
+    if (oldOption.factor !== sortFactor) oldOption.factor = "id"
+    if (oldOption.factor === "id") await localDB.setSortOption(optionName, { factor: sortFactor, increasing: true })
+    else if (oldOption.increasing) await localDB.setSortOption(optionName, { factor: sortFactor, increasing: false })
+    else await localDB.setSortOption(optionName, { factor: "id", increasing: true })
+    setDataForTable()
+}
+
+async function updateSortMarker(event, optionName) {
+    const sortOptions = await localDB.get("sortOption", optionName)
+    let sortIndicator = sortOptions.increasing ? "▴" : "▾"
+    if(sortOptions.factor === "id") sortIndicator = ""
+    clearAll(event.target.parentElement) 
+    event.target.innerHTML += sortIndicator
+
+    function clearAll(parent) {
+        Array.from(parent.getElementsByTagName("TD")).forEach(element => {
+            element.classList.remove("select")
+            if (element.innerHTML.includes("▾") || element.innerHTML.includes("▴")) { element.innerHTML = element.innerHTML.slice(0, -1) }
+        })
+    }
+}
 
 //Управление индикатором
 function setSortedIndicator(event) {
@@ -340,6 +394,7 @@ function setSortedIndicator(event) {
         elementText += "⯆"
     }
     event.target.innerHTML = elementText
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////

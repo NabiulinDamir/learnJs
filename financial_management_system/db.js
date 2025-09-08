@@ -8,7 +8,10 @@ const localDB = {
                     db.createObjectStore('operations', { keyPath: 'id', autoIncrement: true });
                 }
                 if (!db.objectStoreNames.contains('categories')) {
-                    db.createObjectStore('categories', { keyPath: 'id', autoIncrement: true });
+                    db.createObjectStore('categories', { keyPath: 'name', autoIncrement: true });
+                }
+                if (!db.objectStoreNames.contains('sortOption')) {
+                    db.createObjectStore('sortOption', { keyPath: 'name' });
                 }
 
             };
@@ -31,13 +34,8 @@ const localDB = {
         return new Promise((resolve, reject) => {
             let request = store.add(object);
 
-            request.onsuccess = () => {
-                resolve(request.result); // Вернет ID созданного элемента
-            };
-
-            request.onerror = () => {
-                reject(request.error);
-            };
+            request.onsuccess = () => { resolve(request.result); };
+            request.onerror = () => { reject(request.error); };
         });
     },
 
@@ -69,23 +67,35 @@ const localDB = {
         });
     },
 
-    //Редактировать по Id
-    //name = "operations" || "categories"
-    set: async (name, id, newObject) => {
-        console.log('hui')
-        const oldData = await localDB.get(name, id)
+    //Редактировать операцию по Id
+    setOperation: async (id, newObj) => {
+        const oldData = await localDB.get("operations", id)
         const type = oldData.type
         const db = await localDB.open();
-        return new Promise((resolve, reject) => {
-            const transaction = db.transaction(name, "readwrite");
-            const store = transaction.objectStore(name);
 
-            const putRequest = store.put({type, ...newObject, id }); 
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("operations", "readwrite");
+            const store = transaction.objectStore("operations");
+
+            const putRequest = store.put({ type, ...newObj, id });
 
             putRequest.onsuccess = () => resolve(putRequest.result);
             putRequest.onerror = () => reject(putRequest.error);
         });
-        
+    },
+
+    //редактировать настройки сортировки
+    setSortOption: async (name, newObj) => {
+        const db = await localDB.open();
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction("sortOption", "readwrite");
+            const store = transaction.objectStore("sortOption");
+
+            const putRequest = store.put({ name, ...newObj });
+
+            putRequest.onsuccess = () => resolve(putRequest.result);
+            putRequest.onerror = () => reject(putRequest.error);
+        });
     },
 
     //Удалить по Id
@@ -105,10 +115,14 @@ const localDB = {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////Вспомогашки
 
-    getCategoryIdForName: async (categoryName) => {
+    //поиск id категории по имени
+    checkCategory: async (categoryName) => {
         const allCategories = await localDB.getAll("categories")
-        return allCategories.find(category => category.name === categoryName).id ?? null
-    }
+        return allCategories.find(category => category.name === categoryName)?.id
+    },
+
+
+
 };
 
 

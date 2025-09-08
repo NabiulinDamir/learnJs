@@ -5,9 +5,8 @@
         <style lang="css"></style>
     </head>
     <body>
+        <!-- ///////////////////////////////////////////////////Форма создания\редактирования///////////////////////////////////////////////////// -->
 
-<!-- ///////////////////////////////////////////////////Форма создания\редактирования///////////////////////////////////////////////////// -->
-        
         <div id="create_form_container">
             <div id="create_form">
                 <div id="create_message"></div>
@@ -45,36 +44,71 @@
             </div>
         </div>
 
-<!-- /////////////////////////////////////////////////Форма подтверждения/////////////////////////////////////////////////////// -->
+        <!-- /////////////////////////////////////////////////Форма подтверждения/////////////////////////////////////////////////////// -->
 
         <div id="confirm_form_container">
             <div id="confirm_form">
-                <div id="confirm_message">
-                    
-                </div>
-                    <button
-                        type="button"
-                        id="confirm_form_button"
-                        class="flat_button default_size"
-                    >
-                        Да
-                    </button>
-                    <button
-                        type="button"
-                        id="hide_confirm_form_button"
-                        class="flat_button default_size"
-                    >
-                        Нет
-                    </button>
-                </div>
+                <div id="confirm_message"></div>
+                <button
+                    type="button"
+                    id="confirm_form_button"
+                    class="flat_button default_size"
+                >
+                    Да
+                </button>
+                <button
+                    type="button"
+                    id="hide_confirm_form_button"
+                    class="flat_button default_size"
+                >
+                    Нет
+                </button>
             </div>
         </div>
 
-<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-        <div id="main_up_container"></div>
+        <div id="main_up_container">
+            <div id="main" style="width: 600px; height: 400px"></div>
+            <script type="text/javascript">
+                // Initialize the echarts instance based on the prepared dom
+                var myChart = echarts.init(document.getElementById("main"));
 
-<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+                // Specify the configuration items and data for the chart
+                var option = {
+                    title: {
+                        text: "ECharts Getting Started Example",
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ["sales"],
+                    },
+                    xAxis: {
+                        data: [
+                            "Shirts",
+                            "Cardigans",
+                            "Chiffons",
+                            "Pants",
+                            "Heels",
+                            "Socks",
+                        ],
+                    },
+                    yAxis: {},
+                    series: [
+                        {
+                            name: "sales",
+                            type: "bar",
+                            data: [5, 20, 36, 10, 10, 20],
+                        },
+                    ],
+                };
+
+                // Display the chart using the configuration items and data just specified.
+                myChart.setOption(option);
+            </script>
+        </div>
+
+        <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
         <div id="main_bottom_container">
             <div class="border_table">
@@ -111,7 +145,7 @@
                 </div>
             </div>
 
-<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+            <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
             <div class="border_table">
                 <div class="table_manager_container">
@@ -148,10 +182,10 @@
             </div>
         </div>
 
-
-<!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+        <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
         <script type="module" src="./main.js"></script>
+        <!-- <script type="module" src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script> -->
         <script></script>
     </body>
 </html>
