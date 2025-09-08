@@ -69,43 +69,7 @@
         <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
         <div id="main_up_container">
-            <div id="main" style="width: 600px; height: 400px"></div>
-            <script type="text/javascript">
-                // Initialize the echarts instance based on the prepared dom
-                var myChart = echarts.init(document.getElementById("main"));
-
-                // Specify the configuration items and data for the chart
-                var option = {
-                    title: {
-                        text: "ECharts Getting Started Example",
-                    },
-                    tooltip: {},
-                    legend: {
-                        data: ["sales"],
-                    },
-                    xAxis: {
-                        data: [
-                            "Shirts",
-                            "Cardigans",
-                            "Chiffons",
-                            "Pants",
-                            "Heels",
-                            "Socks",
-                        ],
-                    },
-                    yAxis: {},
-                    series: [
-                        {
-                            name: "sales",
-                            type: "bar",
-                            data: [5, 20, 36, 10, 10, 20],
-                        },
-                    ],
-                };
-
-                // Display the chart using the configuration items and data just specified.
-                myChart.setOption(option);
-            </script>
+            <div id="chart" style="width: 500px; height: 350px;"></div>
         </div>
 
         <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -185,7 +149,8 @@
         <!-- //////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
         <script type="module" src="./main.js"></script>
-        <!-- <script type="module" src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script> -->
+        <script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
         <script></script>
+        <!-- <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script> -->
     </body>
 </html>

@@ -122,9 +122,42 @@ const localDB = {
     },
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////Подготовленные данные для графиков
+
+    //Требуемый результат [[ 'Декабрь 2021',  720, 5300 ],[...]]
+    getOperationsStatistic: async () => {
+        const allOperations = await localDB.getAll("operations")
+        const resultMap = new Map();
+        allOperations.sort((a,b) => a.date.getTime() - b.date.getTime())
+        allOperations.forEach(item => {
+            const date = new Date(item.date);
+            const key = `${date.getFullYear()}-${date.getMonth()}`; // ключ "год-месяц"
+            const monthName = `${formatDate(date)}`;
+
+            if (!resultMap.has(key)) {
+                resultMap.set(key, [monthName, 0, 0]);
+            }
+
+            const [_, income, expense] = resultMap.get(key);
+
+            if (item.type > 0) {
+                resultMap.set(key, [monthName, income + item.value, expense]);
+            } else {
+                resultMap.set(key, [monthName, income, expense + item.value]);
+            }
+        });
+        return Array.from(resultMap.values())
+
+        function formatDate(date){
+            const MONTH_NAME = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+            return MONTH_NAME[date.getMonth()] + " " + date.getFullYear()
+        }
+
+    }
 
 };
 
+// console.log(await localDB.getOperationsStatistic())
 
 export default localDB
 

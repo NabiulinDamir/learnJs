@@ -1,12 +1,11 @@
 import localDB from './db.js'
-
+import { updateRoundChart } from './chart.js'
 
 setDataForTable()
 async function setDataForTable() {
     let allOperations = await localDB.getAll("operations")
     let incomeData = allOperations.filter(op => op.type > 0)
     let expensData = allOperations.filter(op => op.type < 0)
-    let allCategories = await localDB.getAll("categories")
 
     const incomeSortedOptions = await localDB.get("sortOption", "incomeSortedOptions")
     const expensSortedOptions = await localDB.get("sortOption", "expensSortedOptions")
@@ -28,6 +27,7 @@ async function setDataForTable() {
     // localDB.add("categories", {name: "еда", type: 'expens' })
     // localDB.add("categories", {name: "топливо", type: 'expens'})
     // localDB.add("categories", {name: "парковка", type: 'expens'})
+    updateRoundChart()
 
     fillTable(main_table_income, incomeData)
     fillTable(main_table_expens, expensData)
@@ -105,7 +105,6 @@ function setDefaultValuesForAddForm() {
     value_input.value = ""
     value_input.classList.remove("err")
     category_input.classList.remove("err")
-    console.log(formatDate(new Date))
 }
 
 //установка значений по id операции для формы редактирования
@@ -131,7 +130,6 @@ async function getObjectForm() {
     const value = +value_input.value
     const date = new Date(date_selector.value)
     const category = category_input.value
-    console.log(date_selector.value)
     return { value, date, category }
 }
 
@@ -179,7 +177,6 @@ table_manager_button_delete_income.addEventListener("click", showConfirmForm)
 
 //показать окно с редактированием дохода
 async function showEditForm(dataObject) {
-    console.log(dataObject)
     await setValuesForEditForm(dataObject)
     save_form_button.addEventListener("click", () => { editOperation(dataObject) })
     create_form_container.style.visibility = 'visible'
@@ -253,7 +250,6 @@ async function deleteSelectedOperations() {
 //если нету категории, то создаёт
 //type === 'income' || 'expens'
 async function checkCategory(name, type) {
-    console.log(name)
     const allCategories = await localDB.getAll("categories")
     const categories = allCategories.filter(category => category.type === type)
     if (!(categories.map(c => c.name).includes(name))) await localDB.add("categories", { name, type })
@@ -363,8 +359,8 @@ async function setSortOption(optionName, sortFactor) {
 async function updateSortMarker(event, optionName) {
     const sortOptions = await localDB.get("sortOption", optionName)
     let sortIndicator = sortOptions.increasing ? "▴" : "▾"
-    if(sortOptions.factor === "id") sortIndicator = ""
-    clearAll(event.target.parentElement) 
+    if (sortOptions.factor === "id") sortIndicator = ""
+    clearAll(event.target.parentElement)
     event.target.innerHTML += sortIndicator
 
     function clearAll(parent) {
