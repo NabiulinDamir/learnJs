@@ -4,11 +4,13 @@ BODy {
         sans-serif;
     background-color: #e8e8e8;
     height: 100vh;
+    overflow: hidden;
 }
 
 #main_up_container {
     height: 400px;
     background-color: #d8d8da;
+    display: flex;
 }
 
 #main_bottom_container {
@@ -17,7 +19,7 @@ BODy {
     place-items: center;
     justify-content: space-around;
     gap: 20px;
-    padding: 20px;
+    padding: 30px 10px 10px 10px;
     /* padding: 10px; */
 }
 
@@ -265,4 +267,106 @@ datalist {
 
 #table_manager_button_delete_income{
     visibility: hidden;
+}
+
+/* //////////////////////////////////////////////////////////////////////////////////////////Графики */
+
+.chart{
+    height: 300px;
+    width: calc(100% / 3);
+}
+
+@media(max-width: 820px ){
+    .chart{
+    height: 300px;
+    width: calc(100% / 2 - 20px);
+}
+}
+
+/* ////////////////////////////////////////////////////////////////////////////////////////// */
+
+
+#time_selector{
+    position: absolute;
+    top: 363px;
+    background-color: #e8e8e8;
+    padding: 7px 7px 0px 7px ;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    width: 300px;
+    height: 30px;
+    left: calc(50% - 150px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    gap: 4px;
+
+}
+#time_interval_selector{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.time_interval_choice{
+    width: 50px;
+    text-align: center;
+     user-select: none;
+     transition: 200ms;
+     padding: 2px;
+     border-radius: 5px;
+}
+
+.time_interval_choice:hover{
+    background-color: #344b632a;
+
+}
+
+
+#select_line{
+    position: absolute;
+    top: 25px;
+    left: 32px;
+    width: 50px;
+    height: 2px;
+    background-color: #2c4157;
+    border: 0;
+    transition: 500ms ease;
+}
+
+#time_unit_selector{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    transition: all 500ms ease;
+    position: absolute;
+
+    /* background-color: #778a9ea1; */
+}
+
+
+
+.time_cell{
+    transition: 200ms ease;
+    border-radius: 10px;
+    /* width: 25px;
+    height: 25px; */
+    flex: 1;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    padding: 3px;
+    margin: 3px;
+    min-width: 100px;
+}
+
+.time_cell:hover{
+    background-color: #2c415757;
+    
+}
+
+.time_cell.select{
+    background-color: #2c4157be;
 }

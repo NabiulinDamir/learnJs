@@ -125,21 +125,16 @@ const localDB = {
     ////////////////////////////////////////////////////////////////////////////////////////////////////Подготовленные данные для графиков
 
     //Требуемый результат [[ 'Декабрь 2021',  720, 5300 ],[...]]
-    getOperationsStatistic: async () => {
+    getDateFormat: async () => {
         const allOperations = await localDB.getAll("operations")
         const resultMap = new Map();
-        allOperations.sort((a,b) => a.date.getTime() - b.date.getTime())
+        allOperations.sort((a, b) => a.date.getTime() - b.date.getTime())
         allOperations.forEach(item => {
             const date = new Date(item.date);
-            const key = `${date.getFullYear()}-${date.getMonth()}`; // ключ "год-месяц"
+            const key = `${date.getFullYear()}-${date.getMonth()}`;
             const monthName = `${formatDate(date)}`;
-
-            if (!resultMap.has(key)) {
-                resultMap.set(key, [monthName, 0, 0]);
-            }
-
+            if (!resultMap.has(key)) { resultMap.set(key, [monthName, 0, 0]); }
             const [_, income, expense] = resultMap.get(key);
-
             if (item.type > 0) {
                 resultMap.set(key, [monthName, income + item.value, expense]);
             } else {
@@ -147,12 +142,50 @@ const localDB = {
             }
         });
         return Array.from(resultMap.values())
-
-        function formatDate(date){
+        function formatDate(date) {
             const MONTH_NAME = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
             return MONTH_NAME[date.getMonth()] + " " + date.getFullYear()
         }
+    },
 
+    //{ value: 300, name: 'Video Ads' }
+    getIncomeCategoryFormat: async () => {
+        const allOperations = await localDB.getAll("operations")
+        const resultMap = new Map();
+
+        allOperations.forEach(item => {
+            if (item.type > 0) {
+                const category = item.category;
+
+                if (!resultMap.has(category)) { resultMap.set(category, 0) }
+                const currentValue = resultMap.get(category);
+                resultMap.set(category, currentValue + item.value);
+            }
+        });
+        return Array.from(resultMap.entries()).map(([name, value]) => ({
+            value: value,       
+            name: name          
+        }));
+    },
+
+    //{ value: 300, name: 'Video Ads' }
+    getExpensCategoryFormat: async () => {
+        const allOperations = await localDB.getAll("operations")
+        const resultMap = new Map();
+
+        allOperations.forEach(item => {
+            if (item.type < 0) {
+                const category = item.category;
+
+                if (!resultMap.has(category)) { resultMap.set(category, 0) }
+                const currentValue = resultMap.get(category);
+                resultMap.set(category, currentValue + item.value);
+            }
+        });
+        return Array.from(resultMap.entries()).map(([name, value]) => ({
+            value: value,       
+            name: name          
+        }));
     }
 
 };

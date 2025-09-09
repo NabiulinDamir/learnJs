@@ -1,7 +1,15 @@
 import localDB from './db.js'
-import { updateRoundChart } from './chart.js'
+import { updateSalineChart, updateRoundChart } from './chart.js'
 
-setDataForTable()
+
+updateAllData()
+async function updateAllData() {
+    setDataForTable()
+    updateSalineChart()
+    updateRoundChart()
+}
+
+
 async function setDataForTable() {
     let allOperations = await localDB.getAll("operations")
     let incomeData = allOperations.filter(op => op.type > 0)
@@ -27,7 +35,8 @@ async function setDataForTable() {
     // localDB.add("categories", {name: "еда", type: 'expens' })
     // localDB.add("categories", {name: "топливо", type: 'expens'})
     // localDB.add("categories", {name: "парковка", type: 'expens'})
-    updateRoundChart()
+
+
 
     fillTable(main_table_income, incomeData)
     fillTable(main_table_expens, expensData)
@@ -213,7 +222,7 @@ async function createExpensOperation() {
 //создание операции
 async function createOperation(newObj, type) {
     await localDB.add("operations", { type, ...newObj });
-    setDataForTable()
+    updateAllData()
     create_form_container.style.visibility = 'hidden'
 }
 
@@ -227,7 +236,7 @@ async function editOperation(operationObj) {
     await localDB.setOperation(operationObj.id, newObj)
     create_form_container.style.visibility = 'hidden'
     clearAllEvents(save_form_button)
-    setDataForTable()
+    updateAllData()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////Удаление операций
@@ -241,7 +250,7 @@ async function deleteSelectedOperations() {
     table_manager_button_delete_expens.style.visibility = "hidden"
     confirm_form_container.style.visibility = 'hidden'
     confirm_form_button.removeEventListener("click", deleteSelectedOperations)
-    setDataForTable()
+    updateAllData()
 
 }
 
@@ -260,6 +269,11 @@ async function checkCategory(name, type) {
 const formatDate = (dateObj) => {
     const addNul = (number) => number < 10 ? `0${number}` : number
     return `${addNul(dateObj.getFullYear())}-${addNul(dateObj.getMonth() + 1)}-${addNul(dateObj.getDate())}`
+}
+
+const formatDateRevers = (dateObj) => {
+    const addNul = (number) => number < 10 ? `0${number}` : number
+    return `${addNul(dateObj.getDate())}.${addNul(dateObj.getMonth() + 1)}.${addNul(dateObj.getFullYear())}`
 }
 
 function clearAllEvents(element) {
@@ -393,4 +407,53 @@ function setSortedIndicator(event) {
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////Дата селектор
+
+function setDateArr(scopeDate) {
+
+}
+
+function updatePosition(offsetLeft) {
+    const anhorPosition = time_unit_selector.offsetLeft
+    time_unit_selector.style.left = offsetLeft + 'px'
+
+}
+
+
+time_interval_choice_day.addEventListener("click", (event) => {
+    document.getElementById("select_line").style.left = event.target.offsetLeft + 2 + "px"
+    time_unit_selector.innerHTML = ''
+    const startDate = new Date();
+    const endDate = new Date();
+    startDate.setDate(startDate.getDate() - 15);
+    endDate.setDate(endDate.getDate() + 15);
+
+    while (startDate.getDate() != endDate.getDate()) {
+        startDate.setDate(startDate.getDate() + 1);
+        const day = document.createElement('div');
+        day.classList.add('time_cell')
+        day.innerHTML = `${formatDateRevers(startDate)}`;
+        day.addEventListener("click", (event) => { console.log('hui') })
+        if(startDate.getDay() == (new Date).getDay()) day.classList.add('select')
+        time_unit_selector.appendChild(day);
+    }
+    updatePosition(-screen.width / 2 - 15)
+})
+
+function slideToDate() {
+
+}
+
+
+
+time_interval_choice_day.click()
+
+time_interval_choice_month.addEventListener("click", (event) => {
+    document.getElementById("select_line").style.left = event.target.offsetLeft + 2 + "px"
+
+})
+
+time_interval_choice_year.addEventListener("click", (event) => {
+    document.getElementById("select_line").style.left = event.target.offsetLeft + 3 + "px"
+
+})
