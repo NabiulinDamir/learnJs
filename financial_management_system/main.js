@@ -62,16 +62,15 @@ add_test_data_button.addEventListener("click", async () => {
     await localDB.clear("operations");
 
     for (const category of data.categories || []) {
-        console.log(category)
         await localDB.add("categories", category);
     }
 
     for (const operation of data.operations || []) {
-        console.log(operation)
         await localDB.add("operations", {...operation, date: new Date(operation.date)})
     }
 
-    updateAllData()
+    await updateAllData()
+    time_interval_choice_day.click()
 })
 
 
