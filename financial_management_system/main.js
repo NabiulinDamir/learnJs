@@ -417,7 +417,7 @@ time_interval_choice_year.addEventListener("click", async (event) => {
     await generateTimeUnits("year");
 });
 
-
+//
 //генерация кнопочек с выбором дня, месяца или года
 //intervalType = "day" || "month" || "year"
 async function generateTimeUnits(intervalType) {
