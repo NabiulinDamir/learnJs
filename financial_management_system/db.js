@@ -161,6 +161,7 @@ const localDB = {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////Подготовленные данные для графиков
 
+    //собирает массив для статичтики - chart_1
     //Требуемый результат [[ 'Декабрь 2021',  720, 5300 ],[...]]
     getDateFormat: async () => {
 
@@ -192,6 +193,7 @@ const localDB = {
 
     },
 
+    //собирает массив для статичтики - chart_2_1
     //{ value: 300, name: 'Video Ads' }
     getIncomeCategoryFormat: async () => {
         const allOperations = await localDB.getAll("operations")
@@ -214,6 +216,7 @@ const localDB = {
         }));
     },
 
+    //собирает массив для статичтики- chart_2_2
     //[{ value: 300, name: 'Video Ads' }]
     getExpensCategoryFormat: async () => {
         const allOperations = await localDB.getAll("operations")
@@ -238,6 +241,7 @@ const localDB = {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //собирает асси для датаселектора
     getCurrentTimeArray: async (intervalType) => {
         const allOperations = await localDB.getAll("operations")
         allOperations.sort((a, b) => a.date.getTime() - b.date.getTime())

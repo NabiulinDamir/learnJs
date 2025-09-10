@@ -64,21 +64,7 @@ td:not(:last-of-type) {
     width: 110px; */
     width: 32%;
 }
-/* td:last-of-type{
-    max-width: min-content;
 
-} */
-
-/* tr:not(thead tr) td:last-of-type {
-    padding: 5px;
-    width: 40px;
-
-} */
-
-/* /////////////////////////////////////////// */
-/* tr:not(thead tr) {
-     background-color: #9a9aa1; 
-} */
 
 tr:not(thead tr):hover {
     background-color: #cfcfd1;
@@ -93,26 +79,7 @@ tr:not(thead tr).select:hover {
 }
 /* /////////////////////////////////////////// */
 
-/* кнопка последней ячейки не в хеад
-tr:not(thead tr) td:last-of-type > *{
-    background-color: rgb(233, 233, 233);
-    height: 20px;
-    width: 20px;
-    border: 1px solid rgb(172, 172, 172);
-    border-radius: 3px;
-    padding: 0;
-    transition: all 200ms;
-}
-/* кнопка последней ячейки не в хеад ховер 
-tr:not(thead tr) td:last-of-type:hover > *{
-    background-color: #dfdfdf;
-} */
 
-/* tbody{
-    gap: 0px;
-    height: 200px;
-    overflow: scroll;
-} */
 
 thead,
 tfoot {
@@ -130,20 +97,7 @@ thead td:not(:last-of-type).select {
     background-color: #344b63;
 }
 
-/* .button_cell{
-    padding: 0;
-    display: flex;
-    place-content: center;
-    height: 100%;
-    flex-direction: column;
 
-    
-}
-
-.button_cell > * {
-    
-    
-} */
 /* //////////////////////////////////////////////////////////////////////////////////////// */
 
 .table_manager_container {
@@ -216,16 +170,7 @@ datalist {
     padding-top: 25px;
 }
 
-/* #save_form_button, #hide_form_button{
-    border-radius: 4px;
-    border: 1px solid #a3a3a3;
-    cursor: pointer;
 
-} */
-
-/* #save_form_button{
-    background-color: #76e78f;
-} */
 
 .inputs {
     width: 100%;
