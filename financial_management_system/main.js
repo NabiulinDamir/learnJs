@@ -1,4 +1,5 @@
 import localDB from './db.js'
+
 import { updateSalineChart, updateRoundChart } from './chart.js'
 
 
@@ -20,21 +21,6 @@ async function setDataForTable() {
 
     sort(incomeData, incomeSortedOptions?.factor, incomeSortedOptions?.increasing)
     sort(expensData, expensSortedOptions?.factor, expensSortedOptions?.increasing)
-    // localDB.add("operations", {type: 1, value: 140,  date: new Date, categoryId: 1})
-    // localDB.add("operations", {type: 1, value: 2500, date: new Date, categoryId: 2})
-    // localDB.add("operations", {type: 1, value: 230, date: new Date, categoryId: 1})
-
-    // localDB.add("operations", {type: -1, value: 140, date: new Date, categoryId: 3})
-    // localDB.add("operations", {type: -1, value: 1300, date: new Date, categoryId: 4})
-    // localDB.add("operations", {type: -1, value: 250, date: new Date, categoryId: 5})
-    // localDB.add("operations", {type: -1, value: 1440, date: new Date, categoryId: 4})
-
-    // localDB.add("categories", {name: "зарплата",  type: 'income' })
-    // localDB.add("categories", {name: "подработка",  type: 'income' })
-
-    // localDB.add("categories", {name: "еда", type: 'expens' })
-    // localDB.add("categories", {name: "топливо", type: 'expens'})
-    // localDB.add("categories", {name: "парковка", type: 'expens'})
 
 
 
@@ -67,6 +53,26 @@ async function setDataForTable() {
 
 
 }
+
+add_test_data_button.addEventListener("click", async () => {
+    const response = await fetch('./testData.json');
+    const data = await response.json();
+
+    await localDB.clear("categories");
+    await localDB.clear("operations");
+
+    for (const category of data.categories || []) {
+        console.log(category)
+        await localDB.add("categories", category);
+    }
+
+    for (const operation of data.operations || []) {
+        console.log(operation)
+        await localDB.add("operations", {...operation, date: new Date(operation.date)})
+    }
+
+    updateAllData()
+})
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,6 +226,8 @@ async function createExpensOperation() {
 }
 
 //создание операции
+//newObj = { value: "", date: "", category: ""}
+//type = 1 || -1
 async function createOperation(newObj, type) {
     await localDB.add("operations", { type, ...newObj });
     updateAllData()
@@ -229,6 +237,7 @@ async function createOperation(newObj, type) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////редактирование операций
 
 //редактирование операции(расхода или дохода)
+//operationObj = 
 async function editOperation(operationObj) {
     if (!isFormValid()) return
     const newObj = await getObjectForm()
@@ -370,6 +379,8 @@ async function setSortOption(optionName, sortFactor) {
     setDataForTable()
 }
 
+//размещение маркера сортировки
+//optionName = "expensSortedOptions" || "incomeSortedOptions"
 async function updateSortMarker(event, optionName) {
     const sortOptions = await localDB.get("sortOption", optionName)
     let sortIndicator = sortOptions.increasing ? "▴" : "▾"
@@ -384,76 +395,83 @@ async function updateSortMarker(event, optionName) {
         })
     }
 }
-
-//Управление индикатором
-function setSortedIndicator(event) {
-    Array.from(event.target.parentElement.getElementsByTagName("TD")).forEach(element => {
-        if (element != event.target) {
-            element.classList.remove("select")
-            if (element.innerHTML.includes("⯆") || element.innerHTML.includes("⯅")) { element.innerHTML = element.innerHTML.slice(0, -1) }
-        }
-    })
-    let elementText = event.target.innerHTML
-    if (elementText.includes("⯆")) elementText = elementText.slice(0, -1) + "⯅"
-    else if (elementText.includes("⯅")) {
-        event.target.classList.remove("select")
-        elementText = elementText.slice(0, -1)
-    }
-    else {
-        event.target.classList.add("select")
-        elementText += "⯆"
-    }
-    event.target.innerHTML = elementText
-
-}
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////Дата селектор
 
-function setDateArr(scopeDate) {
-
-}
-
-function updatePosition(offsetLeft) {
-    const anhorPosition = time_unit_selector.offsetLeft
-    time_unit_selector.style.left = offsetLeft + 'px'
-
-}
-
-
-time_interval_choice_day.addEventListener("click", (event) => {
-    document.getElementById("select_line").style.left = event.target.offsetLeft + 2 + "px"
-    time_unit_selector.innerHTML = ''
-    const startDate = new Date();
-    const endDate = new Date();
-    startDate.setDate(startDate.getDate() - 15);
-    endDate.setDate(endDate.getDate() + 15);
-
-    while (startDate.getDate() != endDate.getDate()) {
-        startDate.setDate(startDate.getDate() + 1);
-        const day = document.createElement('div');
-        day.classList.add('time_cell')
-        day.innerHTML = `${formatDateRevers(startDate)}`;
-        day.addEventListener("click", (event) => { console.log('hui') })
-        if(startDate.getDay() == (new Date).getDay()) day.classList.add('select')
-        time_unit_selector.appendChild(day);
-    }
-    updatePosition(-screen.width / 2 - 15)
-})
-
-function slideToDate() {
-
-}
-
-
-
+//кнопка День
+time_interval_choice_day.addEventListener("click", async (event) => {
+    document.getElementById("select_line").style.left = `${event.target.offsetLeft + 2}px`;
+    await generateTimeUnits("day");
+});
 time_interval_choice_day.click()
 
-time_interval_choice_month.addEventListener("click", (event) => {
-    document.getElementById("select_line").style.left = event.target.offsetLeft + 2 + "px"
+//кнопка месяц
+time_interval_choice_month.addEventListener("click", async (event) => {
+    document.getElementById("select_line").style.left = `${event.target.offsetLeft + 2}px`;
+    await generateTimeUnits("month");
 
-})
+});
 
-time_interval_choice_year.addEventListener("click", (event) => {
-    document.getElementById("select_line").style.left = event.target.offsetLeft + 3 + "px"
+//кнопка год
+time_interval_choice_year.addEventListener("click", async (event) => {
+    document.getElementById("select_line").style.left = `${event.target.offsetLeft + 2}px`;
+    await generateTimeUnits("year");
+});
 
-})
+
+//генерация кнопочек с выбором дня, месяца или года
+//intervalType = "day" || "month" || "year"
+async function generateTimeUnits(intervalType) {
+    time_unit_selector.innerHTML = '';
+    let selectedElement
+
+    let units = await localDB.getCurrentTimeArray(intervalType);
+    units.forEach(unit => {
+        const element = createTimeUnitElement(unit, intervalType);
+        time_unit_selector.appendChild(element);
+
+        if (unit.value.isCurrent) {
+            selectedElement = element
+            selectElem(element, intervalType, unit.value.date)
+        }
+    });
+    await slideToElem(selectedElement);
+
+}
+
+//создание кнопочек с выбором дня, месяца или года
+//unit = {value: {date: Fri Jul 18 2025 05:00:00 GMT+0500 (Екатеринбург, стандартное время), isCurrent: false}, name: '18.07.2025'}
+//intervalType = "day" || "month" || "year"
+function createTimeUnitElement(unit, intervalType) {
+    const element = document.createElement('div');
+    element.className = 'time_cell';
+    element.textContent = unit.name;
+    // element.dataset.value = unit.name;
+
+    element.addEventListener("click", async () => {
+        slideToElem(element);
+        await selectElem(element, intervalType, unit.value.date);
+    });
+
+    return element;
+}
+
+//выбор кнопочки с выбором дня, месяца или года
+//elem = document element
+//intervalType = "day" || "month" || "year"
+async function selectElem(elem, intervalType, date) {
+    time_unit_selector.childNodes.forEach(a => a.classList.remove("select"))
+    elem.classList.add("select")
+    await localDB.setSortOption("time_delay", { length: intervalType, date })
+    updateSalineChart()
+    updateRoundChart()
+}
+
+//навигация до кнопочки с выбором дня, месяца или года
+//elem = document element
+function slideToElem(elem) {
+    const container = document.body;
+    const containerCenter = container.offsetWidth / 2;
+    const elemCenter = elem.offsetLeft + (elem.offsetWidth / 2);
+    time_unit_selector.style.left = (containerCenter - elemCenter) + "px";
+    // console.log(time_unit_selector.style.left)
+}

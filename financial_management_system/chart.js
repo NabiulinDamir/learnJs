@@ -1,6 +1,7 @@
 import localDB from "./db.js";
 
-const chart = echarts.init(document.getElementById("chart_1"));
+
+const chart   = echarts.init(document.getElementById("chart_1"));
 const chart21 = echarts.init(document.getElementById("chart_2_1"));
 const chart22 = echarts.init(document.getElementById("chart_2_2"));
 export const updateSalineChart = async () => {
