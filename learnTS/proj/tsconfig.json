@@ -4,7 +4,7 @@
         "removeComments": true,
         "outDir": "js",
         "sourceMap": true,
-        "outFile": "main.js",
+        "outFile": "./src/main.js",
         "noEmitOnError": true,
     }
 }

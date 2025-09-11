@@ -110,9 +110,6 @@ thead td:not(:last-of-type).select {
     /* border: 1px solid black; */
 }
 
-.table_manager_button {
-}
-
 .border_table {
     /* width: min-content;
     border-top: 1px solid black;
