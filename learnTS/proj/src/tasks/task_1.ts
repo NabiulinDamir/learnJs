@@ -1,18 +1,26 @@
 (function () {
-    const name = "task_0";
-    const description = "Test_0";
+    const name = "task_1";
+    const description = "Стрелочные функции";
     const table = document.getElementById("task_table");
 
     function run(): void {
         //Программа
 
-        show("test");
+        const x: number = 5
+        const y: number = 4
+
+        const sum = (x: number,y: number) => x + y;
+
+
+
+        show(sum)
+        show('5 + 4 = ' + sum(x, y));
+
         /////////////////////////
-        const f = 4;
     }
 
     function show(result: any = ""): void {
-        document.getElementById(`lb_${name}`).innerHTML = result;
+        document.getElementById(`lb_${name}`).innerHTML += result + "<br>";
     }
 
     function clear(): void {
@@ -25,9 +33,6 @@
         <td id='lb_${name}'></td>
         <td><button id='btn_${name}'>Run</button></td>
     </tr>`;
-    row.querySelector("button").addEventListener("click", () => {
-        clear();
-        run();
-    });
+    row.querySelector("button").addEventListener("click", () => {clear(); run();});
     table.appendChild(row);
 })();
