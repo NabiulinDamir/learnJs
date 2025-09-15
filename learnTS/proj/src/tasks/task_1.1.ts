@@ -6,15 +6,13 @@
     function run(): void {
         //Программа
 
-        const x: number = 5
-        const y: number = 4
+        const x: number = 5;
+        const y: number = 4;
 
-        const sum = (x: number,y: number) => x + y;
+        const sum = (x: number, y: number) => x + y;
 
-
-
-        show(sum)
-        show('5 + 4 = ' + sum(x, y));
+        show(sum);
+        show("5 + 4 = " + sum(x, y));
 
         /////////////////////////
     }
@@ -33,6 +31,10 @@
         <td id='lb_${name}'></td>
         <td><button id='btn_${name}'>Run</button></td>
     </tr>`;
-    row.querySelector("button").addEventListener("click", () => {clear(); run();});
+    row.querySelector("button").addEventListener("click", () => {
+        clear();
+        run();
+        console.log(`Программа ${name} звершена.`);
+    });
     table.appendChild(row);
 })();

@@ -5,16 +5,16 @@
 
     function run(): void {
         //Программа
-        let id: number | string | boolean
+        let id: number | string | boolean;
 
-        id = "35ts1"
-        show(id)
+        id = "35ts1";
+        show(id);
 
-        id = 23
-        show(id)
+        id = 23;
+        show(id);
 
-        id = true
-        show(id)
+        id = true;
+        show(id);
 
         /////////////////////////
     }
@@ -33,6 +33,10 @@
         <td id='lb_${name}'></td>
         <td><button id='btn_${name}'>Run</button></td>
     </tr>`;
-    row.querySelector("button").addEventListener("click", () => {clear(); run();});
+    row.querySelector("button").addEventListener("click", () => {
+        clear();
+        run();
+        console.log(`Программа ${name} звершена.`);
+    });
     table.appendChild(row);
 })();

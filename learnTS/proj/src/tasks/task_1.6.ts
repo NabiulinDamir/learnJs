@@ -1,42 +1,38 @@
 (function () {
-    const name = "task_3";
-    const description = "Обьекты";
-    const table = document.getElementById("task_table");
+    const name = "task_6";
+    const description = "Кортежи";
+    const table = <HTMLElement>document.getElementById("task_table");
 
     function run(): void {
         //Программа
 
-        let men: { name: string; old?: number };
-
-        men = {
-            name: "Damir",
-            old: 22,
-        };
-        show("Имя: " + men.name);
+        let user: [string, number];
+        user = ["gg", 20];
+        show(user);
 
         show(
             "/////////////////////////////////////////////////////////////////////////////"
         );
 
-        men = { name: "Alex" };
-        show("Имя: " + men.name);
-        show("Имя: " + men.old);
+        type attestation = [string, ...number[]];
+
+        let grade1: attestation = ["math", 4, 4, 5, 4, 5, 5];
+        let grade2: attestation = ["Physics", 4, 2, 3];
+        show(grade1);
+        show(grade2);
 
         show(
             "/////////////////////////////////////////////////////////////////////////////"
         );
 
-        printObj(men);
+        type grade = attestation[];
 
-        function printObj(people: { name: string; old?: number }): any {
-            show(`Имя: ${people.name}`);
+        const tom_grade: grade = [
+            ["math", 4, 4, 5, 4, 5, 5],
+            ["Physics", 4, 2, 3],
+        ];
 
-            show(`Возраст: ${people.old ? people.old : "нет данных"}`);
-        }
-
-        show(
-            "/////////////////////////////////////////////////////////////////////////////"
-        );
+        show(tom_grade);
 
         /////////////////////////
     }
@@ -58,6 +54,7 @@
     row.querySelector("button").addEventListener("click", () => {
         clear();
         run();
+        console.log(`Программа ${name} звершена.`);
     });
     table.appendChild(row);
 })();

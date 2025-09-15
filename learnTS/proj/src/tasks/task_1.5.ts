@@ -1,18 +1,34 @@
 (function () {
-    const name = "task_0";
-    const description = "Test_0";
-    const table = document.getElementById("task_table");
+    const name = "task_5";
+    const description = "Массивы";
+    const table = <HTMLElement>document.getElementById("task_table");
 
     function run(): void {
         //Программа
 
-        show("test");
+        const peoples: readonly string[] = ["Jack", "Daniel", "Umed"];
+
+        const [first, second, third] = peoples;
+
+        show(first);
+        show(second);
+        show(third);
+
+        show(
+            "/////////////////////////////////////////////////////////////////////////////"
+        );
+
+        const [firstPeople, ...other] = peoples;
+
+        show(firstPeople);
+        show(other[0]);
+        show(other[1]);
+
         /////////////////////////
-        const f = 4;
     }
 
     function show(result: any = ""): void {
-        document.getElementById(`lb_${name}`).innerHTML = result;
+        document.getElementById(`lb_${name}`).innerHTML += result + "<br>";
     }
 
     function clear(): void {
