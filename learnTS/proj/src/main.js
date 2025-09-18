@@ -766,7 +766,6 @@ var __extends = (this && this.__extends) || (function () {
         }
         show(compareName({ name: "Fill" }, { id: 5, name: "Fill" }));
         show(compareName({ name: "Fill" }, { name: "NoFill" }));
-        show(compareName({ name: "Fill" }, { id: 4, name: "Fill" }));
     }
     function show(result) {
         if (result === void 0) { result = ""; }

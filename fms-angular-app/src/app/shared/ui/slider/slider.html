@@ -1,0 +1,18 @@
+<div class="main_slider_container d-flex">
+  <button type="button" class="btn btn-default height-max" ng-click="click()"><</button>
+
+  <div class="content bg-primary-subtle">
+    <ng-content></ng-content>
+  </div>
+
+  <button type="button" class="btn btn-default height-max" ng-click="click()">></button>
+</div>
+
+<style>
+  .height-max {
+    height: 100%;
+  }
+  .width-max {
+    width: 100%;
+  }
+</style>
