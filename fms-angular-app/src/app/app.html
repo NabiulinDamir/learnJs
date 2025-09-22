@@ -3,7 +3,14 @@
     <my-slider></my-slider>
   </section>
 
-  <section id="bottom-content"></section>
+  <section id="bottom-content" class="d-flex justify-content-evenly">
+    <my-table class="w-100 m-1" [allData]="this.localStorage.incomeOperations" title="Расходы">
+    </my-table>
+    <my-table class="w-100 m-1" [allData]="this.localStorage.expensOperations" title="Доходы">
+    </my-table>
+  </section>
 </main>
 
 <router-outlet />
+
+<style lang="css"></style>

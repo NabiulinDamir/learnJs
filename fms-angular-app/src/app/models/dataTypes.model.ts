@@ -2,8 +2,7 @@ export interface IOperation {
   type: string;
   value: number;
   date: Date;
-  category: String;
-  id: number;
+  category: string;
 }
 
 export interface ICategory {
@@ -12,7 +11,7 @@ export interface ICategory {
 }
 
 export interface IFilterOption {
-  length: String;               // 'day' || 'month' || 'year'
+  length: string;               // 'day' || 'month' || 'year'
   date: Date;                   // {dateObject}- выбранный день-месяц-год
 }
 

@@ -1,1 +1,32 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+  --primary-color: #233446;
+  --secondary-color: #dc004e;
+  --background-color: #fafafa;
+  --text-dark-color: #333;
+  --text-white-color: #f8f8f8;
+}
+
+.bg-my-primary {
+  background-color: var(--primary-color) !important;
+  color: var(--text-white-color) !important;
+}
+
+.a {
+  background-color: #dc004e;
+  height: 20rem;
+}
+
+h1{
+    font-size: 1.3rem;
+    margin-bottom: 0
+}
+
+.text-color-light{
+    color: var(--text-white-color)!important;
+}
+
+.text-color-dark{
+    color: var(--text-dark-color)!important;
+}

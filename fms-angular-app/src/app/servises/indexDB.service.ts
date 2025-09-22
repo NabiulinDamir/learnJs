@@ -6,12 +6,13 @@ import {
   IFilterOption,
   MixedType,
 } from '../models/dataTypes.model';
+import testData from '../shared/documents/testData.json';
 
 @Injectable({ providedIn: 'root' })
 export default class localDB {
   private open(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
-      const openRequest = indexedDB.open('localDB', 2);
+      const openRequest = indexedDB.open('localDB', 1);
 
       openRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const target = event.target as IDBOpenDBRequest;
@@ -21,7 +22,7 @@ export default class localDB {
           db.createObjectStore('operations', { keyPath: 'id', autoIncrement: true });
         }
         if (!db.objectStoreNames.contains('categories')) {
-          db.createObjectStore('categories', { keyPath: 'name', autoIncrement: true });
+          db.createObjectStore('categories', { keyPath: 'name' });
         }
         if (!db.objectStoreNames.contains('sortOption')) {
           db.createObjectStore('sortOption', { keyPath: 'name' });
@@ -49,7 +50,7 @@ export default class localDB {
     const store = transaction.objectStore(storeKey);
 
     return new Promise((resolve, reject) => {
-      let request = store.getAll();
+      const request = store.getAll();
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
@@ -63,7 +64,7 @@ export default class localDB {
     const store = transaction.objectStore(storeKey);
 
     return new Promise((resolve, reject) => {
-      let request = store.get(itemKey);
+      const request = store.get(itemKey);
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
@@ -76,7 +77,7 @@ export default class localDB {
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
     return new Promise((resolve, reject) => {
-      let request = store.add(object);
+      const request = store.add(object);
       request.onsuccess = () => {
         resolve(request.result);
       };
@@ -86,16 +87,16 @@ export default class localDB {
     });
   }
 
-  //Редактировать/заменить по ключу
+  //Редактировать/заменить/добавить по ключу
   private async setByKey(storeKey: string, itemKey: number | string, newObj: MixedType) {
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
     return new Promise((resolve, reject) => {
-      const putRequest = store.put(newObj, itemKey);
+      const request = store.put(newObj, itemKey);
 
-      putRequest.onsuccess = () => resolve(putRequest.result);
-      putRequest.onerror = () => reject(putRequest.error);
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
     });
   }
 
@@ -107,7 +108,7 @@ export default class localDB {
     const store = transaction.objectStore(storeKey);
 
     return new Promise((resolve, reject) => {
-      let request = store.delete(itemKey);
+      const request = store.delete(itemKey);
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
@@ -119,9 +120,20 @@ export default class localDB {
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
     return new Promise((resolve, reject) => {
-      let request = store.clear();
+      const request = store.clear();
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
+    });
+  }
+
+  private async keyOf(storeKey: string, itemKey: number | string): Promise<boolean> {
+    const db = await this.open();
+    const transaction = db.transaction(storeKey, 'readonly');
+    const store = transaction.objectStore(storeKey);
+    return new Promise((resolve) => {
+      const request = store.getKey(itemKey);
+      request.onsuccess = () => resolve(request.result !== undefined);
+      request.onerror = () => resolve(false);
     });
   }
 
@@ -132,70 +144,112 @@ export default class localDB {
     try {
       result = await this.getAll<IOperation>('operations');
     } catch (error) {
-      console.log('error');
+      console.error('Ошибка в возвращении операций: ', error);
     }
     return result;
   }
 
-  public async createOperation() {
+  public async createOperation(newObj: IOperation) {
+    ///Как обрабатывать создание? что возвращать? и.т.д
+    let result: any;
     try {
+      if (!(await this.keyOf('categories', newObj.category))) {
+        await this.createCategory({ name: newObj.category, type: newObj.type });
+      }
+      result = await this.add('operations', newObj);
     } catch (error) {
-      console.log('error');
+      console.error('Ошибка в создании операции: ', error);
     }
-    return [];
+    return result;
   }
 
-  public async deleteOperation() {
+  public async deleteOperation(itemKey: number) {
+    let result: any;
     try {
+      result = await this.deleteByKey('operations', itemKey);
     } catch (error) {
-      console.log('error');
+      console.error('Ошибка в удалении операции: ', error);
     }
-    return [];
+    return result;
   }
 
-  public async updateOperation() {
+  public async updateOperation(itemKey: number, newObj: IOperation) {
+    let result: any;
     try {
+      result = await this.setByKey('operations', itemKey, newObj);
     } catch (error) {
-      console.log('error');
+      console.error('Ошибка в обновлении оперпции: ', error);
     }
-    return [];
+    return result;
   }
+
+  // public async clearAllOperations() {
+  //   let result: any;
+  //   try {
+  //     result = await this.clear('operations');
+  //   } catch (error) {
+  //     console.error('error');
+  //   }
+  //   return result;
+  // }
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////Категории
 
   public async getAllCategories() {
+    let result: ICategory[] = [];
     try {
+      result = await this.getAll<ICategory>('categories');
     } catch (error) {
-      console.log('error');
+      console.error('Ошибка в возвращении категорий: ', error);
     }
-    return [];
+    return result;
   }
 
-  public async createCategory() {
+  public async createCategory(newObj: ICategory) {
+    let result: any;
     try {
+      result = await this.add('categories', newObj);
     } catch (error) {
-      console.log('error');
+      console.error('Ошибка в создании категории: ', error);
     }
-    return [];
+    return result;
   }
 
-  public async deleteCategory() {
+  public async deleteCategory(itemKey: string) {
+    let result: any;
     try {
+      result = await this.deleteByKey('categories', itemKey);
     } catch (error) {
-      console.log('error');
+      console.error('Ошибка в удалении категории: ', error);
     }
-    return [];
+    return result;
   }
 
-  public async updateCategory() {
+  public async updateCategory(itemKey: string, newObj: ICategory) {
+    let result: any;
     try {
+      result = await this.setByKey('categories', itemKey, newObj);
     } catch (error) {
-      console.log('error');
+      console.error('Ошибка в обновлении категории: ', error);
     }
-    return [];
+    return result;
   }
 
-  //   //////////////////////////////////////////////////////////////////////////////////////////////////////Настройки сортировки
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////Установка дефолтных значений
+
+  public async setDefaultData() {
+    await this.clear('operations');
+    await this.clear('categories');
+
+    for (const element of testData.operations) {
+      await this.createOperation({
+        type: element.type,
+        value: element.value,
+        date: new Date(element.date),
+        category: element.category,
+      });
+    }
+  }
 
   //   public async getIncomeSortOptions() {}
 

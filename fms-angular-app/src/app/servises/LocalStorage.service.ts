@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IOperation, ICategory, ISortOption, IFilterOption } from '../models/dataTypes.model';
-import testData from '../shared/documents/testData.json';
-import localDB from './fakeBackend.service';
+import localDB from './indexDB.service';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorage {
@@ -15,13 +14,27 @@ export class LocalStorage {
 
   constructor(private _localDb: localDB) {}
 
-  async setDaefaultData(){
-    this._operations = await this._localDb.getAllOperations();
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
 
-    console.log(this._operations);
+  get operations(): IOperation[] {
+    return this._operations;
   }
 
-  // get operations(): string[] {
-  //   return this._operations.filter();
-  // }
+  get incomeOperations(): IOperation[] {
+    return this._operations.filter((obj) => obj.type === 'income') || [];
+  }
+
+  get expensOperations(): IOperation[] {
+    return this._operations.filter((obj) => obj.type === 'expens') || [];
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  async setDaefaultData(): Promise<void> {
+    // await this._localDb.setDefaultData();
+  }
+
+  async setOperations(): Promise<void> {
+    this._operations = await this._localDb.getAllOperations();
+  }
 }
