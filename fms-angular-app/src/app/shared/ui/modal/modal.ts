@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output,  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 @Component({
   selector: 'my-modal',
@@ -6,21 +6,17 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
 })
 export class Modal {
-  isVisible: boolean = true;
+  isVisible: boolean = false;
   title = input<string>('Модалка');
+
+  readonly close = output<void>();
+  readonly deny = output<void>();
+  readonly confirm = output<void>();
+
   show() {
     this.isVisible = true;
   }
   hide() {
     this.isVisible = false;
   }
-
-//   ngOnInit() {
-//     const myModal = <HTMLElement>document.getElementById('myModal');
-//     const myInput = <HTMLElement>document.getElementById('myInput');
-
-//     myModal.addEventListener('shown.bs.modal', () => {
-//       myInput.focus();
-//     });
-//   }
 }
