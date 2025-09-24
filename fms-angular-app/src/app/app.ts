@@ -4,11 +4,10 @@ import { Slider } from './shared/ui/slider/slider';
 import { LocalStorage } from './servises/LocalStorage.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Table } from './components/table/table';
-import { Modal } from './shared/ui/modal/modal';
-
+import { TableContainer } from './components/tableContainer/tableContainer';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Slider, Table, Modal],
+  imports: [RouterOutlet, Slider, TableContainer],
   providers: [LocalStorage],
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -21,8 +20,6 @@ export class App {
   async ngOnInit() {
     await this.localStorage.setDaefaultData();
     await this.localStorage.setOperations();
-    console.log(this.localStorage.operations);
-    console.log(this.localStorage.incomeOperations);
-    console.log(this.localStorage.expensOperations);
+    await this.localStorage.setCategories();
   }
 }

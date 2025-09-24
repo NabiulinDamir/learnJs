@@ -3,29 +3,29 @@ import { IOperation } from '../../models/dataTypes.model';
 
 @Injectable()
 export class Sort {
-  private _option: string = '';
-  private _increasing: boolean = true;
+  private _option: string = 'date';
+  private _increasing: boolean = false;
 
   public setOption(optionName: string): void {
     console.log(this._option, this._increasing);
     if (optionName !== this._option) {
       this._option = optionName;
+      this._increasing = false;
+      return;
+    }
+    if (!this._increasing) {
       this._increasing = true;
       return;
     }
-    if (this._increasing) {
-      this._increasing = !this._increasing;
-      return;
-    }
-    this._option = '';
-    this._increasing = true;
+    this._option = 'date';
+    this._increasing = false;
   }
 
   public getMarker(option: string): string {
     if (option !== this._option) {
       return '';
     }
-    if (!this._increasing) {
+    if (this._increasing) {
       return ' ᨈ';
     }
     return ' ᨆ';
@@ -33,7 +33,7 @@ export class Sort {
 
   public sort(array: IOperation[]): IOperation[] {
     let result: IOperation[] = [];
-    const koef = this._increasing ? -1 : 1
+    const koef = this._increasing ? -1 : 1;
     switch (this._option) {
       case 'value':
         result = array.sort((a, b) => (b.value - a.value) * koef);
@@ -43,7 +43,7 @@ export class Sort {
         break;
       case 'category':
         result = array.sort((a, b) => {
-          return (b.category.localeCompare(a.category) * koef);
+          return b.category.localeCompare(a.category) * koef;
         });
         break;
       default:

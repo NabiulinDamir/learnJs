@@ -1,22 +1,57 @@
-<form [formGroup]="myForm" class="d-flex flex-column gap-3">
-
-  <div class="form-floating">
-    <input type="number" class="form-control" id="floatingInput" placeholder="" />
-    <label for="floatingInput">Сумма</label>
+<form [formGroup]="myForm" class="d-flex flex-column gap-2 needs-validation">
+  <div class="">
+    <label for="validationNumber" class="form-label mb-1">Сумма</label>
+    <input
+      type="number"
+      class="form-control"
+      id="validationNumber"
+      [class.is-invalid]="myForm.get('number')?.invalid && myForm.get('number')?.touched"
+      formControlName="number"
+    />
+    <div class="invalid-feedback">
+      {{myForm.get('number')?.errors?.['text'] ?? "Неверный формат"}}
+    </div>
   </div>
 
-  <div class="form-floating">
-    <select class="form-select" id="floatingSelect">
-      <option value="1">One</option>
-      <option value="2">Two</option>
-      <option value="3">Three</option>
-    </select>
-    <label for="floatingSelect">Категория</label>
+  <div>
+    <label for="validationSelector" class="form-label mb-">Категория</label>
+    <div class="input-group mb-0">
+      <input
+        type="text"
+        class="form-control"
+        id="validationSelector"
+        [class.is-invalid]="myForm.get('selector')?.invalid && myForm.get('selector')?.touched"
+        formControlName="selector"
+      />
+
+      <button
+        class="btn btn-outline-secondary dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+      >
+        Выбрать
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-end">
+        @for (item of this.selectorItems(); track $index) {
+        <li class="dropdown-item" (click)="this.myForm.patchValue({ selector: item })">
+          {{ item }}
+        </li>
+        }
+      </ul>
+    </div>
   </div>
 
-
-  <div class="form-floating">
-    <input type="date" class="form-control" id="floatingInput" placeholder="name@example.com" />
-    <label for="floatingInput">Дата</label>
+  <div class="">
+    <label for="validationDate" class="form-label mb-1">Дата</label>
+    <input
+      type="date"
+      class="form-control"
+      id="validationDate"
+      [class.is-invalid]="myForm.get('date')?.invalid && myForm.get('date')?.touched"
+      formControlName="date"
+    />
+    <div class="invalid-feedback">Неверный формат</div>
   </div>
 </form>
+

@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
-import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
-
+import { FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
+import { CustomValidators } from './validator';
 @Component({
   selector: 'my-form',
   templateUrl: './form.html',
@@ -8,27 +8,36 @@ import { FormGroup, ReactiveFormsModule, FormControl } from '@angular/forms';
 })
 export class Form {
   number = input<number>(0);
-  //   outputNumber = output<number>();
-
-  selector = input<string[]>();
-  //   outputSelector = output<string>();
-
-  date = input<Date>();
-  //   outputDate = output<Date>();
+  selectorItems = input<string[]>();
+  date = input<Date>(new Date());
 
   myForm = new FormGroup({
-    number: new FormControl(0),
-    selector: new FormControl(''),
-    date: new FormControl(new Date()),
+    number: new FormControl(this.number(), [
+      CustomValidators.required,
+      CustomValidators.positiveNumber,
+      CustomValidators.notNull,
+    ]),
+    selector: new FormControl('', [CustomValidators.required, CustomValidators.minLength]),
+    date: new FormControl(this.date().toISOString().split('T')[0], [
+      CustomValidators.required,
+      Validators.maxLength(10),
+    ]),
   });
 
-  get isFormValid():boolean{
-    return <number>this.myForm.value.number > 0
+  public submit(): void {
+    this.myForm.markAllAsTouched();
+    if (!this.myForm.valid) return;
+
+    alert(
+        this.myForm.value.number +
+        ' | ' +
+        this.myForm.value.selector +
+        ' | ' +
+        this.myForm.value.date
+    );
   }
 
-  handleSubmit():void {
-    alert(
-      this.myForm.value.number + ' | ' + this.myForm.value.selector + ' | ' + this.myForm.value.date
-    );
+  clear():void{
+    this.myForm.reset({}, { emitEvent: false });
   }
 }

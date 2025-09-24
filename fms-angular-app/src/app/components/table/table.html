@@ -1,18 +1,18 @@
-<div class="d-flex justify-content-between p-1">
-  <h5>{{ title() }}</h5>
-  <div class="d-flex gap-1">
-    <button type="button" class="btn btn-danger btn-sm" (click)="createModal.hide()">Удалить</button>
-    <button type="button" class="btn btn-primary btn-sm" (click)="createModal.show()">Добавить</button>
-  </div>
-</div><my-modal #createModal (deny)="createModal.hide()"><my-form></my-form></my-modal>
+
 <div class="overflow-hidden rounded-2 border">
   <table class="table table-striped-columns m-0">
     <thead>
       <tr class="h-3 align-middle">
-        <th class="bg-primary text-color-light user-select-none w-31"  (click)="categorySort()">Категория{{this.sortService.getMarker("category")}}</th>
-        <th class="bg-primary text-color-light user-select-none w-31"  (click)="valueSort()">Сумма{{this.sortService.getMarker("value")}}</th>
-        <th class="bg-primary text-color-light user-select-none w-31"  (click)="dateSort()">Дата{{this.sortService.getMarker("date")}}</th>
-        <th class="bg-primary text-color-light user-select-none"></th> 
+        <th class="bg-primary text-color-light user-select-none w-31" (click)="categorySort()">
+          Категория{{ this.sortService.getMarker('category') }}
+        </th>
+        <th class="bg-primary text-color-light user-select-none w-31" (click)="valueSort()">
+          Сумма{{ this.sortService.getMarker('value') }}
+        </th>
+        <th class="bg-primary text-color-light user-select-none w-31" (click)="dateSort()">
+          Дата{{ this.sortService.getMarker('date') }}
+        </th>
+        <th class="bg-primary text-color-light user-select-none"></th>
       </tr>
     </thead>
 
@@ -29,16 +29,12 @@
   </table>
 </div>
 
-
-
 <style lang="css">
   .h-3 {
     height: 3rem;
-
   }
 
-  .w-31{
+  .w-31 {
     width: 31%;
   }
-
 </style>

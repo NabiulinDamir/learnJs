@@ -1,36 +1,36 @@
 import { Component, input, computed } from '@angular/core';
-import { IOperation } from '../../models/dataTypes.model';
+import { ICategory, IOperation } from '../../models/dataTypes.model';
 import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
-import { Modal } from '../../shared/ui/modal/modal';
-import { Form } from '../../shared/ui/form/form';
+
 import { Sort } from './sort.servicee';
 
 @Component({
   selector: 'my-table',
   templateUrl: './table.html',
-  styleUrl: './table.css',
-  imports: [DatePipe, Modal, Form],
+
+  imports: [DatePipe],
   providers: [Sort],
 })
 export class Table {
+  title = input<string>('');
   allData = input<IOperation[]>([]);
+  allCategories = input<ICategory[]>([]);
+
   sortedData = computed(() => this.sortService.sort(this.allData()));
-  title = input<string>();
+
+  allCategoriesToString = computed(() => (this.allCategories()).map(a => a.name))
 
   constructor(protected sortService: Sort) {}
 
   valueSort(): void {
     this.sortService.setOption('value');
-    console.log(this.allData());
   }
 
   categorySort(): void {
     this.sortService.setOption('category');
-    console.log(this.allData());
   }
 
   dateSort(): void {
     this.sortService.setOption('date');
-    console.log(this.allData());
   }
 }
