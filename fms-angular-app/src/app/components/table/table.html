@@ -4,21 +4,21 @@
     <thead>
       <tr class="h-3 align-middle">
         <th class="bg-primary text-color-light user-select-none w-31" (click)="categorySort()">
-          Категория{{ this.sortService.getMarker('category') }}
+          Категория{{ sortService.getMarker('category') }}
         </th>
         <th class="bg-primary text-color-light user-select-none w-31" (click)="valueSort()">
-          Сумма{{ this.sortService.getMarker('value') }}
+          Сумма{{ sortService.getMarker('value') }}
         </th>
         <th class="bg-primary text-color-light user-select-none w-31" (click)="dateSort()">
-          Дата{{ this.sortService.getMarker('date') }}
+          Дата{{ sortService.getMarker('date') }}
         </th>
         <th class="bg-primary text-color-light user-select-none"></th>
       </tr>
     </thead>
 
     <tbody>
-      @for (data of this.sortedData(); track data) {
-      <tr class="h-3 align-middle">
+      @for (data of sortedData(); track data) {
+      <tr class="h-3 align-middle" [class.bg-dark]="true" (click)="toggleData(data)" selectable [selected]="this.selectedData().includes(data)">
         <td>{{ data.category }}</td>
         <td>{{ data.value }}</td>
         <td>{{ data.date | date : 'dd.MM.yy' }}</td>
@@ -36,5 +36,9 @@
 
   .w-31 {
     width: 31%;
+  }
+  
+  .s {
+    filter: brightness(90%);
   }
 </style>

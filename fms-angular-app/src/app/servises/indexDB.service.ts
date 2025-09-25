@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  IOperation,
-  ICategory,
-  ISortOption,
-  IFilterOption,
-  MixedType,
-} from '../models/dataTypes.model';
+import { IOperation, ICategory } from '../models/dataTypes.model';
 import testData from '../shared/documents/testData.json';
 
 @Injectable({ providedIn: 'root' })
@@ -72,7 +66,7 @@ export default class localDB {
 
   //Добавление
   //storeKey = "operations" || "categories"
-  private async add(storeKey: string, object: MixedType) {
+  private async add(storeKey: string, object: IOperation | ICategory) {
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
@@ -88,7 +82,7 @@ export default class localDB {
   }
 
   //Редактировать/заменить/добавить по ключу
-  private async setByKey(storeKey: string, itemKey: number | string, newObj: MixedType) {
+  private async setByKey(storeKey: string, itemKey: number | string, newObj: IOperation | ICategory) {
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);

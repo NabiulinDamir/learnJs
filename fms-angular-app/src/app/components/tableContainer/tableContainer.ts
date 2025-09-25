@@ -13,6 +13,9 @@ export class TableContainer {
   constructor(protected localStorage: LocalStorage) {}
 
 
+  con(){
+    console.log('hui')
+  }
 
 
   formatToStringArr(categoryArr: ICategory[]):string[]{

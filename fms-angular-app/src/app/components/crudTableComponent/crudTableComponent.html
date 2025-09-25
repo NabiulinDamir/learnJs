@@ -1,0 +1,40 @@
+<my-modal
+  #createIncomeModal
+  (deny)="createIncomeModal.hide()"
+  (confirm)="createIncomeForm.submit()"
+  title="Добавить дход"
+>
+  <my-form
+    #createIncomeForm
+    [selectorItems]="formatToStringArr(this.localStorage.incomeCategories)"
+  ></my-form>
+</my-modal>
+
+<my-modal
+  #deleteModal
+  (deny)="deleteModal.hide()"
+  (confirm)="deleteModal.hide()"
+  title="Удалить операцию"
+>
+  Вы действительно хотите удалить выбранные {{ 2 }} операций?
+</my-modal>
+
+<div class="p-1">
+  <div class="d-flex justify-content-between mb-1">
+    <h5>{{ this.title() }}</h5>
+    <div class="d-flex gap-1">
+      <button type="button" class="btn btn-danger btn-sm" (click)="deleteModal.show()">
+        Удалить
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary btn-sm"
+        (click)="createIncomeModal.show(); createIncomeForm.setDefault()"
+      >
+        Добавить
+      </button>
+    </div>
+  </div>
+
+  <my-table #incomeTable class="w-100" [allData]="this.localStorage.incomeOperations"> </my-table>
+</div>

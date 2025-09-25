@@ -7,7 +7,6 @@ export class Sort {
   private _increasing: boolean = false;
 
   public setOption(optionName: string): void {
-    console.log(this._option, this._increasing);
     if (optionName !== this._option) {
       this._option = optionName;
       this._increasing = false;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IOperation, ICategory, ISortOption, IFilterOption } from '../models/dataTypes.model';
+import { IOperation, ICategory } from '../models/dataTypes.model';
 import localDB from './indexDB.service';
 
 @Injectable({ providedIn: 'root' })
@@ -7,7 +7,7 @@ export class LocalStorage {
   private _operations: IOperation[] = [];
   private _categories: ICategory[] = [];
 
-  private _filterOption: IFilterOption = { length: 'day', date: new Date() };
+  // private _filterOption: IFilterOption = { length: 'day', date: new Date() };
 
   constructor(private _localDb: localDB) {}
 

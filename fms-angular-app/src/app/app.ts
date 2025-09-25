@@ -5,9 +5,10 @@ import { LocalStorage } from './servises/LocalStorage.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Table } from './components/table/table';
 import { TableContainer } from './components/tableContainer/tableContainer';
+import { CrudTableComponent } from './components/crudTableComponent/crudTableComponent';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Slider, TableContainer],
+  imports: [RouterOutlet, Slider, CrudTableComponent],
   providers: [LocalStorage],
   templateUrl: './app.html',
   styleUrl: './app.css',

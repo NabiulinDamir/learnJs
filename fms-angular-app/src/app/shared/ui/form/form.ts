@@ -40,4 +40,12 @@ export class Form {
   clear():void{
     this.myForm.reset({}, { emitEvent: false });
   }
+
+  setDefault():void{
+     this.myForm.patchValue({
+       number: 0,
+       selector: '',
+       date: new Date().toISOString().split('T')[0],
+     });
+  }
 }
