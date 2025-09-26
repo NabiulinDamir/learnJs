@@ -1,6 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { CustomValidators } from './validator';
+import { IOperation } from '../../../models/dataTypes.model';
 @Component({
   selector: 'my-form',
   templateUrl: './form.html',
@@ -10,14 +11,15 @@ export class Form {
   number = input<number>(0);
   selectorItems = input<string[]>();
   date = input<Date>(new Date());
+  onSubmit = output<IOperation>({});
 
   myForm = new FormGroup({
-    number: new FormControl(this.number(), [
+    value: new FormControl(this.number(), [
       CustomValidators.required,
       CustomValidators.positiveNumber,
       CustomValidators.notNull,
     ]),
-    selector: new FormControl('', [CustomValidators.required, CustomValidators.minLength]),
+    category: new FormControl('', [CustomValidators.required, CustomValidators.minLength]),
     date: new FormControl(this.date().toISOString().split('T')[0], [
       CustomValidators.required,
       Validators.maxLength(10),
@@ -28,13 +30,12 @@ export class Form {
     this.myForm.markAllAsTouched();
     if (!this.myForm.valid) return;
 
-    alert(
-        this.myForm.value.number +
-        ' | ' +
-        this.myForm.value.selector +
-        ' | ' +
-        this.myForm.value.date
-    );
+    this.onSubmit.emit({
+      type: '',
+      value: <number>this.myForm.value.value,
+      date: new Date(<string>this.myForm.value.date),
+      category: <string>this.myForm.value.category,
+    });
   }
 
   clear():void{
@@ -43,8 +44,8 @@ export class Form {
 
   setDefault():void{
      this.myForm.patchValue({
-       number: 0,
-       selector: '',
+       value: 0,
+       category: '',
        date: new Date().toISOString().split('T')[0],
      });
   }

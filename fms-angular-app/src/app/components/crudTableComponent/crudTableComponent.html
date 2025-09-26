@@ -1,40 +1,42 @@
+<div class="p-1">
+  <div class="d-flex justify-content-between mb-1">
+    <h5>{{ (type() == 'income') ? 'Доходы' : 'Расходы'}}</h5>
+    <div class="d-flex gap-1">
+      @if(selectedOperations.length){ 
+        <button type="button" class="btn btn-secondary btn-sm" (click)="selectedOperations = []"> Сбросить </button>
+        <button type="button" class="btn btn-danger btn-sm" (click)="deleteModal.show()"> Удалить </button>
+      }
+      <button type="button" class="btn btn-primary btn-sm" (click)="createModal.show(); createIncomeForm.setDefault()"> Добавить </button>
+    </div>
+  </div>
+
+  <my-table class="w-100" 
+    [allData]="(type() == 'income') ? this.localStorage.incomeOperations : this.localStorage.expensOperations"
+    [(selectedData)]="selectedOperations"
+  > </my-table>
+</div>
+
+<!-- //////////////////////////////////////////// -->
+
 <my-modal
-  #createIncomeModal
-  (deny)="createIncomeModal.hide()"
+  #createModal
+  (deny)="createModal.hide()"
   (confirm)="createIncomeForm.submit()"
-  title="Добавить дход"
+  [title]="'Добавить ' + ((type() == 'income') ? 'доход' : 'расход')"
+  [isLoaded]="modalIsLoad"
 >
   <my-form
     #createIncomeForm
-    [selectorItems]="formatToStringArr(this.localStorage.incomeCategories)"
+    [selectorItems]="formatToStringArr((type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories)"
+    (onSubmit)="createOperation($event); "
   ></my-form>
 </my-modal>
 
 <my-modal
   #deleteModal
   (deny)="deleteModal.hide()"
-  (confirm)="deleteModal.hide()"
-  title="Удалить операцию"
+  (confirm)="deleteSelectedOperations()"
+  title="Удалить операции"
 >
-  Вы действительно хотите удалить выбранные {{ 2 }} операций?
+  Вы действительно хотите удалить выбранные {{ selectedOperations.length }} операций?
 </my-modal>
-
-<div class="p-1">
-  <div class="d-flex justify-content-between mb-1">
-    <h5>{{ this.title() }}</h5>
-    <div class="d-flex gap-1">
-      <button type="button" class="btn btn-danger btn-sm" (click)="deleteModal.show()">
-        Удалить
-      </button>
-      <button
-        type="button"
-        class="btn btn-primary btn-sm"
-        (click)="createIncomeModal.show(); createIncomeForm.setDefault()"
-      >
-        Добавить
-      </button>
-    </div>
-  </div>
-
-  <my-table #incomeTable class="w-100" [allData]="this.localStorage.incomeOperations"> </my-table>
-</div>

@@ -16,11 +16,9 @@ import { CrudTableComponent } from './components/crudTableComponent/crudTableCom
 export class App {
   protected readonly title = signal('fms-angular-app');
   items: string[] = [];
-  constructor(protected localStorage: LocalStorage) {}
-
-  async ngOnInit() {
-    await this.localStorage.setDaefaultData();
-    await this.localStorage.setOperations();
-    await this.localStorage.setCategories();
+  constructor(protected localStorage: LocalStorage) {
+    localStorage.setOperations()
   }
+
+  async ngOnInit() {}
 }

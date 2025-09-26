@@ -33,7 +33,7 @@ export class LocalStorage {
     return this._categories.filter((obj) => obj.type === 'expens') || [];
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
   async setDaefaultData(): Promise<void> {
     // await this._localDb.setDefaultData();
@@ -45,5 +45,24 @@ export class LocalStorage {
 
   async setCategories(): Promise<void> {
     this._categories = await this._localDb.getAllCategories();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////Создатторы
+
+  async createOperation(newOperation: IOperation): Promise<void> {
+    await this._localDb.createOperation(newOperation);
+    await this.setOperations();
+    await this.setCategories();
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////Обновлятторы
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////Удалятторы
+
+  async deleteOperations(operationsArray: IOperation[]): Promise<void>{
+    for (const obj of operationsArray) {
+      await this._localDb.deleteOperation(<number>obj.id);
+    }
+    await this.setOperations();
   }
 }

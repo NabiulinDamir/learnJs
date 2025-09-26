@@ -18,6 +18,7 @@ export class Sort {
     }
     this._option = 'date';
     this._increasing = false;
+   
   }
 
   public getMarker(option: string): string {
@@ -32,6 +33,7 @@ export class Sort {
 
   public sort(array: IOperation[]): IOperation[] {
     let result: IOperation[] = [];
+    // console.log("Сортировка");
     const koef = this._increasing ? -1 : 1;
     switch (this._option) {
       case 'value':

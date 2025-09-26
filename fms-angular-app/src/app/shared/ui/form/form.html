@@ -5,11 +5,11 @@
       type="number"
       class="form-control"
       id="validationNumber"
-      [class.is-invalid]="myForm.get('number')?.invalid && myForm.get('number')?.touched"
-      formControlName="number"
+      [class.is-invalid]="myForm.get('value')?.invalid && myForm.get('value')?.touched"
+      formControlName="value"
     />
     <div class="invalid-feedback">
-      {{myForm.get('number')?.errors?.['text'] ?? "Неверный формат"}}
+      {{myForm.get('value')?.errors?.['text'] ?? "Неверный формат"}}
     </div>
   </div>
 
@@ -20,8 +20,8 @@
         type="text"
         class="form-control"
         id="validationSelector"
-        [class.is-invalid]="myForm.get('selector')?.invalid && myForm.get('selector')?.touched"
-        formControlName="selector"
+        [class.is-invalid]="myForm.get('category')?.invalid && myForm.get('category')?.touched"
+        formControlName="category"
       />
 
       <button
@@ -34,7 +34,7 @@
 
       <ul class="dropdown-menu dropdown-menu-end">
         @for (item of this.selectorItems(); track $index) {
-        <li class="dropdown-item" (click)="this.myForm.patchValue({ selector: item })">
+        <li class="dropdown-item" (click)="this.myForm.patchValue({ category: item })">
           {{ item }}
         </li>
         }

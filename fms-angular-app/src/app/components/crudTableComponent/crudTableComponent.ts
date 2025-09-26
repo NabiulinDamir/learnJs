@@ -1,9 +1,9 @@
-import { Component, input, computed, Input, effect } from '@angular/core';
+import { Component, input, computed, Input, effect, viewChild } from '@angular/core';
 import { LocalStorage } from '../../servises/LocalStorage.service';
 import { Table } from '../table/table';
 import { Modal } from '../../shared/ui/modal/modal';
 import { Form } from '../../shared/ui/form/form';
-import { ICategory } from '../../models/dataTypes.model';
+import { ICategory, IOperation } from '../../models/dataTypes.model';
 
 @Component({
   selector: 'my-crud-table',
@@ -11,31 +11,37 @@ import { ICategory } from '../../models/dataTypes.model';
   imports: [Table, Modal, Form],
 })
 export class CrudTableComponent {
-  title = input<string>();
   type = input<string>();
-
-  /////////////////////////////////////////////////////////
-  categories: ICategory[] = [];
-
-  /////////////////////////////////////////////////////////
+  modalIsLoad: boolean = false;
+  selectedOperations: IOperation[] = [];
+  createModalElement = viewChild<any>('createModal');
+  deleteModalElement = viewChild<any>('deleteModal');
 
   constructor(protected localStorage: LocalStorage) {
-    effect(() => {
-      switch (this.type()) {
-        case 'income':
-          this.categories = localStorage.incomeCategories;
-          break;
-        case 'expens':
-          this.categories = localStorage.expensCategories;
-          break;
-        default:
-          break;
-      }
+    effect(async () => {
+      await localStorage.setCategories();
     });
   }
 
-  con() {
-    console.log('hui');
+  async createOperation(operation: IOperation) {
+    this.modalIsLoad = true;
+    operation.type = <string>this.type();
+    await this.localStorage.createOperation(operation);
+    this.modalIsLoad = false;
+    this.createModalElement().hide();
+  }
+  async updateOperation(operation: IOperation) {
+    this.modalIsLoad = true;
+    operation.type = <string>this.type();
+    console.log(operation);
+    this.modalIsLoad = false;
+  }
+  async deleteSelectedOperations() {
+    this.modalIsLoad = true;
+    this.localStorage.deleteOperations(this.selectedOperations);
+    this.modalIsLoad = false;
+    this.selectedOperations = [];
+    this.deleteModalElement().hide();
   }
 
   formatToStringArr(categoryArr: ICategory[]): string[] {

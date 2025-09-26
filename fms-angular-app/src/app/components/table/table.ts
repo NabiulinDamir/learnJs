@@ -1,4 +1,4 @@
-import { Component, input, output, computed, model } from '@angular/core';
+import { Component, input, output, computed, model, effect } from '@angular/core';
 import { ICategory, IOperation } from '../../models/dataTypes.model';
 import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
 import { SelectableDirective } from '../../directives/selectable.directive';
@@ -12,22 +12,22 @@ import { Sort } from './sort.servicee';
   providers: [Sort],
 })
 export class Table {
-  constructor(protected sortService: Sort) {}
-
-  ///////////////////////////////////////////////////////////////////////
-
   title = input<string>('');
-
-  ///////////////////////////////////////////////////////////////////////
-
   allData = input<IOperation[]>([]);
-
-  sortedData = computed(() => this.sortService.sort(this.allData()));
-
-  ///////////////////////////////////////////////////////////////////////
-
   selectedData = model<IOperation[]>([]);
   onSelectedDataChanged = output<void>();
+
+  constructor(protected sortService: Sort) {
+    // effect(() => {
+    //   this.sortedData = this.sortService.sort(this.allData());
+    // });
+  }
+
+  sortedData = computed(() => {
+    if (!this.allData().length) return;
+    return this.sortService.sort(this.allData());
+  });
+  ///////////////////////////////////////////////////////////////////////
 
   toggleData(data: IOperation): void {
     this.selectedData.update((current) => {
@@ -40,8 +40,8 @@ export class Table {
     this.onSelectedDataChanged.emit();
   }
 
-  clearSelectedData():void{
-    this.selectedData.update((current) => [])
+  clearSelectedData(): void {
+    this.selectedData.update((current) => []);
   }
 
   ///////////////////////////////////////////////////////////////////////
@@ -59,4 +59,8 @@ export class Table {
   }
 
   ///////////////////////////////////////////////////////////////////////
+
+  col(){
+    console.log('hai')
+  }
 }

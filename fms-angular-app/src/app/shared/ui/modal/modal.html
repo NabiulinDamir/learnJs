@@ -17,8 +17,15 @@
         <ng-content></ng-content>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="this.deny.emit()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="this.confirm.emit()"> Understood</button>
+        @if (isLoaded()){
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        }
+        @if (!isLoaded()){
+          <button type="button" class="btn btn-secondary" (click)="this.deny.emit()">Close</button>
+          <button type="button" class="btn btn-primary" (click)="this.confirm.emit()"> Understood</button>
+        }
       </div>
     </div>
   </div>

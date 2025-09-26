@@ -3,6 +3,7 @@ export interface IOperation {
   value: number;
   date: Date;
   category: string;
+  id?: number;
 }
 
 export interface ICategory {
@@ -10,23 +11,23 @@ export interface ICategory {
   name: string;
 }
 
-export class Operations {
-  private _value: IOperation[];
+// export class Operations {
+//   private _value: IOperation[];
 
-  constructor(value: IOperation[]) {
-    this._value = value;
-  }
+//   constructor(value: IOperation[]) {
+//     this._value = value;
+//   }
 
-  set value(value: IOperation[]) {
-    this.value = value;
-  }
-  get value(): IOperation[] {
-    return this._value;
-  }
+//   set value(value: IOperation[]) {
+//     this.value = value;
+//   }
+//   get value(): IOperation[] {
+//     return this._value;
+//   }
 
   
 
-}
+// }
 
 // export interface IFilterOption {
 //   length: string;               // 'day' || 'month' || 'year'

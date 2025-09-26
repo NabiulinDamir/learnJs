@@ -7,16 +7,17 @@ import { CommonModule } from '@angular/common';
 })
 export class Modal {
   isVisible: boolean = false;
+  isLoaded = input<boolean>(false);
   title = input<string>('Модалка');
 
   readonly close = output<void>();
   readonly deny = output<void>();
   readonly confirm = output<void>();
 
-  show() {
+  show(): void {
     this.isVisible = true;
   }
-  hide() {
+  hide(): void {
     this.isVisible = false;
   }
 }
