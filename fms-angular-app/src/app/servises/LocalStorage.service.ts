@@ -9,7 +9,7 @@ export class LocalStorage {
 
   // private _filterOption: IFilterOption = { length: 'day', date: new Date() };
 
-  constructor(private _localDb: localDB) {}
+  constructor(private _localDb: localDB) { }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
 
@@ -49,7 +49,7 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Создатторы
 
-  async createOperation(newOperation: IOperation): Promise<void> {
+  async createOperation(newOperation:  {type: string, value: number, category: string, date: Date}): Promise<void> {
     await this._localDb.createOperation(newOperation);
     await this.setOperations();
     await this.setCategories();
@@ -57,11 +57,17 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Обновлятторы
 
+  async updateOperation(operation: IOperation): Promise<void> {
+    await this._localDb.updateOperation(operation);
+    await this.setCategories();
+    await this.setOperations();
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Удалятторы
 
-  async deleteOperations(operationsArray: IOperation[]): Promise<void>{
+  async deleteOperations(operationsArray: IOperation[]): Promise<void> {
     for (const obj of operationsArray) {
-      await this._localDb.deleteOperation(<number>obj.id);
+      await this._localDb.deleteOperationByKey(<number>obj.id);
     }
     await this.setOperations();
   }

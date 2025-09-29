@@ -4,10 +4,10 @@ import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
 import { SelectableDirective } from '../../directives/selectable.directive';
 import { Sort } from './sort.servicee';
 
+
 @Component({
   selector: 'my-table',
   templateUrl: './table.html',
-
   imports: [DatePipe, SelectableDirective],
   providers: [Sort],
 })
@@ -16,12 +16,9 @@ export class Table {
   allData = input<IOperation[]>([]);
   selectedData = model<IOperation[]>([]);
   onSelectedDataChanged = output<void>();
+  onEditDataClick = output<IOperation>();
 
-  constructor(protected sortService: Sort) {
-    // effect(() => {
-    //   this.sortedData = this.sortService.sort(this.allData());
-    // });
-  }
+  constructor(protected sortService: Sort) { }
 
   sortedData = computed(() => {
     if (!this.allData().length) return;
@@ -44,6 +41,11 @@ export class Table {
     this.selectedData.update((current) => []);
   }
 
+  isNotLastChildElement(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    return target.closest('td:last-child')
+  }
+
   ///////////////////////////////////////////////////////////////////////
 
   valueSort(): void {
@@ -60,7 +62,7 @@ export class Table {
 
   ///////////////////////////////////////////////////////////////////////
 
-  col(){
-    console.log('hai')
+  editData(data: IOperation) {
+    this.onEditDataClick.emit(data)
   }
 }

@@ -6,6 +6,9 @@
   --background-color: #fafafa;
   --text-dark-color: #333;
   --text-white-color: #f8f8f8;
+
+  --success-color: #198754;
+  --danger-color: #dc3545;
 }
 
 .bg-my-primary {
@@ -30,3 +33,18 @@ h1{
 .text-color-dark{
     color: var(--text-dark-color)!important;
 }
+
+
+.h-1-rem{
+  height: 1rem;
+}
+
+.h-3-rem {
+  height: 3rem;
+}
+
+.w-31 {
+  width: 31%;
+}
+
+

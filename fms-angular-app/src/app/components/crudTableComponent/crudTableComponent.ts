@@ -2,7 +2,7 @@ import { Component, input, computed, Input, effect, viewChild } from '@angular/c
 import { LocalStorage } from '../../servises/LocalStorage.service';
 import { Table } from '../table/table';
 import { Modal } from '../../shared/ui/modal/modal';
-import { Form } from '../../shared/ui/form/form';
+import { Form } from '../form/form';
 import { ICategory, IOperation } from '../../models/dataTypes.model';
 
 @Component({
@@ -15,7 +15,9 @@ export class CrudTableComponent {
   modalIsLoad: boolean = false;
   selectedOperations: IOperation[] = [];
   createModalElement = viewChild<any>('createModal');
+  editModalElement = viewChild<any>('editModal');
   deleteModalElement = viewChild<any>('deleteModal');
+  tmpEditOperationKey: number | undefined = undefined;
 
   constructor(protected localStorage: LocalStorage) {
     effect(async () => {
@@ -23,18 +25,25 @@ export class CrudTableComponent {
     });
   }
 
-  async createOperation(operation: IOperation) {
+  async createOperation({ value, category, date }: { value: number, category: string, date: Date }) {
     this.modalIsLoad = true;
-    operation.type = <string>this.type();
-    await this.localStorage.createOperation(operation);
+    const type = <string>this.type();
+    await this.localStorage.createOperation({ type, value, category, date });
     this.modalIsLoad = false;
     this.createModalElement().hide();
   }
-  async updateOperation(operation: IOperation) {
+  async updateOperation({ value, category, date }: { value: number, category: string, date: Date }) {
     this.modalIsLoad = true;
-    operation.type = <string>this.type();
-    console.log(operation);
+    const type = <string>this.type();
+    if (this.tmpEditOperationKey == undefined) { 
+      alert("Ошибка на стороне клиента"); 
+      this.editModalElement().hide(); 
+      return 
+    }
+    const id = <number>this.tmpEditOperationKey;
+    await this.localStorage.updateOperation({ id, type, value, category, date });
     this.modalIsLoad = false;
+    this.editModalElement().hide();
   }
   async deleteSelectedOperations() {
     this.modalIsLoad = true;

@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { CustomValidators } from './validator';
-import { IOperation } from '../../../models/dataTypes.model';
+
 @Component({
   selector: 'my-form',
   templateUrl: './form.html',
@@ -11,7 +11,7 @@ export class Form {
   number = input<number>(0);
   selectorItems = input<string[]>();
   date = input<Date>(new Date());
-  onSubmit = output<IOperation>({});
+  onSubmit = output<{value: number, category: string, date: Date}>({});
 
   myForm = new FormGroup({
     value: new FormControl(this.number(), [
@@ -20,7 +20,7 @@ export class Form {
       CustomValidators.notNull,
     ]),
     category: new FormControl('', [CustomValidators.required, CustomValidators.minLength]),
-    date: new FormControl(this.date().toISOString().split('T')[0], [
+    date: new FormControl(this.formatDateToString(this.date()), [
       CustomValidators.required,
       Validators.maxLength(10),
     ]),
@@ -31,22 +31,49 @@ export class Form {
     if (!this.myForm.valid) return;
 
     this.onSubmit.emit({
-      type: '',
       value: <number>this.myForm.value.value,
       date: new Date(<string>this.myForm.value.date),
       category: <string>this.myForm.value.category,
     });
   }
 
-  clear():void{
+  clear(): void {
     this.myForm.reset({}, { emitEvent: false });
   }
 
-  setDefault():void{
-     this.myForm.patchValue({
-       value: 0,
-       category: '',
-       date: new Date().toISOString().split('T')[0],
-     });
+  setDefault(): void {
+    this.myForm.patchValue({
+      value: 0,
+      category: '',
+      date: this.formatDateToString(),
+    });
+  }
+
+  setId(newValue: number): void {
+
+  }
+
+  setValue(newValue: number): void {
+    this.myForm.patchValue({
+      value: newValue,
+    });
+  }
+
+  setDate(newDate: Date): void {
+    this.myForm.patchValue({
+      date: this.formatDateToString(newDate),
+    });
+  }
+
+  setCategory(newCategoiry: string): void {
+    this.myForm.patchValue({
+      category: newCategoiry,
+    });
+  }
+
+  ////////////////////////////////////////////////////////////////////////
+
+  formatDateToString(date: Date = new Date){
+    return date.toISOString().split('T')[0]
   }
 }

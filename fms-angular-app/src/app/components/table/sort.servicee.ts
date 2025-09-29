@@ -31,7 +31,7 @@ export class Sort {
     return ' ᨆ';
   }
 
-  public sort(array: IOperation[]): IOperation[] {
+  public sort(array: IOperation[]): IOperation[] {//!!!Оптимизация мертва!!!
     let result: IOperation[] = [];
     // console.log("Сортировка");
     const koef = this._increasing ? -1 : 1;

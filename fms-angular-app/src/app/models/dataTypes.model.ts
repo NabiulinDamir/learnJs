@@ -3,7 +3,7 @@ export interface IOperation {
   value: number;
   date: Date;
   category: string;
-  id?: number;
+  id: number;
 }
 
 export interface ICategory {
@@ -29,10 +29,10 @@ export interface ICategory {
 
 // }
 
-// export interface IFilterOption {
-//   length: string;               // 'day' || 'month' || 'year'
-//   date: Date;                   // {dateObject}- выбранный день-месяц-год
-// }
+export interface IFilterOption {
+  length: string;               // 'day' || 'month' || 'year'
+  date: Date;                   // {dateObject}- выбранный день-месяц-год
+}
 
 // export interface ISortOption {
 //   factor: string;               //'value' || 'category' || 'date'

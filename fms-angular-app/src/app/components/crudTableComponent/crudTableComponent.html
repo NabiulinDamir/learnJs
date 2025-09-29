@@ -13,6 +13,12 @@
   <my-table class="w-100" 
     [allData]="(type() == 'income') ? this.localStorage.incomeOperations : this.localStorage.expensOperations"
     [(selectedData)]="selectedOperations"
+    (onEditDataClick)="
+      editModal.show();
+      editIncomeForm.setValue($event.value);
+      editIncomeForm.setCategory($event.category);
+      editIncomeForm.setDate($event.date);
+      tmpEditOperationKey = $event.id"
   > </my-table>
 </div>
 
@@ -32,11 +38,29 @@
   ></my-form>
 </my-modal>
 
+<!-- //////////////////////////////////////////// -->
+
+<my-modal
+  #editModal
+  (deny)="editModal.hide()"
+  (confirm)="editIncomeForm.submit()"
+  [title]="'Редактировать ' + ((type() == 'income') ? 'доход' : 'расход')"
+  [isLoaded]="modalIsLoad"
+>
+  <my-form
+    #editIncomeForm
+    [selectorItems]="formatToStringArr((type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories)"
+    (onSubmit)="updateOperation($event);"
+  ></my-form>
+</my-modal>
+
+<!-- //////////////////////////////////////////// -->
+
 <my-modal
   #deleteModal
   (deny)="deleteModal.hide()"
   (confirm)="deleteSelectedOperations()"
   title="Удалить операции"
 >
-  Вы действительно хотите удалить выбранные {{ selectedOperations.length }} операций?
+  Вы действительно хотите удалить выбранные ({{ selectedOperations.length }}) операций?
 </my-modal>

@@ -4,11 +4,11 @@ import { Slider } from './shared/ui/slider/slider';
 import { LocalStorage } from './servises/LocalStorage.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Table } from './components/table/table';
-import { TableContainer } from './components/tableContainer/tableContainer';
 import { CrudTableComponent } from './components/crudTableComponent/crudTableComponent';
+import { DatasetInObjectArray } from './shared/ui/charts/datasetInObjectArray';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Slider, CrudTableComponent],
+  imports: [RouterOutlet, Slider, CrudTableComponent, DatasetInObjectArray],
   providers: [LocalStorage],
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -18,6 +18,7 @@ export class App {
   items: string[] = [];
   constructor(protected localStorage: LocalStorage) {
     localStorage.setOperations()
+    localStorage.setDaefaultData()
   }
 
   async ngOnInit() {}

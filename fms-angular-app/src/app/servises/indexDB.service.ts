@@ -66,7 +66,7 @@ export default class localDB {
 
   //Добавление
   //storeKey = "operations" || "categories"
-  private async add(storeKey: string, object: IOperation | ICategory) {
+  private async add(storeKey: string, object: IOperation | ICategory | {type: string, value: number, category: string, date: Date}) {
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
@@ -82,12 +82,12 @@ export default class localDB {
   }
 
   //Редактировать/заменить/добавить по ключу
-  private async setByKey(storeKey: string, itemKey: number | string, newObj: IOperation | ICategory) {
+  private async set(storeKey: string, newObj: IOperation | ICategory) {
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
     return new Promise((resolve, reject) => {
-      const request = store.put(newObj, itemKey);
+      const request = store.put(newObj);
 
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
@@ -143,7 +143,7 @@ export default class localDB {
     return result;
   }
 
-  public async createOperation(newObj: IOperation) {
+  public async createOperation(newObj: {type: string, value: number, category: string, date: Date}) {
     ///Как обрабатывать создание? что возвращать? и.т.д
     let result: any;
     try {
@@ -157,7 +157,7 @@ export default class localDB {
     return result;
   }
 
-  public async deleteOperation(itemKey: number) {
+  public async deleteOperationByKey(itemKey: number) {
     let result: any;
     try {
       result = await this.deleteByKey('operations', itemKey);
@@ -167,10 +167,10 @@ export default class localDB {
     return result;
   }
 
-  public async updateOperation(itemKey: number, newObj: IOperation) {
+  public async updateOperation(newObj: IOperation) {
     let result: any;
     try {
-      result = await this.setByKey('operations', itemKey, newObj);
+      result = await this.set('operations', newObj);
     } catch (error) {
       console.error('Ошибка в обновлении оперпции: ', error);
     }
@@ -209,7 +209,7 @@ export default class localDB {
     return result;
   }
 
-  public async deleteCategory(itemKey: string) {
+  public async deleteCategoryByKey(itemKey: string) {
     let result: any;
     try {
       result = await this.deleteByKey('categories', itemKey);
@@ -219,10 +219,10 @@ export default class localDB {
     return result;
   }
 
-  public async updateCategory(itemKey: string, newObj: ICategory) {
+  public async updateCategoryByKey(itemKey: string, newObj: ICategory) {
     let result: any;
     try {
-      result = await this.setByKey('categories', itemKey, newObj);
+      result = await this.set('categories', newObj);
     } catch (error) {
       console.error('Ошибка в обновлении категории: ', error);
     }
