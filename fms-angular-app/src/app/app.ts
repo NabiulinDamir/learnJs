@@ -5,19 +5,20 @@ import { LocalStorage } from './servises/LocalStorage.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Table } from './components/table/table';
 import { CrudTableComponent } from './components/crudTableComponent/crudTableComponent';
-import { DatasetInObjectArray } from './shared/ui/charts/datasetInObjectArray';
+import { DatasetInObjectArray } from './components/charts/datasetInObjectArray';
+import { DataSelector } from './components/dateSelector/dateSelector';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Slider, CrudTableComponent, DatasetInObjectArray],
+  imports: [RouterOutlet, Slider, CrudTableComponent, DatasetInObjectArray, DataSelector],
   providers: [LocalStorage],
   templateUrl: './app.html',
-  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('fms-angular-app');
   items: string[] = [];
   constructor(protected localStorage: LocalStorage) {
     localStorage.setOperations()
+    localStorage.setCategories()
     localStorage.setDaefaultData()
   }
 

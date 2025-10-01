@@ -1,9 +1,9 @@
 <main class="main">
   <section id="up-content" class="bg-primary-subtle">
-    <my-slider><my-dataset-chart [data]="this.localStorage.operations"></my-dataset-chart></my-slider>
+    <my-slider><my-dataset-chart/></my-slider>
   </section>
-
-  <section class="d-flex">
+  <my-data-selector/>
+  <section class="d-flex bg-emphasis">
     <my-crud-table class="w-100" type="income"/>
     <my-crud-table class="w-100" type="expens"/>
   </section>

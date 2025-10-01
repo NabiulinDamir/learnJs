@@ -39,15 +39,22 @@ export default class localDB {
   //Вернуть всё
   //name = "operations" || "categories"
   private async getAll<T>(storeKey: string): Promise<T[]> {
+    
+    
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readonly');
     const store = transaction.objectStore(storeKey);
 
-    return new Promise((resolve, reject) => {
-      const request = store.getAll();
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
-    });
+
+
+      return new Promise((resolve, reject) => {
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+ 
+
+
   }
 
   //Вернуть по id
@@ -170,6 +177,9 @@ export default class localDB {
   public async updateOperation(newObj: IOperation) {
     let result: any;
     try {
+      if (!(await this.keyOf('categories', newObj.category))) {
+        await this.createCategory({ name: newObj.category, type: newObj.type });
+      }
       result = await this.set('operations', newObj);
     } catch (error) {
       console.error('Ошибка в обновлении оперпции: ', error);

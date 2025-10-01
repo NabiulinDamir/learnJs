@@ -4,35 +4,31 @@
     <div class="d-flex gap-1">
       @if(selectedOperations.length){ 
         <button type="button" class="btn btn-secondary btn-sm" (click)="selectedOperations = []"> Сбросить </button>
-        <button type="button" class="btn btn-danger btn-sm" (click)="deleteModal.show()"> Удалить </button>
+        <button type="button" class="btn btn-danger btn-sm" (click)="modal_delete.show()"> Удалить </button>
       }
-      <button type="button" class="btn btn-primary btn-sm" (click)="createModal.show(); createIncomeForm.setDefault()"> Добавить </button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="openCreateForm()"> Добавить </button>
     </div>
   </div>
 
   <my-table class="w-100" 
+    #table
     [allData]="(type() == 'income') ? this.localStorage.incomeOperations : this.localStorage.expensOperations"
     [(selectedData)]="selectedOperations"
-    (onEditDataClick)="
-      editModal.show();
-      editIncomeForm.setValue($event.value);
-      editIncomeForm.setCategory($event.category);
-      editIncomeForm.setDate($event.date);
-      tmpEditOperationKey = $event.id"
+    (onEditDataClick)="openUpdateForm($event)"
   > </my-table>
 </div>
 
 <!-- //////////////////////////////////////////// -->
 
 <my-modal
-  #createModal
-  (deny)="createModal.hide()"
-  (confirm)="createIncomeForm.submit()"
+  #modal_create
+  (deny)="modal_create.hide()"
+  (confirm)="form_create.submit()"
   [title]="'Добавить ' + ((type() == 'income') ? 'доход' : 'расход')"
   [isLoaded]="modalIsLoad"
 >
   <my-form
-    #createIncomeForm
+    #form_create
     [selectorItems]="formatToStringArr((type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories)"
     (onSubmit)="createOperation($event); "
   ></my-form>
@@ -41,14 +37,14 @@
 <!-- //////////////////////////////////////////// -->
 
 <my-modal
-  #editModal
-  (deny)="editModal.hide()"
-  (confirm)="editIncomeForm.submit()"
+  #modal_update
+  (deny)="modal_update.hide()"
+  (confirm)="form_update.submit()"
   [title]="'Редактировать ' + ((type() == 'income') ? 'доход' : 'расход')"
   [isLoaded]="modalIsLoad"
 >
   <my-form
-    #editIncomeForm
+    #form_update
     [selectorItems]="formatToStringArr((type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories)"
     (onSubmit)="updateOperation($event);"
   ></my-form>
@@ -57,10 +53,10 @@
 <!-- //////////////////////////////////////////// -->
 
 <my-modal
-  #deleteModal
-  (deny)="deleteModal.hide()"
+  #modal_delete
+  (deny)="modal_delete.hide()"
   (confirm)="deleteSelectedOperations()"
   title="Удалить операции"
 >
-  Вы действительно хотите удалить выбранные ({{ selectedOperations.length }}) операций?
+  {{ `Вы действительно хотите удалить выбранные (${selectedOperations.length}) операций?` }}
 </my-modal>
