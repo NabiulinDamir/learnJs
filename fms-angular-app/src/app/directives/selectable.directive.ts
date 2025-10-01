@@ -17,6 +17,9 @@ export class SelectableDirective {
 
   constructor(private element: ElementRef, private renderer: Renderer2) {
     this.renderer.setStyle(this.element.nativeElement, 'cursor', 'pointer');
+    this.renderer.setStyle(this.element.nativeElement, 'tr', 'pointer');
+    this.renderer.setStyle(this.element.nativeElement, 'transition', '100ms'); 
+    // this.renderer.setStyle(this.element.nativeElement, 'user-select', 'none');
   }
 
   ngOnChanges(changes: SimpleChanges) {

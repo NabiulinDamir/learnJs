@@ -6,10 +6,12 @@ import { NgxEchartsModule } from 'ngx-echarts';
 import { Table } from './components/table/table';
 import { CrudTableComponent } from './components/crudTableComponent/crudTableComponent';
 import { DatasetInObjectArray } from './components/charts/datasetInObjectArray';
+import { DatasetScopeChart } from './components/charts/datasetScopeChart';
 import { DataSelector } from './components/dateSelector/dateSelector';
+import { DateCarousel } from './components/dateCarousel/dateCarousel';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Slider, CrudTableComponent, DatasetInObjectArray, DataSelector],
+  imports: [RouterOutlet, Slider, CrudTableComponent, DatasetInObjectArray, DataSelector, DateCarousel, DatasetScopeChart],
   providers: [LocalStorage],
   templateUrl: './app.html',
 })

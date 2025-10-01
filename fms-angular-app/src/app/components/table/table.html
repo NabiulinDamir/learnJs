@@ -22,7 +22,8 @@
         <td>{{ data.category }}</td>
         <td>{{ data.value }}</td>
         <td>{{ data.date | date : 'dd.MM.yy' }}</td>
-        <td selectable (click)="editData(data)"><img src='assets/images/pencil.png' alt="edit" class="h-1-rem"/></td>
+        <td selectable (click)="editData(data)">
+          <div class="w-100 d-flex justify-content-center"><img src='assets/images/pencil.png' alt="edit" class="h-1-rem"/></div></td>
       </tr>
       
       }

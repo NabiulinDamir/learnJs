@@ -7,26 +7,30 @@ export class LocalStorage {
   private _operations: IOperation[] = [];
   private _categories: ICategory[] = [];
 
-  public filterOption: IFilterOption = { length: 'month', date: new Date() };
+  public filterOption: IFilterOption = { length: 'year', date: new Date() };
 
   onOperationsChanged = new EventEmitter<IOperation[]>();
   onCategoriesChanged = new EventEmitter<ICategory[]>();
   onFilterOptionChanged = new EventEmitter<IFilterOption>();
 
-  constructor(private _localDb: localDB) { }
+  constructor(private _localDb: localDB) {}
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
 
-  get operations(): IOperation[] {
-    return this.filterData;
+  get filterOperations(): IOperation[] {
+    return this.filter(this._operations);
   }
 
+  get allOperations(): IOperation[] {
+    return this._operations;
+  }
+  
   get incomeOperations(): IOperation[] {
-    return this.operations.filter((obj) => obj.type === 'income') || [];
+    return this.filterOperations.filter((obj) => obj.type === 'income') || [];
   }
 
   get expensOperations(): IOperation[] {
-    return this.operations.filter((obj) => obj.type === 'expens') || [];
+    return this.filterOperations.filter((obj) => obj.type === 'expens') || [];
   }
 
   get incomeCategories(): ICategory[] {
@@ -53,9 +57,23 @@ export class LocalStorage {
     this.onCategoriesChanged.emit(this._categories);
   }
 
+  async setFilterOptionsLength(option: string): Promise<void> {
+    this.filterOption.length = option;
+    this.onFilterOptionChanged.emit(this.filterOption);
+  }
+
+  async setFilterOptionsDate(option: Date): Promise<void> {
+    this.filterOption.date = option;
+    this.onFilterOptionChanged.emit(this.filterOption);
+  }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Создатторы
 
-  async createOperation(newOperation: { type: string, value: number, category: string, date: Date }): Promise<void> {
+  async createOperation(newOperation: {
+    type: string;
+    value: number;
+    category: string;
+    date: Date;
+  }): Promise<void> {
     await this._localDb.createOperation(newOperation);
     await this.setOperations();
     await this.setCategories();
@@ -80,18 +98,37 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Фильтрация
 
-  get filterData(): IOperation[] {
+  private filter(array: IOperation[]): IOperation[] {
     switch (this.filterOption.length) {
-      case "day":
-        return this._operations.filter(a => a.date.getDate() === this.filterOption.date.getDate());
-      case "month":
-        return this._operations.filter(a => a.date.getMonth() === this.filterOption.date.getMonth());
-      case "year":
-        return this._operations.filter(a => a.date.getFullYear() === this.filterOption.date.getFullYear());
-      case "all":
-        return this._operations
+      case 'day':
+        return array.filter(
+          (a) => a.date.getDate() === this.filterOption.date.getDate()
+        );
+      case 'month':
+        return array.filter(
+          (a) => a.date.getMonth() === this.filterOption.date.getMonth()
+        );
+      case 'year':
+        return array.filter(
+          (a) => a.date.getFullYear() === this.filterOption.date.getFullYear()
+        );
+      case 'all':
+        return array;
     }
-    return []
+    return array;
   }
 
+  public get datePattern(): string{
+      switch(this.filterOption.length) {
+        case "day":
+        case "nedela":
+          return "dd.MM.yyyy";
+        case "month":
+          return "MM.yyyy";
+        case "year":
+          return "yyyy";
+        default:
+          return "dd.MM.yyyy";
+      }
+    }
 }

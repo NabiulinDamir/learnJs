@@ -39,22 +39,15 @@ export default class localDB {
   //Вернуть всё
   //name = "operations" || "categories"
   private async getAll<T>(storeKey: string): Promise<T[]> {
-    
-    
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readonly');
     const store = transaction.objectStore(storeKey);
 
-
-
-      return new Promise((resolve, reject) => {
-        const request = store.getAll();
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => reject(request.error);
-      });
- 
-
-
+    return new Promise((resolve, reject) => {
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
   }
 
   //Вернуть по id
@@ -73,7 +66,10 @@ export default class localDB {
 
   //Добавление
   //storeKey = "operations" || "categories"
-  private async add(storeKey: string, object: IOperation | ICategory | {type: string, value: number, category: string, date: Date}) {
+  private async add(
+    storeKey: string,
+    object: IOperation | ICategory | { type: string; value: number; category: string; date: Date }
+  ) {
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
@@ -128,6 +124,7 @@ export default class localDB {
   }
 
   private async keyOf(storeKey: string, itemKey: number | string): Promise<boolean> {
+
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readonly');
     const store = transaction.objectStore(storeKey);
@@ -141,6 +138,8 @@ export default class localDB {
   //////////////////////////////////////////////////////////////////////////////////////////////////////Операции
 
   public async getAllOperations(): Promise<IOperation[]> {
+    console.log('--Вернуть все опрерации');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     let result: IOperation[] = [];
     try {
       result = await this.getAll<IOperation>('operations');
@@ -150,7 +149,9 @@ export default class localDB {
     return result;
   }
 
-  public async createOperation(newObj: {type: string, value: number, category: string, date: Date}) {
+  public async createOperation(newObj: {type: string;value: number;category: string;date: Date;}) {
+    console.log('--Создание операции');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     ///Как обрабатывать создание? что возвращать? и.т.д
     let result: any;
     try {
@@ -165,6 +166,8 @@ export default class localDB {
   }
 
   public async deleteOperationByKey(itemKey: number) {
+    console.log('--Удалеие операции');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     let result: any;
     try {
       result = await this.deleteByKey('operations', itemKey);
@@ -175,6 +178,8 @@ export default class localDB {
   }
 
   public async updateOperation(newObj: IOperation) {
+    console.log('--Обновление опрерации');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     let result: any;
     try {
       if (!(await this.keyOf('categories', newObj.category))) {
@@ -200,6 +205,8 @@ export default class localDB {
   //////////////////////////////////////////////////////////////////////////////////////////////////////Категории
 
   public async getAllCategories() {
+    console.log('--Возврщение категорий');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     let result: ICategory[] = [];
     try {
       result = await this.getAll<ICategory>('categories');
@@ -210,6 +217,8 @@ export default class localDB {
   }
 
   public async createCategory(newObj: ICategory) {
+    console.log('--Создание категории');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     let result: any;
     try {
       result = await this.add('categories', newObj);
@@ -220,6 +229,8 @@ export default class localDB {
   }
 
   public async deleteCategoryByKey(itemKey: string) {
+    console.log('--Удаление категорий');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     let result: any;
     try {
       result = await this.deleteByKey('categories', itemKey);
@@ -230,6 +241,8 @@ export default class localDB {
   }
 
   public async updateCategoryByKey(itemKey: string, newObj: ICategory) {
+    console.log('--Обновление категории');
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     let result: any;
     try {
       result = await this.set('categories', newObj);
@@ -246,12 +259,17 @@ export default class localDB {
     await this.clear('categories');
 
     for (const element of testData.operations) {
-      await this.createOperation({
+      const newObj = {
         type: element.type,
         value: element.value,
         date: new Date(element.date),
         category: element.category,
-      });
+      };
+
+      if (!(await this.keyOf('categories', newObj.category))) {
+        await this.add('categories', { name: newObj.category, type: newObj.type });
+      }
+      await this.add('operations', newObj);
     }
   }
 

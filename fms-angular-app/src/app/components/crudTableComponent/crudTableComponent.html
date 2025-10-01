@@ -1,62 +1,39 @@
 <div class="p-1">
-  <div class="d-flex justify-content-between mb-1">
-    <h5>{{ (type() == 'income') ? 'Доходы' : 'Расходы'}}</h5>
-    <div class="d-flex gap-1">
-      @if(selectedOperations.length){ 
-        <button type="button" class="btn btn-secondary btn-sm" (click)="selectedOperations = []"> Сбросить </button>
-        <button type="button" class="btn btn-danger btn-sm" (click)="modal_delete.show()"> Удалить </button>
-      }
-      <button type="button" class="btn btn-primary btn-sm" (click)="openCreateForm()"> Добавить </button>
-    </div>
+  <div class="hstack gap-1 mb-1">
+    <h5 class="me-auto">{{ (type() == 'income') ? 'Доходы' : 'Расходы'}}</h5>
+    @if(selectedOperations.length){
+    <button type="button" class="btn btn-secondary btn-sm " (click)="selectedOperations = []"> Сбросить </button>
+    <button type="button" class="btn btn-danger btn-sm " (click)="modal_delete.show()"> Удалить </button>
+    }
+    <button type="button" class="btn btn-primary btn-sm " (click)="openCreateForm()"> Добавить </button>
   </div>
 
-  <my-table class="w-100" 
-    #table
+  <my-table class="w-100" #table
     [allData]="(type() == 'income') ? this.localStorage.incomeOperations : this.localStorage.expensOperations"
-    [(selectedData)]="selectedOperations"
-    (onEditDataClick)="openUpdateForm($event)"
-  > </my-table>
+    [(selectedData)]="selectedOperations" (onEditDataClick)="openUpdateForm($event)"> </my-table>
 </div>
 
 <!-- //////////////////////////////////////////// -->
 
-<my-modal
-  #modal_create
-  (deny)="modal_create.hide()"
-  (confirm)="form_create.submit()"
-  [title]="'Добавить ' + ((type() == 'income') ? 'доход' : 'расход')"
-  [isLoaded]="modalIsLoad"
->
-  <my-form
-    #form_create
+<my-modal #modal_create (deny)="modal_create.hide()" (confirm)="form_create.submit()"
+  [title]="'Добавить ' + ((type() == 'income') ? 'доход' : 'расход')" [isLoaded]="modalIsLoad">
+  <my-form #form_create
     [selectorItems]="formatToStringArr((type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories)"
-    (onSubmit)="createOperation($event); "
-  ></my-form>
+    (onSubmit)="createOperation($event); "></my-form>
 </my-modal>
 
 <!-- //////////////////////////////////////////// -->
 
-<my-modal
-  #modal_update
-  (deny)="modal_update.hide()"
-  (confirm)="form_update.submit()"
-  [title]="'Редактировать ' + ((type() == 'income') ? 'доход' : 'расход')"
-  [isLoaded]="modalIsLoad"
->
-  <my-form
-    #form_update
+<my-modal #modal_update (deny)="modal_update.hide()" (confirm)="form_update.submit()"
+  [title]="'Редактировать ' + ((type() == 'income') ? 'доход' : 'расход')" [isLoaded]="modalIsLoad">
+  <my-form #form_update
     [selectorItems]="formatToStringArr((type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories)"
-    (onSubmit)="updateOperation($event);"
-  ></my-form>
+    (onSubmit)="updateOperation($event);"></my-form>
 </my-modal>
 
 <!-- //////////////////////////////////////////// -->
 
-<my-modal
-  #modal_delete
-  (deny)="modal_delete.hide()"
-  (confirm)="deleteSelectedOperations()"
-  title="Удалить операции"
->
+<my-modal #modal_delete (deny)="modal_delete.hide()" (confirm)="deleteSelectedOperations()" title="Удалить операции"
+  [isLoaded]="modalIsLoad">
   {{ `Вы действительно хотите удалить выбранные (${selectedOperations.length}) операций?` }}
 </my-modal>
