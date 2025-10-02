@@ -22,7 +22,7 @@ export class MovableDirective {
   }
 
   move(num?: number) {
-    this.renderer.setStyle(this.element.nativeElement, 'left', `${this.left}rem`);
+    this.renderer.setStyle(this.element.nativeElement, 'left', `${this.left}px`);
   }
 
   ngOnChanges(changes: SimpleChanges) {

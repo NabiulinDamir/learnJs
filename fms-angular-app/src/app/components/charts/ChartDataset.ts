@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy, input, computed, effect } from '@angular/core';
+import { Component, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
 import * as echarts from 'echarts';
-import { IFilterOption, IOperation } from '../../models/dataTypes.model';
 import { LocalStorage } from '../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
+import { Subscription } from 'rxjs';
 @Component({
-  selector: 'my-dataset-chart',
+  selector: 'my-chart-dataset',
   providers: [DatePipe],
   template: `
     <div class="position-relative">
@@ -25,20 +25,17 @@ import { DatePipe } from '@angular/common';
     <style></style>
   `,
 })
-export class DatasetInObjectArray implements OnInit, OnDestroy {
+export class ChartDataset implements OnDestroy, AfterViewInit {
   private _chart: echarts.ECharts | undefined = undefined;
-
-  get hasData(): boolean {
-    return this.localStorage.filterOperations.length > 0;
-  }
-
-  constructor(private localStorage: LocalStorage, private datePipe: DatePipe) {}
+  private observer!: IntersectionObserver;
+  private operationSub?: Subscription;
+  private filterSub?: Subscription;
+  constructor(private localStorage: LocalStorage, private datePipe: DatePipe, private element: ElementRef) { }
 
   private initChart() {
     if (this._chart) {
       this._chart.dispose();
     }
-
     const chartDom = <HTMLElement>document.getElementById('chart-container');
     this._chart = <echarts.ECharts>echarts.init(chartDom);
 
@@ -73,7 +70,7 @@ export class DatasetInObjectArray implements OnInit, OnDestroy {
     );
 
     const resultMap = new Map();
-    
+
     for (const operation of allOperations) {
       const key = this.datePipe.transform(operation.date, 'dd.MM.yyyy');
       const name = this.datePipe.transform(operation.date, 'dd');
@@ -93,13 +90,38 @@ export class DatasetInObjectArray implements OnInit, OnDestroy {
     return Array.from(resultMap.values());
   }
 
-  ngOnInit() {
-    this.initChart();
-    this.localStorage.onOperationsChanged.subscribe((value) => { this.initChart(); });
-    this.localStorage.onFilterOptionChanged.subscribe((value) => { this.initChart(); })
-  }
-
   ngOnDestroy() {
     this._chart?.dispose();
+    this.operationSub?.unsubscribe();
+    this.filterSub?.unsubscribe();
+  }
+
+  ngOnInit() {
+
+  }
+
+  ngAfterViewInit() {
+    this.observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        this.initChart();
+        this.operationSub = this.localStorage.onOperationsChanged.subscribe(() => { this.initChart(); });
+        this.filterSub = this.localStorage.onFilterOptionDateChanged.subscribe(() => { this.initChart(); });
+      }
+      else {
+        this.operationSub?.unsubscribe();
+        this.filterSub?.unsubscribe();
+      }
+    });
+    this.observer.observe(this.element.nativeElement);
+  }
+
+  checkVisibility(): boolean {
+    const element = this.element.nativeElement;
+    const rect = element.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  }
+
+  get hasData(): boolean {
+    return this.localStorage.filterOperations.length > 0;
   }
 }

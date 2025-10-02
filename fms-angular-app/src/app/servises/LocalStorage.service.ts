@@ -11,7 +11,8 @@ export class LocalStorage {
 
   onOperationsChanged = new EventEmitter<IOperation[]>();
   onCategoriesChanged = new EventEmitter<ICategory[]>();
-  onFilterOptionChanged = new EventEmitter<IFilterOption>();
+  onFilterOptionLengthChanged = new EventEmitter<string>();
+  onFilterOptionDateChanged = new EventEmitter<Date>();
 
   constructor(private _localDb: localDB) {}
 
@@ -59,12 +60,12 @@ export class LocalStorage {
 
   async setFilterOptionsLength(option: string): Promise<void> {
     this.filterOption.length = option;
-    this.onFilterOptionChanged.emit(this.filterOption);
+    this.onFilterOptionLengthChanged.emit(option);
   }
 
   async setFilterOptionsDate(option: Date): Promise<void> {
     this.filterOption.date = option;
-    this.onFilterOptionChanged.emit(this.filterOption);
+    this.onFilterOptionDateChanged.emit(option);
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Создатторы
 

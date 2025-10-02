@@ -1,17 +1,15 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Slider } from './shared/ui/slider/slider';
 import { LocalStorage } from './servises/LocalStorage.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Table } from './components/table/table';
 import { CrudTableComponent } from './components/crudTableComponent/crudTableComponent';
-import { DatasetInObjectArray } from './components/charts/datasetInObjectArray';
-import { DatasetScopeChart } from './components/charts/datasetScopeChart';
 import { DataSelector } from './components/dateSelector/dateSelector';
+import { ChartsSlider } from './components/charts-slider/charts-slider';
 import { DateCarousel } from './components/dateCarousel/dateCarousel';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Slider, CrudTableComponent, DatasetInObjectArray, DataSelector, DateCarousel, DatasetScopeChart],
+  imports: [RouterOutlet, CrudTableComponent, DataSelector, DateCarousel, ChartsSlider],
   providers: [LocalStorage],
   templateUrl: './app.html',
 })

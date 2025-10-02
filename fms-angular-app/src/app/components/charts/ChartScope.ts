@@ -4,7 +4,7 @@ import { IFilterOption, IOperation } from '../../models/dataTypes.model';
 import { LocalStorage } from '../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
 @Component({
-  selector: 'my-dataset-scope',
+  selector: 'my-chart-scope',
   providers: [DatePipe],
   template: `
     <div class="position-relative">
@@ -17,7 +17,7 @@ import { DatePipe } from '@angular/common';
     <style></style>
   `,
 })
-export class DatasetScopeChart implements OnInit, OnDestroy {
+export class ChartScope implements OnInit, OnDestroy {
   private _chart: echarts.ECharts | undefined = undefined;
 
   get hasData(): boolean {
@@ -91,12 +91,14 @@ export class DatasetScopeChart implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.initChart();
-    this.localStorage.onOperationsChanged.subscribe((value) => { this.initChart(); });
-    this.localStorage.onFilterOptionChanged.subscribe((value) => { this.initChart(); })
+    // this.initChart();
+    // this.localStorage.onOperationsChanged.subscribe((value) => { this.initChart(); });
+    // this.localStorage.onFilterOptionLengthChanged.subscribe((value) => { this.initChart(); })
+    // this.localStorage.onFilterOptionDateChanged.subscribe((value) => { this.initChart(); })
   }
 
   ngOnDestroy() {
+    console.log("ltcnhjq")
     this._chart?.dispose();
   }
 }

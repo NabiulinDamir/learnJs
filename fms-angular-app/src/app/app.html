@@ -1,14 +1,17 @@
 <main class="main">
+
   <section id="up-content" class="bg-primary-subtle">
-    <my-slider><my-dataset-chart/><my-dataset-scope/></my-slider>
+    <my-charts-slider/>
   </section>
-  <my-date-selector/>
-  <my-date-carousel/>
-  <section class="d-flex">
-    <my-crud-table class="w-100" type="income"/>
-    <my-crud-table class="w-100" type="expens"/>
+
+  <my-date-selector />
+  <my-date-carousel />
+
+  <section class="d-flex bg-emphasis flex-wrap flex-md-nowrap">
+    <my-crud-table class="w-100" type="income" />
+    <my-crud-table class="w-100" type="expens" />
   </section>
-    <!-- <my-table-container/> -->
+  <!-- <my-table-container/> -->
 
 </main>
 <router-outlet />

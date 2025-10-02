@@ -19,7 +19,7 @@ export class SelectableDirective {
     this.renderer.setStyle(this.element.nativeElement, 'cursor', 'pointer');
     this.renderer.setStyle(this.element.nativeElement, 'tr', 'pointer');
     this.renderer.setStyle(this.element.nativeElement, 'transition', '100ms'); 
-    // this.renderer.setStyle(this.element.nativeElement, 'user-select', 'none');
+    this.renderer.setStyle(this.element.nativeElement, 'background-color', 'var(--background-color)');
   }
 
   ngOnChanges(changes: SimpleChanges) {
