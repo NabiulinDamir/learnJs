@@ -16,7 +16,7 @@ export class Table {
   title = input<string>('');
   inputData = input<IOperation[]>([]);
   isLoaded  = input<boolean>(true);
-  data: IOperation[] = [];
+  //data: IOperation[] = [];
   selectedData = model<IOperation[]>([]);
   onSelectedDataChanged = output<void>();
   onEditDataClick = output<IOperation>();
@@ -80,10 +80,10 @@ export class Table {
     this.onEditDataClick.emit(data)
   }
 
-  get validData():boolean{
-    console.log("huhui")
-    return this.data.length > 0
-  }
+  // get validData():boolean{
+  //   console.log("huhui")
+  //   return this.data.length > 0
+  // }
 
 
 

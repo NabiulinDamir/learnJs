@@ -40,6 +40,22 @@ export class CrudTableComponent {
 
   constructor(protected localStorage: LocalStorage, public filter: Filter) { }
 
+    
+  /////////////////////////////////////////////////////////////
+
+  get tableData():IOperation[] {
+    return (this.type() == 'income') ? this.localStorage.incomeOperations : this.localStorage.expensOperations
+  }
+
+  get categoriesStringArr(): string[]{
+    const categories = (this.type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories;
+    return categories.map((a) => a.name);
+
+  }
+
+  /////////////////////////////////////////////////////////////
+
+
   async createOperation({ value, category, date }: { value: number, category: string, date: Date }) {
     this.loadModal = true;
     const type = <string>this.type();
@@ -70,9 +86,6 @@ export class CrudTableComponent {
     this.ELEMENT_MODAL_DELETE().hide();
   }
 
-  formatToStringArr(categoryArr: ICategory[]): string[] {
-    return categoryArr.map((a) => a.name);
-  }
 
   openUpdateForm(operation: IOperation): void {
     this.ELEMENT_MODAL_UPDATE().show();

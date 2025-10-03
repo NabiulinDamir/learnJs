@@ -9,7 +9,7 @@
   </div>
 
   <my-table class="w-100" #table 
-    [inputData]="(type() == 'income') ? this.localStorage.incomeOperations : this.localStorage.expensOperations"
+    [inputData]="this.localStorage.incomeOperations"
     [(selectedData)]="selectedOperations" 
     (onEditDataClick)="openUpdateForm($event)"
     [isLoaded]="loadOperations"
@@ -23,7 +23,7 @@
 <my-modal #modal_create (deny)="modal_create.hide()" (confirm)="form_create.submit()"
   [title]="'Добавить ' + ((type() == 'income') ? 'доход' : 'расход')" [isLoaded]="loadModal">
   <my-form #form_create
-    [selectorItems]="formatToStringArr((type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories)"
+    [selectorItems]="categoriesStringArr"
     (onSubmit)="createOperation($event); "></my-form>
 </my-modal>
 
@@ -32,7 +32,7 @@
 <my-modal #modal_update (deny)="modal_update.hide()" (confirm)="form_update.submit()"
   [title]="'Редактировать ' + ((type() == 'income') ? 'доход' : 'расход')" [isLoaded]="loadModal">
   <my-form #form_update
-    [selectorItems]="formatToStringArr((type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories)"
+    [selectorItems]="categoriesStringArr"
     (onSubmit)="updateOperation($event);"></my-form>
 </my-modal>
 

@@ -136,7 +136,7 @@ export class ChartDataset implements OnDestroy, AfterViewInit {
         case "day":
           return "dd.MM.yyyy";
         case "month":
-          return "dd";
+          return "d";
         case "year":
           return "dd.MM";
         default:
