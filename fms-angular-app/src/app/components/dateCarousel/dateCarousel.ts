@@ -5,6 +5,7 @@ import { LocalStorage } from '../../servises/LocalStorage.service';
 import { MovableDirective } from '../../directives/movable.directive';
 import { Renderer2 } from '@angular/core';
 import { PointnerDirective } from '../../directives/pointner.directive';
+import { Filter } from '../../servises/filter.service';
 @Component({
   selector: 'my-date-carousel',
   template: `
@@ -13,10 +14,10 @@ import { PointnerDirective } from '../../directives/pointner.directive';
       @for(item of allData; track $index){
         <li class=" rounded-3 d-flex justify-content-center" 
           [style.width]='calcWidth(item.name.length)' 
-          (click)="this.localStorage.setFilterOptionsDate(item.date)"
+          (click)="this.filter.date = item.date"
           selectable
           pointner
-          [class.bg-primary]="isSameDay(item.date, localStorage.filterOption.date)"
+          [class.bg-primary]="(item.date == filter.date)"
           >{{item.name}}</li>
       }
     </ul>
@@ -37,30 +38,28 @@ export class DateCarousel {
   public allData: { name: string, date: Date }[] = [];
   private ELEMENT_LIST_PARRENT = viewChild<any>('option_list');
 
-  constructor(public localStorage: LocalStorage, private datePipe: DatePipe, private renderer: Renderer2) { }
+  constructor(public localStorage: LocalStorage, private datePipe: DatePipe, public filter: Filter) { }
 
   async setData() {
     const allOperations = this.localStorage.allOperations.sort(
       (a, b) => a.date.getTime() - b.date.getTime()
     );
     this.allData = [];
-    let containToday = false;
-    const todayFormat = <string>this.datePipe.transform(new Date(), this.localStorage.datePattern);
     for (const operation of allOperations) {
-      const name = <string>this.datePipe.transform(operation.date, this.localStorage.datePattern);
+      const name = <string>this.datePipe.transform(operation.date, this.filter.datePattern);
       if (this.allData.map(a => a.name).includes(name)) { continue }
-      const date = new Date(operation.date)
-      date.setHours(0, 0, 0, 0)
-      if (this.localStorage.filterOption.length === "month") { date.setDate(1) }
-      if (this.localStorage.filterOption.length === "year") { date.setMonth(0);  date.setDate(1) }
-      this.allData.push({ name: name, date: date });
-      if(name === todayFormat){ 
-        containToday = true;
-        await this.localStorage.setFilterOptionsDate(date) 
-      }
+      this.allData.push({ name: name, date: operation.date });
     }
-    if(!containToday){
-      await this.localStorage.setFilterOptionsDate(this.allData[this.allData.length - 1]?.date) 
+  }
+
+  setDefaultItem(){
+    const today: Date = new Date();
+    const todayFormat = <string>this.datePipe.transform(today, this.filter.datePattern);
+    if(this.allData.find(a => a.name === todayFormat)){
+      this.filter.date = today;
+    }
+    else{
+      this.filter.date = this.allData[this.allData.length - 1]?.date
     }
   }
 
@@ -70,34 +69,28 @@ export class DateCarousel {
     return (11 - length) * 100 + "px"
   }
 
-  checkChildrens() {
-    setTimeout(() => {
-      const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
-      Array.from(children).forEach((child: unknown) => {
-        const element = child as HTMLElement;
-        const text = element.textContent?.trim();
-        if(text === this.datePipe.transform(this.localStorage.filterOption.date, this.localStorage.datePattern)){
-          this.navigateToItem(element);
-        }
-      });
-    },100);
-  }
-
-  navigateToItem(element: HTMLElement){
-    const containerWidth = window.innerWidth;
-    const containerCenter = containerWidth / 2;
-    const elemCenter = element.offsetLeft + (element.offsetWidth / 2);
-    this.position = containerCenter - elemCenter;
+  navigateToSelectedItem() {
+    const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
+    Array.from(children).forEach((child: unknown) => {
+      const element = child as HTMLElement;
+      const text = element.textContent?.trim();
+      if (text === this.datePipe.transform(this.filter.date, this.filter.datePattern)) {
+        const containerWidth = window.innerWidth;
+        const containerCenter = containerWidth / 2;
+        const elemCenter = element.offsetLeft + (element.offsetWidth / 2);
+        this.position = containerCenter - elemCenter;
+      }
+    });
   }
 
   ngOnInit() {
     this.localStorage.onOperationsChanged.subscribe((value) => { this.setData(); });
-    this.localStorage.onFilterOptionLengthChanged.subscribe(async(value) => { await this.setData(); })
-    this.localStorage.onFilterOptionDateChanged.subscribe((value) => { this.checkChildrens() })
+    this.filter.onDateChange.subscribe(async (value) => { this.navigateToSelectedItem(); })
+    this.filter.onIntervalChanged.subscribe(async(value) => { this.setData(); this.setDefaultItem() })
   }
 
-  isSameDay(date1: Date, date2: Date): boolean{
-    return (date1.getTime() ===  date2.getTime())
+  isSameDay(date1: Date, date2: Date): boolean {
+    return (date1.getTime() === date2.getTime())
   }
 
 }

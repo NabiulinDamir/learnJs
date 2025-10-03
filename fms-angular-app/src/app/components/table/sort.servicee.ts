@@ -31,9 +31,9 @@ export class Sort {
     return ' ᨆ';
   }
 
-  public sort(array: IOperation[]): IOperation[] {//!!!Оптимизация мертва!!!
+  public sort(array: IOperation[]): IOperation[] {//!!!Оптимизация уже не мертва!!!(по 2 раза при ините)
     let result: IOperation[] = [];
-    // console.log("Сортировка");
+    console.log("Сортировка")
     const koef = this._increasing ? -1 : 1;
     switch (this._option) {
       case 'value':

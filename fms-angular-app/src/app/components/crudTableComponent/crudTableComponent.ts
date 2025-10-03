@@ -4,6 +4,7 @@ import { Table } from '../table/table';
 import { Modal } from '../../shared/ui/modal/modal';
 import { Form } from '../form/form';
 import { ICategory, IOperation } from '../../models/dataTypes.model';
+import { Filter } from '../../servises/filter.service';
 
 @Component({
   selector: 'my-crud-table',
@@ -16,12 +17,15 @@ export class CrudTableComponent {
 
   //////////////////////////////////////////////////////////////
 
-  modalIsLoad: boolean = false;
+  public loadModal: boolean = false;
+  public loadOperations: boolean = true;
+
   selectedOperations: IOperation[] = [];
+
 
   //////////////////////////////////////////////////////////////
 
-  // private ELEMENT_TABLE = viewChild<any>('table');
+  private ELEMENT_TABLE = viewChild<any>('table');
 
   private ELEMENT_MODAL_CREATE = viewChild<any>('modal_create');
   private ELEMENT_MODAL_UPDATE = viewChild<any>('modal_update');
@@ -34,18 +38,18 @@ export class CrudTableComponent {
 
   private tmpEditOperationKey: number | undefined = undefined;
 
-  constructor(protected localStorage: LocalStorage) { }
+  constructor(protected localStorage: LocalStorage, public filter: Filter) { }
 
   async createOperation({ value, category, date }: { value: number, category: string, date: Date }) {
-    this.modalIsLoad = true;
+    this.loadModal = true;
     const type = <string>this.type();
     await this.localStorage.createOperation({ type, value, category, date });
-    this.modalIsLoad = false;
+    this.loadModal = false;
     this.ELEMENT_MODAL_CREATE().hide();
   }
 
   async updateOperation({ value, category, date }: { value: number, category: string, date: Date }) {
-    this.modalIsLoad = true;
+    this.loadModal = true;
     const type = <string>this.type();
     if (this.tmpEditOperationKey == undefined) {
       alert("Ошибка на стороне клиента");
@@ -54,14 +58,14 @@ export class CrudTableComponent {
     }
     const id = <number>this.tmpEditOperationKey;
     await this.localStorage.updateOperation({ id, type, value, category, date });
-    this.modalIsLoad = false;
+    this.loadModal = false;
     this.ELEMENT_MODAL_UPDATE().hide();
   }
 
   async deleteSelectedOperations(): Promise<void> {
-    this.modalIsLoad = true;
+    this.loadModal = true;
     await this.localStorage.deleteOperations(this.selectedOperations);
-    this.modalIsLoad = false;
+    this.loadModal = false;
     this.selectedOperations = [];
     this.ELEMENT_MODAL_DELETE().hide();
   }
@@ -83,6 +87,11 @@ export class CrudTableComponent {
     this.ELEMENT_FORM_CREATE().setDefault()
   }
 
-
-
+  ngOnInit() {
+    this.localStorage.onOperationsChanged.subscribe((value) => {  
+      this.loadOperations = false;
+      this.ELEMENT_TABLE().sortData(); 
+    });
+    this.filter.onDateChange.subscribe((value) => { this.ELEMENT_TABLE().sortData() });
+  }
 }

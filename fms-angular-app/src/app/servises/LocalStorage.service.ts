@@ -1,25 +1,22 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { IOperation, ICategory, IFilterOption } from '../models/dataTypes.model';
 import localDB from './indexDB.service';
+import { Filter } from './filter.service';
 
 @Injectable({ providedIn: 'root' })
 export class LocalStorage {
   private _operations: IOperation[] = [];
   private _categories: ICategory[] = [];
 
-  public filterOption: IFilterOption = { length: 'year', date: new Date() };
-
   onOperationsChanged = new EventEmitter<IOperation[]>();
   onCategoriesChanged = new EventEmitter<ICategory[]>();
-  onFilterOptionLengthChanged = new EventEmitter<string>();
-  onFilterOptionDateChanged = new EventEmitter<Date>();
 
-  constructor(private _localDb: localDB) {}
+  constructor(private _localDb: localDB, private _filter: Filter) {}
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
 
   get filterOperations(): IOperation[] {
-    return this.filter(this._operations);
+    return this._filter.filter(this._operations);
   }
 
   get allOperations(): IOperation[] {
@@ -57,16 +54,6 @@ export class LocalStorage {
     this._categories = await this._localDb.getAllCategories();
     this.onCategoriesChanged.emit(this._categories);
   }
-
-  async setFilterOptionsLength(option: string): Promise<void> {
-    this.filterOption.length = option;
-    this.onFilterOptionLengthChanged.emit(option);
-  }
-
-  async setFilterOptionsDate(option: Date): Promise<void> {
-    this.filterOption.date = option;
-    this.onFilterOptionDateChanged.emit(option);
-  }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Создатторы
 
   async createOperation(newOperation: {
@@ -97,39 +84,5 @@ export class LocalStorage {
     await this.setOperations();
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////Фильтрация
 
-  private filter(array: IOperation[]): IOperation[] {
-    switch (this.filterOption.length) {
-      case 'day':
-        return array.filter(
-          (a) => a.date.getDate() === this.filterOption.date.getDate()
-        );
-      case 'month':
-        return array.filter(
-          (a) => a.date.getMonth() === this.filterOption.date.getMonth()
-        );
-      case 'year':
-        return array.filter(
-          (a) => a.date.getFullYear() === this.filterOption.date.getFullYear()
-        );
-      case 'all':
-        return array;
-    }
-    return array;
-  }
-
-  public get datePattern(): string{
-      switch(this.filterOption.length) {
-        case "day":
-        case "nedela":
-          return "dd.MM.yyyy";
-        case "month":
-          return "MM.yyyy";
-        case "year":
-          return "yyyy";
-        default:
-          return "dd.MM.yyyy";
-      }
-    }
 }
