@@ -60,7 +60,7 @@ export class ChartScope implements OnInit, OnDestroy {
   }
 
   get formattedData() {
-    const allOperations = this.localStorage.filterOperations.sort(
+    const allOperations = this.localStorage.filterOperations().sort(
       (a, b) => a.date.getTime() - b.date.getTime()
     );
 

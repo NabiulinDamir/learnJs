@@ -6,7 +6,7 @@ import { PointnerDirective } from '../../directives/pointner.directive';
 import { Filter } from '../../servises/filter.service';
 
 @Component({
-  selector: 'my-date-selector',
+  selector: 'my-interval-selector',
   template: `
 
       <div class="bg-primary-subtle position-relative d-flex justify-content-center">
@@ -16,8 +16,8 @@ import { Filter } from '../../servises/filter.service';
               class="nav-link w-5-rem d-flex justify-content-center p-1"
               pointner
               aria-current="page"
-              [class.active]="filter.interval === 'day'"
-              (click)="filter.interval = 'day'"
+              [class.active]="filter.interval() === 'day'"
+              (click)="filter.setIntervalDay()"
               >День</a
             >
           </li>
@@ -26,8 +26,8 @@ import { Filter } from '../../servises/filter.service';
               class="nav-link w-5-rem d-flex justify-content-center p-1"
               pointner
               aria-current="page"
-              [class.active]="filter.interval === 'month'"
-              (click)="filter.interval = 'month'"
+              [class.active]="filter.interval() === 'month'"
+              (click)="filter.setIntervalMonth()"
               >Месяц</a
             >
           </li>
@@ -36,8 +36,8 @@ import { Filter } from '../../servises/filter.service';
               class="nav-link w-5-rem d-flex justify-content-center p-1"
               pointner
               aria-current="page"
-              [class.active]="filter.interval === 'year'"
-              (click)="filter.interval = 'year'"
+              [class.active]="filter.interval() === 'year'"
+              (click)="filter.setIntervalYear()"
               >Год</a
             >
           </li>
@@ -55,14 +55,11 @@ import { Filter } from '../../servises/filter.service';
       }
     </style>
   `,
-  imports: [ PointnerDirective],
+  imports: [PointnerDirective],
   providers: [],
 })
-export class DataSelector {
-  constructor(public localStorage: LocalStorage, public filter: Filter) {}
+export class IntervalSelector {
+  constructor(public filter: Filter) {
 
-
-  selectedLength(option: string): void{
-    this.filter.interval = option
   }
 }

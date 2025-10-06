@@ -1,9 +1,10 @@
-import { Component, OnDestroy, ElementRef, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnDestroy, ElementRef, AfterViewInit, HostListener, computed, effect, OnInit, signal } from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
-import { Subscription } from 'rxjs';
 import { Filter } from '../../servises/filter.service';
+import { IOperation } from '../../models/dataTypes.model';
+
 @Component({
   selector: 'my-chart-dataset',
   providers: [DatePipe],
@@ -26,29 +27,31 @@ import { Filter } from '../../servises/filter.service';
     <style></style>
   `,
 })
-export class ChartDataset implements OnDestroy, AfterViewInit {
+export class ChartDataset implements OnDestroy {
   private _chart: echarts.ECharts | undefined = undefined;
   private observer!: IntersectionObserver;
-  private operationSub?: Subscription;
-  private filterSub?: Subscription;
-  constructor(private localStorage: LocalStorage, private datePipe: DatePipe, private element: ElementRef, public filter: Filter) { }
+  private _isVisible = signal<boolean>(false);
+  constructor(private localStorage: LocalStorage, private datePipe: DatePipe, private element: ElementRef, public filter: Filter) {
+    effect(() => {
+      if (!this._isVisible()) { return; }
+      if (this._chart) { this._chart.dispose(); }
+      const chartDom = document.getElementById('chart-container') as HTMLElement;
+      this._chart = echarts.init(chartDom);
+      this._chart.setOption(this.option());
+    })
+  }
 
-  private initChart() {
-    if (this._chart) {
-      this._chart.dispose();
-    }
 
-    const chartDom = document.getElementById('chart-container') as HTMLElement;
-    this._chart = echarts.init(chartDom);
-
-    const option = {
+  option = computed(() => {
+    const data = this.format(this.localStorage.filterOperations());
+    return {
       tooltip: { trigger: 'axis' },
       legend: {
         data: ['Доходы', 'Расходы'],
         itemGap: 5
       },
       title: {
-        text: `Все операции за ${this.filter.intervalLocale}`,
+        text: `Орерации за ${this.filter.intervalLocale}`,
         position: 'top'
       },
       grid: {
@@ -59,7 +62,7 @@ export class ChartDataset implements OnDestroy, AfterViewInit {
       },
       xAxis: {
         type: 'category',
-        data: this.formattedData.map(item => item.name)
+        data: data.map(item => item.name)
       },
       yAxis: {
         type: 'value',
@@ -76,40 +79,37 @@ export class ChartDataset implements OnDestroy, AfterViewInit {
         {
           name: 'Доходы',
           type: 'bar',
-          data: this.formattedData.map(item => item.income),
+          data: data.map(item => item.income),
           color: '#0d6efd'
         },
         {
           name: 'Расходы',
           type: 'bar',
-          data: this.formattedData.map(item => item.expens),
+          data: data.map(item => item.expens),
           color: '#6c757d'
         }
       ]
     };
+  })
 
-    this._chart.setOption(option);
-
-    this._chart.setOption(option);
-  }
-
-  get formattedData(): { name: string, income: number, expens: number }[] {
-    const allOperations = this.localStorage.filterOperations.sort(
+  format(data: IOperation[]): { name: string, income: number, expens: number }[] {
+    const allOperations = data.sort(
       (a, b) => a.date.getTime() - b.date.getTime()
     );
 
     const resultMap = new Map();
 
-    let currentDate = this.filter.startInterval;
-    let endDate = this.filter.endInterval;
+    let currentDate = new Date(this.filter.startInterval);
+    let endDate = new Date(this.filter.endInterval);
 
-    while (currentDate <= endDate) {
+    do {
       const key = this.formatDate(currentDate);
       resultMap.set(key, { name: key, income: 0, expens: 0 });
-      if (this.filter.interval === "month") { currentDate.setDate(currentDate.getDate() + 1) }
-      else if (this.filter.interval === "year") { currentDate.setMonth(currentDate.getMonth() + 1); }
+      if (this.filter.interval() === "day") { currentDate.setHours(currentDate.getHours() + 1) }
+      else if (this.filter.interval() === "month") { currentDate.setDate(currentDate.getDate() + 1) }
+      else if (this.filter.interval() === "year") { currentDate.setMonth(currentDate.getMonth() + 1); }
       else { currentDate.setDate(currentDate.getDate() + 1); }
-    }
+    } while (currentDate <= endDate)
 
     for (const operation of allOperations) {
       const key = this.formatDate(operation.date);
@@ -126,19 +126,20 @@ export class ChartDataset implements OnDestroy, AfterViewInit {
         });
       }
     }
+
     const res = Array.from(resultMap.values());
     return res
   }
 
   formatDate(date: Date): string | null {
     const pattern = () => {
-      switch (this.filter.interval) {
+      switch (this.filter.interval()) {
         case "day":
-          return "dd.MM.yyyy";
+          return "H";
         case "month":
           return "d";
         case "year":
-          return "dd.MM";
+          return "MMMM";
         default:
           return "dd.MM.yyyy";
       }
@@ -146,30 +147,19 @@ export class ChartDataset implements OnDestroy, AfterViewInit {
     return this.datePipe.transform(date, pattern())
   }
 
-  ngOnDestroy() {
-    this._chart?.dispose();
-    this.operationSub?.unsubscribe();
-    this.filterSub?.unsubscribe();
-  }
-
-  ngOnInit() {
-
-  }
-
   ngAfterViewInit() {
     this.observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        this.initChart();
-        this.operationSub = this.localStorage.onOperationsChanged.subscribe(() => { this.initChart(); });
-        this.filterSub = this.filter.onDateChange.subscribe(() => { this.initChart(); });
-      }
-      else {
-        this.operationSub?.unsubscribe();
-        this.filterSub?.unsubscribe();
-      }
+      this._isVisible.set(entry.isIntersecting);
     });
+
     this.observer.observe(this.element.nativeElement);
   }
+
+  ngOnDestroy() {
+    this._chart?.dispose();
+    this.observer?.disconnect();
+  }
+
 
   @HostListener('window:resize')
   onWindowResize() {
@@ -177,6 +167,6 @@ export class ChartDataset implements OnDestroy, AfterViewInit {
   }
 
   get hasData(): boolean {
-    return this.localStorage.filterOperations.length > 0;
+    return this.localStorage.filterOperations().length > 0;
   }
 }

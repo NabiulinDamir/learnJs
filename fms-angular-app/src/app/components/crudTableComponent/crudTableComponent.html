@@ -1,18 +1,17 @@
 <div class="p-1">
   <div class="hstack gap-1 mb-1">
-    <h5 class="me-auto">{{ (type() == 'income') ? 'Доходы' : 'Расходы'}}</h5>
+    <h5 class="me-auto">{{ tableTitleRu }}</h5>
     @if(selectedOperations.length){
     <button type="button" class="btn btn-secondary btn-sm " (click)="selectedOperations = []"> Сбросить </button>
     <button type="button" class="btn btn-danger btn-sm " (click)="modal_delete.show()"> Удалить </button>
     }
-    <button type="button" class="btn btn-primary btn-sm" [class.disabled]="loadOperations" (click)="openCreateForm()"> Добавить </button>
+    <button type="button" class="btn btn-primary btn-sm" [class.disabled]="loadTable" (click)="openCreateForm()"> Добавить </button>
   </div>
-
   <my-table class="w-100" #table 
-    [inputData]="this.localStorage.incomeOperations"
+    [inputData]="operations()"
     [(selectedData)]="selectedOperations" 
     (onEditDataClick)="openUpdateForm($event)"
-    [isLoaded]="loadOperations"
+    [isLoaded]="loadTable()"
     > 
     
   </my-table>
@@ -21,18 +20,18 @@
 <!-- //////////////////////////////////////////// -->
 
 <my-modal #modal_create (deny)="modal_create.hide()" (confirm)="form_create.submit()"
-  [title]="'Добавить ' + ((type() == 'income') ? 'доход' : 'расход')" [isLoaded]="loadModal">
+  [title]="'Добавить ' + modalTypeRu" [isLoaded]="loadModal">
   <my-form #form_create
-    [selectorItems]="categoriesStringArr"
+    [selectorItems]="categoriesStringArr()"
     (onSubmit)="createOperation($event); "></my-form>
 </my-modal>
 
 <!-- //////////////////////////////////////////// -->
 
 <my-modal #modal_update (deny)="modal_update.hide()" (confirm)="form_update.submit()"
-  [title]="'Редактировать ' + ((type() == 'income') ? 'доход' : 'расход')" [isLoaded]="loadModal">
+  [title]="'Редактировать ' + modalTypeRu" [isLoaded]="loadModal">
   <my-form #form_update
-    [selectorItems]="categoriesStringArr"
+    [selectorItems]="categoriesStringArr()"
     (onSubmit)="updateOperation($event);"></my-form>
 </my-modal>
 

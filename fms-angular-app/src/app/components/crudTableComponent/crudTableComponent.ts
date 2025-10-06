@@ -1,4 +1,4 @@
-import { Component, input, computed, Input, effect, viewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, input, computed, Input, effect, viewChild, OnInit, OnDestroy, signal } from '@angular/core';
 import { LocalStorage } from '../../servises/LocalStorage.service';
 import { Table } from '../table/table';
 import { Modal } from '../../shared/ui/modal/modal';
@@ -13,12 +13,12 @@ import { Filter } from '../../servises/filter.service';
 })
 export class CrudTableComponent {
 
-  type = input<string>();
+  dataType = input<string>("");
 
   //////////////////////////////////////////////////////////////
 
   public loadModal: boolean = false;
-  public loadOperations: boolean = true;
+  public loadTable = input<boolean>(true);
 
   selectedOperations: IOperation[] = [];
 
@@ -40,17 +40,25 @@ export class CrudTableComponent {
 
   constructor(protected localStorage: LocalStorage, public filter: Filter) { }
 
-    
+
   /////////////////////////////////////////////////////////////
 
-  get tableData():IOperation[] {
-    return (this.type() == 'income') ? this.localStorage.incomeOperations : this.localStorage.expensOperations
+  operations = computed((): IOperation[] => this.localStorage.getOperationsByType(this.dataType()));
+
+  categoriesStringArr = computed((): string[] => this.localStorage.getCategoriesByType(this.dataType()).map((a) => a.name));
+
+  /////////////////////////////////////////////////////////////
+
+  get tableTitleRu(): string {
+    if (this.dataType() == "income") { return "Доходы" }
+    else if (this.dataType() == "expens") { return "Расходы" }
+    else { return "Неопределенно" }
   }
 
-  get categoriesStringArr(): string[]{
-    const categories = (this.type() == 'income') ? this.localStorage.incomeCategories : this.localStorage.expensCategories;
-    return categories.map((a) => a.name);
-
+  get modalTypeRu(): string {
+    if (this.dataType() == "income") { return "доход" }
+    else if (this.dataType() == "expens") { return "расход" }
+    else { return "Неопределенно" }
   }
 
   /////////////////////////////////////////////////////////////
@@ -58,7 +66,7 @@ export class CrudTableComponent {
 
   async createOperation({ value, category, date }: { value: number, category: string, date: Date }) {
     this.loadModal = true;
-    const type = <string>this.type();
+    const type = this.dataType();
     await this.localStorage.createOperation({ type, value, category, date });
     this.loadModal = false;
     this.ELEMENT_MODAL_CREATE().hide();
@@ -66,9 +74,9 @@ export class CrudTableComponent {
 
   async updateOperation({ value, category, date }: { value: number, category: string, date: Date }) {
     this.loadModal = true;
-    const type = <string>this.type();
+    const type = this.dataType();
     if (this.tmpEditOperationKey == undefined) {
-      alert("Ошибка на стороне клиента");
+      alert("Произошла ошибка, попробуйте удалить виндовс");
       this.ELEMENT_MODAL_UPDATE().hide();
       return
     }
@@ -101,10 +109,9 @@ export class CrudTableComponent {
   }
 
   ngOnInit() {
-    this.localStorage.onOperationsChanged.subscribe((value) => {  
-      this.loadOperations = false;
-      this.ELEMENT_TABLE().sortData(); 
-    });
-    this.filter.onDateChange.subscribe((value) => { this.ELEMENT_TABLE().sortData() });
+    // this.localStorage.onOperationsChanged.subscribe((value) => { this.loadTable = false; });
+    // this.filter.onDateChange.subscribe((value) => { 
+    //   this.ELEMENT_TABLE().sortData()
+    //  });
   }
 }

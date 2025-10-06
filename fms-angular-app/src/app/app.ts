@@ -4,23 +4,27 @@ import { LocalStorage } from './servises/LocalStorage.service';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { Table } from './components/table/table';
 import { CrudTableComponent } from './components/crudTableComponent/crudTableComponent';
-import { DataSelector } from './components/dateSelector/dateSelector';
+import { IntervalSelector } from './components/IntervalSelector/IntervalSelector';
 import { ChartsSlider } from './components/charts-slider/charts-slider';
 import { DateCarousel } from './components/dateCarousel/dateCarousel';
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CrudTableComponent, DataSelector, DateCarousel, ChartsSlider],
+  imports: [RouterOutlet, CrudTableComponent, IntervalSelector, DateCarousel, ChartsSlider],
   providers: [LocalStorage],
   templateUrl: './app.html',
 })
 export class App {
   protected readonly title = signal('fms-angular-app');
-  items: string[] = [];
+  operationsLoaded = false;
+
   constructor(protected localStorage: LocalStorage) {
-    localStorage.setOperations()
     localStorage.setCategories()
     localStorage.setDaefaultData()
   }
 
-  async ngOnInit() {}
+  async ngOnInit() {
+    this.operationsLoaded = true;
+    await this.localStorage.setOperations()
+    this.operationsLoaded = false;
+  }
 }

@@ -17,7 +17,7 @@
 
     <tbody>
       @if(!isLoaded()){
-      @for (data of filterDara(); track $index) {
+      @for (data of sortedData(); track $index) {
       <tr class="h-3-rem align-middle" 
         (click)="isNotLastChildElement($event) ?? toggleData(data)" 
         [selected]="this.selectedData().includes(data)"

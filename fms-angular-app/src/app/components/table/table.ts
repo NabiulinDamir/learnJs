@@ -15,19 +15,15 @@ import { LocalStorage } from '../../servises/LocalStorage.service';
 export class Table {
   title = input<string>('');
   inputData = input<IOperation[]>([]);
-  isLoaded  = input<boolean>(true);
-  //data: IOperation[] = [];
+  isLoaded = input<boolean>(true);
   selectedData = model<IOperation[]>([]);
   onSelectedDataChanged = output<void>();
   onEditDataClick = output<IOperation>();
 
 
-  constructor(protected sortService: Sort, localStorage: LocalStorage) {}
+  constructor(protected sortService: Sort, localStorage: LocalStorage) { }
 
-
-  filterDara = computed(() => {
-    return this.sortService.sort(this.inputData());
-  })
+  sortedData = computed(() => this.sortService.sort(this.inputData()));
 
   ///////////////////////////////////////////////////////////////////////
 
