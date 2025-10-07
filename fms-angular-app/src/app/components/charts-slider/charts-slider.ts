@@ -1,11 +1,12 @@
 import { Component, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartScope } from '../charts/ChartScope';
+import { ChartTwoRounded } from '../charts/ChartTwoRounded';
 import { ChartDataset } from '../charts/ChartDataset';
+import { ChartWithNegative } from '../charts/ChartWithNegative';
 @Component({
   selector: 'my-charts-slider',
   standalone: true,
-  imports: [CommonModule, ChartScope, ChartDataset],
+  imports: [CommonModule, ChartTwoRounded, ChartDataset, ChartWithNegative],
   template: `
     <div id="carouselExampleIndicators" class="carousel slide">
       <div class="carousel-indicators m-0">
@@ -15,18 +16,13 @@ import { ChartDataset } from '../charts/ChartDataset';
       </div>
       <div class="carousel-inner p-3">
         <div class="carousel-item active">
-          <div class='w-100 d-flex flex-nowrap justify-content-around'>
-            <my-chart-scope/>
-            <my-chart-scope/>
-          </div>
+            <my-chart-two-rounded/>
         </div>
         <div class="carousel-item">
-          <div class='w-100 d-flex flex-nowrap justify-content-around'>
             <my-chart-dataset/>
-          </div>
         </div>
         <div class="carousel-item">
-          <img src="..." class="d-block w-100" alt="...">
+          <my-chart-negative/>
         </div>
       </div>
       <button class="carousel-control-prev z-3" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -40,7 +36,7 @@ import { ChartDataset } from '../charts/ChartDataset';
     </div>
   `
 })
-export class ChartsSlider{
+export class ChartsSlider {
 
 
 }

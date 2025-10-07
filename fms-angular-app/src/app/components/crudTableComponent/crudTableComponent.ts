@@ -22,10 +22,7 @@ export class CrudTableComponent {
 
   selectedOperations: IOperation[] = [];
 
-
   //////////////////////////////////////////////////////////////
-
-  private ELEMENT_TABLE = viewChild<any>('table');
 
   private ELEMENT_MODAL_CREATE = viewChild<any>('modal_create');
   private ELEMENT_MODAL_UPDATE = viewChild<any>('modal_update');
@@ -108,10 +105,5 @@ export class CrudTableComponent {
     this.ELEMENT_FORM_CREATE().setDefault()
   }
 
-  ngOnInit() {
-    // this.localStorage.onOperationsChanged.subscribe((value) => { this.loadTable = false; });
-    // this.filter.onDateChange.subscribe((value) => { 
-    //   this.ELEMENT_TABLE().sortData()
-    //  });
-  }
+
 }

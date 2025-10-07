@@ -4,17 +4,12 @@ import localDB from './indexDB.service';
 
 @Injectable({ providedIn: 'root' })
 export class Filter {
-    public interval = signal<string>('year');
+    public interval = signal<string>('month');
     public date = signal<Date>(new Date());
-
-    // onIntervalChanged = new EventEmitter<string>();
-    // onDateChange = new EventEmitter<Date>();
 
     constructor() { }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
-
-
 
     public get intervalLocale(): string {
         switch (this.interval()) {
@@ -30,19 +25,19 @@ export class Filter {
     }
 
     public get startInterval(): Date {
-        console.log("Получить старт интервала")
         const result = new Date(this.date())
+        if(!this.date()) { return new Date(); }
         result.setHours(0, 0, 0);
         if (this.interval() === "month") { result.setDate(1); }
-        if (this.interval() === "year") { result.setDate(1); result.setMonth(0); result.setFullYear(result.getFullYear() - 1) }
+        if (this.interval() === "year") { result.setDate(1); result.setMonth(0); result.setFullYear(result.getFullYear() - 1); }
         return result;
     }
 
     public get endInterval(): Date {
-        console.log("Получить конец интервала")
         const result = new Date(this.date());
+        if(!this.date()) { return new Date(); }
         result.setHours(23, 59, 59);
-        if (this.interval() === "month") { result.setMonth(result.getMonth() + 1, 0) }
+        if (this.interval() === "month") { result.setMonth(result.getMonth() + 1, 0); }
         if (this.interval() === "year") { result.setMonth(11, 31); }
         return result;
     }
@@ -50,44 +45,33 @@ export class Filter {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
     public setDate(newValue: Date) {
-        console.log("Установить дату: " + newValue)
-        // if (newValue === this.date()) { return; }
+        // console.log("Установить дату: " + newValue)
         this.date.set(newValue);
     }
 
     public setIntervalDay() {
-        console.log("Установить интервал дня")
+        // console.log("Установить интервал дня")
         this.interval.set("day");
     }
 
     public setIntervalMonth() {
-        console.log("Установить интервал месяца")
+        // console.log("Установить интервал месяца")
         this.interval.set("month");
     }
 
     public setIntervalYear() {
-        console.log("Установить интервал года")
+        // console.log("Установить интервал года")
         this.interval.set("year");
     }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////Создатторы
-
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////Обновлятторы
-
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////Удалятторы
-
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////Фильтрация
 
     public filter(array: IOperation[]): IOperation[] {
-        console.log("Отфильтровать")
-        if (!this.date()) { return [] }
+        // console.log("Отфильтровать")
+        if (!this.date()) { return []; }
         const startInterval = this.startInterval;
         const endInterval = this.endInterval;
-        return array.filter((a) => a.date >= startInterval && a.date <= endInterval)
+        return array.filter((a) => a.date >= startInterval && a.date <= endInterval);
     }
 }

@@ -20,7 +20,6 @@ export class Table {
   onSelectedDataChanged = output<void>();
   onEditDataClick = output<IOperation>();
 
-
   constructor(protected sortService: Sort, localStorage: LocalStorage) { }
 
   sortedData = computed(() => this.sortService.sort(this.inputData()));
@@ -51,36 +50,23 @@ export class Table {
 
   setFilterOptionValue(): void {
     this.sortService.setOption('value');
-    // this.sortData();
   }
 
   setFilterOptionCategory(): void {
     this.sortService.setOption('category');
-    // this.sortData();
   }
 
   setFilterOptionDate(): void {
     this.sortService.setOption('date');
-    // this.sortData();
   }
 
-  public sortData(): void {
-    // console.log('hui', this.inputData.length)
-    // if (!this.inputData.length) return;
-    // this.data = this.sortService.sort(this.inputData);
+  setFilterOptionTime(): void {
+    this.sortService.setOption('time');
   }
-
   ///////////////////////////////////////////////////////////////////////
 
   editData(data: IOperation) {
     this.onEditDataClick.emit(data)
   }
-
-  // get validData():boolean{
-  //   console.log("huhui")
-  //   return this.data.length > 0
-  // }
-
-
 
 }

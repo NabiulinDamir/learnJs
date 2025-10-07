@@ -11,7 +11,7 @@ export class Form {
   number = input<number>(0);
   selectorItems = input<string[]>();
   date = input<Date>(new Date());
-  onSubmit = output<{value: number, category: string, date: Date}>({});
+  onSubmit = output<{ value: number; category: string; date: Date }>({});
 
   myForm = new FormGroup({
     value: new FormControl(this.number(), [
@@ -27,6 +27,7 @@ export class Form {
   });
 
   public submit(): void {
+    console.log(this.myForm.value.date);
     this.myForm.markAllAsTouched();
     if (!this.myForm.valid) return;
 
@@ -49,10 +50,6 @@ export class Form {
     });
   }
 
-  setId(newValue: number): void {
-
-  }
-
   setValue(newValue: number): void {
     this.myForm.patchValue({
       value: newValue,
@@ -73,7 +70,7 @@ export class Form {
 
   ////////////////////////////////////////////////////////////////////////
 
-  formatDateToString(date: Date = new Date){
-    return date.toISOString().split('T')[0]
+  formatDateToString(date: Date = new Date()) {
+    return date.toISOString().split('T')[0];
   }
 }

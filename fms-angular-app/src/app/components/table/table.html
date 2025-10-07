@@ -2,14 +2,17 @@
   <table class="table table-striped-columns m-0">
     <thead>
       <tr class="h-3-rem align-middle">
-        <th class="bg-primary text-color-light user-select-none w-31" (click)="setFilterOptionCategory()">
+        <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionCategory()">
           Категория{{ sortService.getMarker('category') }}
         </th>
-        <th class="bg-primary text-color-light user-select-none w-31" (click)="setFilterOptionValue()">
+        <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionValue()">
           Сумма{{ sortService.getMarker('value') }}
         </th>
-        <th class="bg-primary text-color-light user-select-none w-31" (click)="setFilterOptionDate()">
+        <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionDate()">
           Дата{{ sortService.getMarker('date') }}
+        </th>
+        <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionTime()">
+          Время{{ sortService.getMarker('time') }}
         </th>
         <th class="bg-primary text-color-light user-select-none"></th>
       </tr>
@@ -18,14 +21,12 @@
     <tbody>
       @if(!isLoaded()){
       @for (data of sortedData(); track $index) {
-      <tr class="h-3-rem align-middle" 
-        (click)="isNotLastChildElement($event) ?? toggleData(data)" 
-        [selected]="this.selectedData().includes(data)"
-        selectable
-        >
+      <tr class="h-3-rem align-middle" (click)="isNotLastChildElement($event) ?? toggleData(data)"
+        [selected]="this.selectedData().includes(data)" selectable>
         <td>{{ data.category }}</td>
         <td>{{ data.value }}</td>
         <td>{{ data.date | date : 'dd.MM.yy' }}</td>
+        <td>{{ data.date | date : 'HH:mm' }}</td>
         <td selectable (click)="editData(data)">
           <div class="w-100 d-flex justify-content-center"><img src='assets/images/pencil.png' alt="edit"
               class="h-1-rem" /></div>
@@ -36,6 +37,7 @@
       @if(isLoaded()){
       @for (i of [1,2,3,4,5,6,7]; track i) {
       <tr class="h-3-rem align-middle">
+        <td><span class="placeholder col-6"></span></td>
         <td><span class="placeholder col-6"></span></td>
         <td><span class="placeholder col-6"></span></td>
         <td><span class="placeholder col-6"></span></td>

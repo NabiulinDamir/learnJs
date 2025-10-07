@@ -18,7 +18,6 @@ export class Sort {
     }
     this._option.set('date');
     this._increasing.set(false);
-   
   }
 
   public getMarker(option: string): string {
@@ -31,9 +30,10 @@ export class Sort {
     return ' ᨆ';
   }
 
-  public sort (array: IOperation[]): IOperation[] {//!!!Оптимизация не мертва ура!!!
+  public sort(array: IOperation[]): IOperation[] {
+    //!!!Оптимизация не мертва ура!!!
     let result: IOperation[] = [];
-    // console.log("Сортировка")
+    console.log('Сортировка');
     const koef = this._increasing() ? -1 : 1;
     switch (this._option()) {
       case 'value':
@@ -41,6 +41,14 @@ export class Sort {
         break;
       case 'date':
         result = array.sort((a, b) => (b.date.getTime() - a.date.getTime()) * koef);
+        break;
+      case 'time':
+        result = array.sort(
+          (a, b) =>
+            (b.date.getHours() - a.date.getHours() ||
+              b.date.getMinutes() - a.date.getMinutes() ||
+              b.date.getSeconds() - a.date.getSeconds()) * koef
+        );
         break;
       case 'category':
         result = array.sort((a, b) => {

@@ -6,77 +6,95 @@ import { Filter } from '../../servises/filter.service';
 import { IOperation } from '../../models/dataTypes.model';
 
 @Component({
-  selector: 'my-chart-dataset',
+  selector: 'my-chart-negative',
   providers: [DatePipe],
   template: `
     <div class="position-relative w-100 d-flex justify-content-around">
-      <div id="chart-container" [class.opacity-50]="!hasData" style="width: 70rem; height: 350px; max-width: 100vw;"></div>
+      <div id="chart-negative-container" [class.opacity-50]="!hasData" style="width: 70rem; height: 350px; max-width: 100vw;"></div>
       @if(!hasData){ 
         <div class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center"> Нет данных </div>
       }
     </div>
   `,
 })
-export class ChartDataset implements OnDestroy {
+export class ChartWithNegative implements OnDestroy {
   private _chart: echarts.ECharts | undefined = undefined;
   private observer!: IntersectionObserver;
   private _isVisible = signal<boolean>(false);
   constructor(private localStorage: LocalStorage, private datePipe: DatePipe, private element: ElementRef, public filter: Filter) {
     effect(() => {
       if (!this._isVisible()) return;
-      const chartDom = document.getElementById('chart-container');
+      const chartDom = document.getElementById('chart-negative-container');
       chartDom?.removeAttribute('_echarts_instance_');
       if (!this._chart) { this._chart = echarts.init(chartDom); }
       this._chart.setOption(this.option());
     });
   }
 
-
   option = computed(() => {
     const data = this.format(this.localStorage.filterOperations());
     return {
-      tooltip: { trigger: 'axis' },
-      legend: {
-        data: ['Доходы', 'Расходы'],
-        itemGap: 5
+
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        }
       },
       title: {
         text: `Орерации за ${this.filter.intervalLocale}`,
         position: 'top'
       },
-      dataset: {
-        source: data,
-      },
       grid: {
-        top: '12%',
-        left: '1%',
-        right: '10%',
-        containLabel: true
-      },
-      xAxis: {
-        type: 'category',
+        top: 80,
+        bottom: 30
       },
       yAxis: {
         type: 'value',
-        name: 'Сумма'
-      },
-      dataZoom: [
-        {
-          show: true,
-          start: 0,
-          end: 100
+        position: 'top',
+        splitLine: {
+          lineStyle: {
+            type: 'dashed'
+          }
         }
-      ],
+      },
+      xAxis: {
+        type: 'category',
+        axisLine: { show: false },
+        axisLabel: { show: false },
+        axisTick: { show: false },
+        splitLine: { show: false },
+
+      },
       series: [
         {
-          name: 'Доходы',
+          markLine: {
+            data: [
+              {
+                yAxis: 0,
+                lineStyle:
+                {
+                  color: '#0d6efd',
+                  width: 2
+                }
+              }
+            ],
+          },
+          name: 'Cost',
           type: 'bar',
-          color: '#0d6efd'
-        },
-        {
-          name: 'Расходы',
-          type: 'bar',
-          color: '#6c757d'
+          stack: 'Total',
+          label: {
+            show: true,
+            formatter: '{b}',
+          },
+          itemStyle: {
+            color: (params: any) => { 
+              if(params.value > 0) { return '#28a745'}  
+              else if(params.value < 0) { return '#dc3545'} 
+              else { return '#000000'}
+            }
+          },
+          data: data
         }
       ]
     };
@@ -94,7 +112,7 @@ export class ChartDataset implements OnDestroy {
 
     do {
       const key = this.formatDate(currentDate);
-      resultMap.set(key, { name: key, income: 0, expens: 0 });
+      resultMap.set(key, { name: key, value: 0 });
       if (this.filter.interval() === "day") { currentDate.setHours(currentDate.getHours() + 1) }
       else if (this.filter.interval() === "month") { currentDate.setDate(currentDate.getDate() + 1) }
       else if (this.filter.interval() === "year") { currentDate.setMonth(currentDate.getMonth() + 1); }
@@ -105,14 +123,13 @@ export class ChartDataset implements OnDestroy {
       const key = this.formatDate(operation.date);
       const mapElemet = resultMap.get(key);
       const incomeValue = operation.type === 'income' ? operation.value : 0;
-      const expensValue = operation.type === 'expens' ? operation.value : 0;
+      const expensValue = operation.type === 'expens' ? -operation.value : 0;
       if (!mapElemet) {
-        resultMap.set(key, { name: key, income: incomeValue, expens: expensValue });
+        resultMap.set(key, { name: key, value: incomeValue + expensValue });
       } else {
         resultMap.set(key, {
           name: key,
-          income: mapElemet.income + incomeValue,
-          expens: mapElemet.expens + expensValue,
+          value: mapElemet.value + incomeValue + expensValue,
         });
       }
     }
@@ -127,7 +144,7 @@ export class ChartDataset implements OnDestroy {
         case "day":
           return "H";
         case "month":
-          return "d";
+          return "dd";
         case "year":
           return "MMMM";
         default:

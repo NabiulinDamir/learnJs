@@ -5,15 +5,12 @@
     <button type="button" class="btn btn-secondary btn-sm " (click)="selectedOperations = []"> Сбросить </button>
     <button type="button" class="btn btn-danger btn-sm " (click)="modal_delete.show()"> Удалить </button>
     }
-    <button type="button" class="btn btn-primary btn-sm" [class.disabled]="loadTable" (click)="openCreateForm()"> Добавить </button>
+    <button type="button" class="btn btn-primary btn-sm" [class.disabled]="loadTable()" (click)="openCreateForm()">
+      Добавить </button>
   </div>
-  <my-table class="w-100" #table 
-    [inputData]="operations()"
-    [(selectedData)]="selectedOperations" 
-    (onEditDataClick)="openUpdateForm($event)"
-    [isLoaded]="loadTable()"
-    > 
-    
+  <my-table class="w-100" #table [inputData]="operations()" [(selectedData)]="selectedOperations"
+    (onEditDataClick)="openUpdateForm($event)" [isLoaded]="loadTable()">
+
   </my-table>
 </div>
 
@@ -21,18 +18,14 @@
 
 <my-modal #modal_create (deny)="modal_create.hide()" (confirm)="form_create.submit()"
   [title]="'Добавить ' + modalTypeRu" [isLoaded]="loadModal">
-  <my-form #form_create
-    [selectorItems]="categoriesStringArr()"
-    (onSubmit)="createOperation($event); "></my-form>
+  <my-form #form_create [selectorItems]="categoriesStringArr()" (onSubmit)="createOperation($event); "></my-form>
 </my-modal>
 
 <!-- //////////////////////////////////////////// -->
 
 <my-modal #modal_update (deny)="modal_update.hide()" (confirm)="form_update.submit()"
   [title]="'Редактировать ' + modalTypeRu" [isLoaded]="loadModal">
-  <my-form #form_update
-    [selectorItems]="categoriesStringArr()"
-    (onSubmit)="updateOperation($event);"></my-form>
+  <my-form #form_update [selectorItems]="categoriesStringArr()" (onSubmit)="updateOperation($event);"></my-form>
 </my-modal>
 
 <!-- //////////////////////////////////////////// -->
