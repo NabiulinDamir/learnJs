@@ -1,5 +1,5 @@
 import { Injectable, input, signal } from '@angular/core';
-import { IOperation } from '../../models/dataTypes.model';
+import { IOperation } from '../../../models/dataTypes.model';
 
 @Injectable()
 export class Sort {
@@ -33,7 +33,7 @@ export class Sort {
   public sort(array: IOperation[]): IOperation[] {
     //!!!Оптимизация не мертва ура!!!
     let result: IOperation[] = [];
-    console.log('Сортировка');
+    // console.log('Сортировка');
     const koef = this._increasing() ? -1 : 1;
     switch (this._option()) {
       case 'value':

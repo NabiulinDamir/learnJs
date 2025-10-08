@@ -64,6 +64,13 @@ export class Filter {
         this.interval.set("year");
     }
 
+    public downInterval(){
+        if(this.interval() === "day"){ return; }
+        else if(this.interval() === "month"){ this.setIntervalDay(); }
+        else if(this.interval() === "year"){ this.setIntervalMonth() }
+        else{ return; }
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////Фильтрация
 

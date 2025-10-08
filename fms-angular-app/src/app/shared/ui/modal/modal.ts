@@ -1,5 +1,6 @@
-import { Component, input, output,  } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Theme } from '../../../servises/theme.service';
 @Component({
   selector: 'my-modal',
   templateUrl: './modal.html',
@@ -13,6 +14,8 @@ export class Modal {
   readonly close = output<void>();
   readonly deny = output<void>();
   readonly confirm = output<void>();
+
+  constructor(public theme: Theme) {}
 
   show(): void {
     this.isVisible = true;

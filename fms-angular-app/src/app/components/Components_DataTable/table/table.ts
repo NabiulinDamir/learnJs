@@ -1,9 +1,10 @@
 import { Component, input, output, computed, model, effect, OnInit, SimpleChanges, Input } from '@angular/core';
-import { ICategory, IOperation } from '../../models/dataTypes.model';
+import { ICategory, IOperation } from '../../../models/dataTypes.model';
 import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
-import { SelectableDirective } from '../../directives/selectable.directive';
+import { SelectableDirective } from '../../../directives/selectable.directive';
 import { Sort } from './sort.servicee';
-import { LocalStorage } from '../../servises/LocalStorage.service';
+import { LocalStorage } from '../../../servises/LocalStorage.service';
+import { Theme } from '../../../servises/theme.service';
 
 
 @Component({
@@ -13,14 +14,12 @@ import { LocalStorage } from '../../servises/LocalStorage.service';
   providers: [Sort],
 })
 export class Table {
-  title = input<string>('');
   inputData = input<IOperation[]>([]);
   isLoaded = input<boolean>(true);
   selectedData = model<IOperation[]>([]);
-  onSelectedDataChanged = output<void>();
   onEditDataClick = output<IOperation>();
 
-  constructor(protected sortService: Sort, localStorage: LocalStorage) { }
+  constructor(protected sortService: Sort, public theme: Theme) { }
 
   sortedData = computed(() => this.sortService.sort(this.inputData()));
 
@@ -34,7 +33,6 @@ export class Table {
         return current.filter((a) => a != data);
       }
     });
-    this.onSelectedDataChanged.emit();
   }
 
   clearSelectedData(): void {

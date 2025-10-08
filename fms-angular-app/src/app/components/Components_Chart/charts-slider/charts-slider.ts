@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterContentInit } from '@angular/core';
+import { Component, ContentChildren, QueryList, AfterContentInit, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartTwoRounded } from '../charts/ChartTwoRounded';
 import { ChartDataset } from '../charts/ChartDataset';
@@ -16,13 +16,13 @@ import { ChartWithNegative } from '../charts/ChartWithNegative';
       </div>
       <div class="carousel-inner p-3">
         <div class="carousel-item active">
-            <my-chart-two-rounded/>
+            <my-chart-two-rounded />
         </div>
         <div class="carousel-item">
-            <my-chart-dataset/>
+            <my-chart-dataset />
         </div>
         <div class="carousel-item">
-          <my-chart-negative/>
+          <my-chart-negative />
         </div>
       </div>
       <button class="carousel-control-prev z-3" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -37,6 +37,6 @@ import { ChartWithNegative } from '../charts/ChartWithNegative';
   `
 })
 export class ChartsSlider {
-
+constructor(){}
 
 }

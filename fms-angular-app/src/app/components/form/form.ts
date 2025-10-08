@@ -10,7 +10,7 @@ import { CustomValidators } from './validator';
 export class Form {
   number = input<number>(0);
   selectorItems = input<string[]>();
-  date = input<Date>(new Date());
+  date = new Date();
   onSubmit = output<{ value: number; category: string; date: Date }>({});
 
   myForm = new FormGroup({
@@ -20,20 +20,24 @@ export class Form {
       CustomValidators.notNull,
     ]),
     category: new FormControl('', [CustomValidators.required, CustomValidators.minLength]),
-    date: new FormControl(this.formatDateToString(this.date()), [
+    date: new FormControl(this.formatDateToString(this.date), [
       CustomValidators.required,
       Validators.maxLength(10),
     ]),
   });
 
   public submit(): void {
-    console.log(this.myForm.value.date);
     this.myForm.markAllAsTouched();
     if (!this.myForm.valid) return;
-
     this.onSubmit.emit({
       value: <number>this.myForm.value.value,
-      date: new Date(<string>this.myForm.value.date),
+      date: new Date(
+        new Date(<string>this.myForm.value.date).setHours(
+          this.date.getHours(),
+          this.date.getMinutes(),
+          this.date.getSeconds()
+        )
+      ),
       category: <string>this.myForm.value.category,
     });
   }
@@ -46,9 +50,11 @@ export class Form {
     this.myForm.patchValue({
       value: 0,
       category: '',
-      date: this.formatDateToString(),
+      date: this.formatDateToString(new Date()),
     });
   }
+
+  ////////////////////////////////////////////////////////////////////////
 
   setValue(newValue: number): void {
     this.myForm.patchValue({
@@ -57,9 +63,11 @@ export class Form {
   }
 
   setDate(newDate: Date): void {
+    this.date = newDate;
     this.myForm.patchValue({
       date: this.formatDateToString(newDate),
     });
+    console.log(this.date);
   }
 
   setCategory(newCategoiry: string): void {

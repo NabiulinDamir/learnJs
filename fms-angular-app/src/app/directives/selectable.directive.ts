@@ -18,8 +18,12 @@ export class SelectableDirective {
   constructor(private element: ElementRef, private renderer: Renderer2) {
     this.renderer.setStyle(this.element.nativeElement, 'cursor', 'pointer');
     this.renderer.setStyle(this.element.nativeElement, 'tr', 'pointer');
-    this.renderer.setStyle(this.element.nativeElement, 'transition', '100ms'); 
-    this.renderer.setStyle(this.element.nativeElement, 'background-color', 'var(--background-color)');
+    this.renderer.setStyle(this.element.nativeElement, 'transition', '100ms');
+    this.renderer.setStyle(
+      this.element.nativeElement,
+      'background-color',
+      'var(--background-color)'
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -27,8 +31,9 @@ export class SelectableDirective {
       if (this.selected) {
         this.setBrightness(-10);
       } else {
-        if(this._brightness <= 90){this.setBrightness(10)}
-        
+        if (this._brightness <= 90) {
+          this.setBrightness(10);
+        }
       }
     }
   }

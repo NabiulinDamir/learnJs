@@ -1,57 +1,38 @@
 <form [formGroup]="myForm" class="d-flex flex-column gap-2 needs-validation">
-  <div class="">
-    <label for="validationNumber" class="form-label mb-1">Сумма</label>
-    <input
-      type="number"
-      class="form-control"
-      id="validationNumber"
-      [class.is-invalid]="myForm.get('value')?.invalid && myForm.get('value')?.touched"
-      formControlName="value"
-    />
-    <div class="invalid-feedback">
-      {{myForm.get('value')?.errors?.['text'] ?? "Неверный формат"}}
+    <div>
+        <label for="validationNumber" class="form-label mb-1">Сумма</label>
+        <input type="number" class="form-control" id="validationNumber"
+            [class.is-invalid]="myForm.get('value')?.invalid && myForm.get('value')?.touched" formControlName="value" />
+        <div class="invalid-feedback">
+            {{myForm.get('value')?.errors?.['text'] ?? "Неверный формат"}}
+        </div>
     </div>
-  </div>
 
-  <div>
-    <label for="validationSelector" class="form-label mb-">Категория</label>
-    <div class="input-group mb-0">
-      <input
-        type="text"
-        class="form-control"
-        id="validationSelector"
-        [class.is-invalid]="myForm.get('category')?.invalid && myForm.get('category')?.touched"
-        formControlName="category"
-      />
+    <div>
+        <label for="validationSelector" class="form-label mb-">Категория</label>
+        <div class="input-group mb-0">
+            <input type="text" class="form-control" id="validationSelector"
+                [class.is-invalid]="myForm.get('category')?.invalid && myForm.get('category')?.touched"
+                formControlName="category" />
 
-      <button
-        class="btn btn-outline-secondary dropdown-toggle"
-        type="button"
-        data-bs-toggle="dropdown"
-      >
-        Выбрать
-      </button>
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                Выбрать
+            </button>
 
-      <ul class="dropdown-menu dropdown-menu-end">
-        @for (item of this.selectorItems(); track $index) {
-        <li class="dropdown-item" (click)="this.myForm.patchValue({ category: item })">
-          {{ item }}
-        </li>
-        }
-      </ul>
+            <ul class="dropdown-menu dropdown-menu-end">
+                @for (item of this.selectorItems(); track $index) {
+                <li class="dropdown-item" (click)="this.myForm.patchValue({ category: item })">
+                    {{ item }}
+                </li>
+                }
+            </ul>
+        </div>
     </div>
-  </div>
 
-  <div class="">
-    <label for="validationDate" class="form-label mb-1">Дата</label>
-    <input
-      type="date"
-      class="form-control"
-      id="validationDate"
-      [class.is-invalid]="myForm.get('date')?.invalid && myForm.get('date')?.touched"
-      formControlName="date"
-    />
-    <div class="invalid-feedback">Неверный формат</div>
-  </div>
+    <div>
+        <label for="validationDate" class="form-label mb-1">Дата</label>
+        <input type="date" class="form-control" id="validationDate"
+            [class.is-invalid]="myForm.get('date')?.invalid && myForm.get('date')?.touched" formControlName="date" />
+        <div class="invalid-feedback">Неверный формат</div>
+    </div>
 </form>
-

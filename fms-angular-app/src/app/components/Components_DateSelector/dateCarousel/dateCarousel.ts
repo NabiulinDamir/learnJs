@@ -1,35 +1,24 @@
-import {
-  Component,
-  input,
-  output,
-  computed,
-  model,
-  effect,
-  viewChild,
-  ElementRef,
-  signal,
-  afterNextRender,
-} from '@angular/core';
-import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
-import { SelectableDirective } from '../../directives/selectable.directive';
-import { LocalStorage } from '../../servises/LocalStorage.service';
-import { MovableDirective } from '../../directives/movable.directive';
-import { Renderer2 } from '@angular/core';
-import { PointnerDirective } from '../../directives/pointner.directive';
-import { Filter } from '../../servises/filter.service';
+import { Component, effect, viewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { SelectableDirective } from '../../../directives/selectable.directive';
+import { LocalStorage } from '../../../servises/LocalStorage.service';
+import { MovableDirective } from '../../../directives/movable.directive';
+import { PointnerDirective } from '../../../directives/pointner.directive';
+import { Filter } from '../../../servises/filter.service';
+
 @Component({
   selector: 'my-date-carousel',
   template: `
-    <div class="position-relative h-5 overflow-x-hidden bg-emphasis">
+    <div class="position-relative h-2-rem overflow-x-hidden">
       <ul
         #option_list
-        class="nav position-absolute p-1 h-100 d-flex flex-nowrap "
+        class="nav position-absolute p-1 h-100 d-flex flex-nowrap gap-2"
         movable
         [left]="position"
       >
         @for(item of allDatesArray; track $index){
         <li
-          class=" rounded-3 d-flex justify-content-center"
+          class=" rounded-3 d-flex justify-content-center th-background-second th-text"
           [style.width]="calcWidth(item.name.length)"
           (click)="selectDate(item.date)"
           selectable
@@ -41,13 +30,6 @@ import { Filter } from '../../servises/filter.service';
         }
       </ul>
     </div>
-
-    <style>
-      .h-5 {
-        height: 2rem;
-        overflow: hidden;
-      }
-    </style>
   `,
   imports: [MovableDirective, SelectableDirective, PointnerDirective],
   providers: [DatePipe],
@@ -55,6 +37,7 @@ import { Filter } from '../../servises/filter.service';
 export class DateCarousel {
   public position: number = 0;
   public allDatesArray: { name: string; date: Date }[] = [];
+  public interval: string = '';
   private ELEMENT_LIST_PARRENT = viewChild<any>('option_list');
 
   constructor(
@@ -63,12 +46,13 @@ export class DateCarousel {
     public filter: Filter
   ) {
     effect(() => {
+      this.interval = filter.interval();
       this.setAllDatesArray();
       this.setDefaultItem();
     });
     effect(() => {
       const currentDate = this.filter.date();
-      setTimeout(() => this.navigateToSelectedItem(currentDate), 100);
+      setTimeout(() => this.navigateToItem(currentDate), 100);
     });
   }
 
@@ -102,7 +86,7 @@ export class DateCarousel {
     return (11 - length) * 100 + 'px';
   }
 
-  navigateToSelectedItem(currentDate: Date) {
+  navigateToItem(currentDate: Date) {
     const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
     Array.from(children).forEach((child: unknown) => {
       const element = child as HTMLElement;
@@ -131,7 +115,7 @@ export class DateCarousel {
   }
 
   public get datePattern(): string {
-    switch (this.filter.interval()) {
+    switch (this.interval) {
       case 'day':
         return 'dd.MM.yyyy';
       case 'month':

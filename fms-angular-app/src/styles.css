@@ -1,47 +1,61 @@
 /* You can add global styles to this file, and also import other style files */
-body{
-    overflow-y: scroll !important;
+body {
+  overflow-y: scroll !important;
 }
 
 :root {
-  --primary-color: #233446;
-  --secondary-color: #dc004e;
-  --background-color: #fafafa;
   --text-dark-color: #333;
   --text-white-color: #f8f8f8;
-
-  --success-color: #198754;
-  --danger-color: #dc3545;
 }
 
-.bg-primary {
+:root {
+  --bg-color: #f6f7f8;
+  --bg-second-color: #e1e4e7;
+  --text-color: black;
+  --icon-filter: invert(1);
+}
+
+.dark-theme {
+  --bg-color: #1e1e1e;
+  --text-color: white;
+  --bg-second-color: #292d31;
+  --icon-filter: invert(0);
+}
+
+.th-background {
+  background: var(--bg-color) !important;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.th-background-second {
+  background: var(--bg-second-color) !important;
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.th-text {
+  color: var(--text-color) !important;
+}
+
+.th-svg {
+  filter: var(--icon-filter, none);
+}
+
+/* //////////////////////////////////////////////////////////////////////// */
+
+h1 {
+  font-size: 1.3rem;
+  margin-bottom: 0;
+}
+
+.text-color-light {
   color: var(--text-white-color) !important;
 }
 
-.bg-emphasis{
-  background-color: var(--background-color) !important;
+.text-color-dark {
+  color: var(--text-dark-color) !important;
 }
 
-.a {
-  background-color: #dc004e;
-  height: 20rem;
-}
-
-h1{
-    font-size: 1.3rem;
-    margin-bottom: 0
-}
-
-.text-color-light{
-    color: var(--text-white-color)!important;
-}
-
-.text-color-dark{
-    color: var(--text-dark-color)!important;
-}
-
-
-.h-1-rem{
+.h-1-rem {
   height: 1rem;
 }
 
@@ -57,6 +71,9 @@ h1{
   width: 23%;
 }
 
-
-
-
+.h-2-rem {
+  height: 2rem;
+}
+.w-5-rem {
+  width: 5rem;
+}

@@ -1,10 +1,10 @@
 import { Component, input, computed, Input, effect, viewChild, OnInit, OnDestroy, signal } from '@angular/core';
-import { LocalStorage } from '../../servises/LocalStorage.service';
+import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { Table } from '../table/table';
-import { Modal } from '../../shared/ui/modal/modal';
-import { Form } from '../form/form';
-import { ICategory, IOperation } from '../../models/dataTypes.model';
-import { Filter } from '../../servises/filter.service';
+import { Modal } from '../../../shared/ui/modal/modal';
+import { Form } from '../../form/form';
+import { ICategory, IOperation } from '../../../models/dataTypes.model';
+import { Filter } from '../../../servises/filter.service';
 
 @Component({
   selector: 'my-crud-table',
@@ -47,15 +47,15 @@ export class CrudTableComponent {
   /////////////////////////////////////////////////////////////
 
   get tableTitleRu(): string {
-    if (this.dataType() == "income") { return "Доходы" }
-    else if (this.dataType() == "expens") { return "Расходы" }
-    else { return "Неопределенно" }
+    if (this.dataType() == "income") { return "Доходы"; }
+    else if (this.dataType() == "expens") { return "Расходы"; }
+    else { return "Неопределенно"; }
   }
 
   get modalTypeRu(): string {
-    if (this.dataType() == "income") { return "доход" }
-    else if (this.dataType() == "expens") { return "расход" }
-    else { return "Неопределенно" }
+    if (this.dataType() == "income") { return "доход"; }
+    else if (this.dataType() == "expens") { return "расход"; }
+    else { return "Неопределенно"; }
   }
 
   /////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ export class CrudTableComponent {
 
   openCreateForm() {
     this.ELEMENT_MODAL_CREATE().show();
-    this.ELEMENT_FORM_CREATE().setDefault()
+    this.ELEMENT_FORM_CREATE().setDefault();
   }
 
 

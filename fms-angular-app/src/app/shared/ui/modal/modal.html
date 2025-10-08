@@ -1,43 +1,33 @@
 <!-- Modal -->
-<div
-  class="modal fade"
-  [class.show]="isVisible"
-  [style.display]="isVisible ? 'block' : 'none'"
-  data-bs-backdrop="static"
-  data-bs-keyboard="false"
-  tabindex="-1"
->
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5">{{ this.title() }}</h1>
-        <button
-          type="button"
-          class="btn-close"
-          (click)="this.hide(); this.close.emit()"
-          aria-label="Close"
-        ></button>
-      </div>
-      <div class="modal-body">
-        <ng-content></ng-content>
-      </div>
-      <div class="modal-footer">
-        @if (isLoaded()){
-        <div class="d-flex w-100 justify-content-center">
-          <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-        </div>
+<div class="modal" [attr.data-bs-theme]="theme.darkTheme() ? 'dark' : null" [class.show]="isVisible"
+    [style.display]="isVisible ? 'block' : 'none'" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">{{ this.title() }}</h1>
+                <button type="button" class="btn-close" (click)="this.hide(); this.close.emit()"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body ">
+                <ng-content></ng-content>
+            </div>
+            <div class="modal-footer">
+                @if (isLoaded()){
+                <div class="d-flex w-100 justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
 
-        } @if (!isLoaded()){
-        <button type="button" class="btn btn-secondary" (click)="this.deny.emit()">Close</button>
-        <button type="button" class="btn btn-primary" (click)="this.confirm.emit()">
-          Understood
-        </button>
-        }
-      </div>
+                } @if (!isLoaded()){
+                <button type="button" class="btn btn-secondary" (click)="this.deny.emit()">Close</button>
+                <button type="button" class="btn btn-primary" (click)="this.confirm.emit()">
+                    Understood
+                </button>
+                }
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Backdrop -->
