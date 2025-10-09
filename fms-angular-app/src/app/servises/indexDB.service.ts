@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { IOperation, ICategory } from '../models/dataTypes.model';
-import testData from '../shared/documents/testData.json';
+import testData from '../../assets/testData.json';
 
 @Injectable({ providedIn: 'root' })
 export default class localDB {
   private _timeDelay = 200;
   private open(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
-      const openRequest = indexedDB.open('localDB', 1);
+      const openRequest = indexedDB.open('localDB', 2);
 
       openRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const target = event.target as IDBOpenDBRequest;
