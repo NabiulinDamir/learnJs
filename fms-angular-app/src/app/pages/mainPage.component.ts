@@ -1,9 +1,9 @@
 import { Component, signal } from '@angular/core';
 import { LocalStorage } from '../servises/LocalStorage.service';
-import { CrudTableComponent } from '../components/Components_DataTable/crudTableComponent/crudTableComponent';
-import { IntervalSelector } from '../components/Components_DateSelector/IntervalSelector/IntervalSelector';
-import { ChartsSlider } from '../components/Components_Chart/charts-slider/charts-slider';
-import { DateCarousel } from '../components/Components_DateSelector/dateCarousel/dateCarousel';
+import { CrudTableComponent } from '../components/Components_DataTable/crudTableComponent/crudTable.component';
+import { IntervalSelector } from '../components/Components_DateSelector/IntervalSelector/IntervalSelector.component';
+import { ChartsSlider } from '../components/Components_Chart/charts-slider/charts-slider.component';
+import { DateCarousel } from '../components/Components_DateSelector/dateCarousel/dateCarousel.component';
 @Component({
   selector: 'my-app-main-page',
   imports: [ CrudTableComponent, IntervalSelector, DateCarousel, ChartsSlider],

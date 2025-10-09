@@ -2,7 +2,7 @@ import { Component, input, output, computed, model, effect, OnInit, SimpleChange
 import { ICategory, IOperation } from '../../../models/dataTypes.model';
 import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
 import { SelectableDirective } from '../../../directives/selectable.directive';
-import { Sort } from './sort.servicee';
+import { Sort } from './sort.service';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { Theme } from '../../../servises/theme.service';
 

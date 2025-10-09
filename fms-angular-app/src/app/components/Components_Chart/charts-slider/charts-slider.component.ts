@@ -1,8 +1,8 @@
 import { Component, ContentChildren, QueryList, AfterContentInit, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartTwoRounded } from '../charts/ChartTwoRounded';
-import { ChartDataset } from '../charts/ChartDataset';
-import { ChartWithNegative } from '../charts/ChartWithNegative';
+import { ChartTwoRounded } from '../charts/ChartTwoRounded.component';
+import { ChartDataset } from '../charts/ChartDataset.component';
+import { ChartWithNegative } from '../charts/ChartWithNegative.component';
 @Component({
   selector: 'my-charts-slider',
   standalone: true,

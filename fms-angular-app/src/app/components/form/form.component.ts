@@ -67,7 +67,6 @@ export class Form {
     this.myForm.patchValue({
       date: this.formatDateToString(newDate),
     });
-    console.log(this.date);
   }
 
   setCategory(newCategoiry: string): void {

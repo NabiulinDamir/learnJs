@@ -1,14 +1,14 @@
 import { Component, input, computed, Input, effect, viewChild, OnInit, OnDestroy, signal } from '@angular/core';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
-import { Table } from '../table/table';
+import { Table } from '../table/table.component';
 import { Modal } from '../../../shared/ui/modal/modal';
-import { Form } from '../../form/form';
+import { Form } from '../../form/form.component';
 import { ICategory, IOperation } from '../../../models/dataTypes.model';
 import { Filter } from '../../../servises/filter.service';
 
 @Component({
   selector: 'my-crud-table',
-  templateUrl: './crudTableComponent.html',
+  templateUrl: './crudTable.html',
   imports: [Table, Modal, Form],
 })
 export class CrudTableComponent {
