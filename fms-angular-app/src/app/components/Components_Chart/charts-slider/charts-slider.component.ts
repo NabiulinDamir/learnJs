@@ -1,4 +1,4 @@
-import { Component, ContentChildren, QueryList, AfterContentInit, input } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChartTwoRounded } from '../charts/ChartTwoRounded.component';
 import { ChartDataset } from '../charts/ChartDataset.component';
@@ -16,13 +16,19 @@ import { ChartWithNegative } from '../charts/ChartWithNegative.component';
       </div>
       <div class="carousel-inner p-3">
         <div class="carousel-item active">
+          @defer (when isActiveSlide(0)) {
             <my-chart-two-rounded />
+          }
         </div>
         <div class="carousel-item">
+          @defer (when isActiveSlide(1)) {
             <my-chart-dataset />
+          }
         </div>
         <div class="carousel-item">
-          <my-chart-negative />
+          @defer (when isActiveSlide(2)) {
+            <my-chart-negative />
+          }
         </div>
       </div>
       <button class="carousel-control-prev z-3" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -37,6 +43,18 @@ import { ChartWithNegative } from '../charts/ChartWithNegative.component';
   `
 })
 export class ChartsSlider {
-constructor(){}
+  activeSlide = signal(0);
 
+  constructor(){}
+
+  ngAfterViewInit() {
+    const carousel = document.getElementById('carouselExampleIndicators');
+    carousel?.addEventListener('slid.bs.carousel', (event: any) => {
+      this.activeSlide.set(event.to);
+    });
+  }
+
+  isActiveSlide(index: number): boolean {
+    return this.activeSlide() === index;
+  }
 }

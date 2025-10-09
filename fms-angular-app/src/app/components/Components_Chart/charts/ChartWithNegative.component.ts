@@ -1,14 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  ElementRef,
-  AfterViewInit,
-  HostListener,
-  computed,
-  effect,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, OnDestroy, ElementRef, HostListener, computed, effect, signal } from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';

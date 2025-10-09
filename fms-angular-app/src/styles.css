@@ -1,4 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+@import "bootstrap";
+
 body {
   overflow-y: scroll !important;
 }
@@ -11,6 +12,7 @@ body {
 :root {
   --bg-color: #f6f7f8;
   --bg-second-color: #e1e4e7;
+  --primmary-color: #0d6efd;
   --text-color: black;
   --icon-filter: invert(1);
 }
@@ -30,6 +32,10 @@ body {
 .th-background-second {
   background: var(--bg-second-color) !important;
   transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+.th-primmary{
+  background: var(--primmary-color) !important;
 }
 
 .th-text {

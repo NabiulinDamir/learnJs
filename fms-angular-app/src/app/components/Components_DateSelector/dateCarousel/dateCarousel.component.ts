@@ -23,7 +23,7 @@ import { Filter } from '../../../servises/filter.service';
           (click)="selectDate(item.date)"
           selectable
           pointner
-          [class.bg-primary]="isSelectedDate(item.date)"
+          [class.th-primmary]="isSelectedDate(item.date)"
         >
           {{ item.name }}
         </li>

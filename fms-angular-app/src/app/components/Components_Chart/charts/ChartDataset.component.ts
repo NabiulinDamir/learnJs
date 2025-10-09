@@ -1,13 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  ElementRef,
-  HostListener,
-  computed,
-  effect,
-  input,
-  signal,
-} from '@angular/core';
+import { Component, OnDestroy, ElementRef, HostListener, computed, effect, signal }from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
@@ -25,9 +16,7 @@ import { Theme } from '../../../servises/theme.service';
         style="width: 70rem; height: 350px; max-width: 100vw;"
       ></div>
       @if(!hasData){
-      <div
-        class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center"
-      >
+      <div class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center">
         Нет данных
       </div>
       }

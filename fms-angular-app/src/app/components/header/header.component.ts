@@ -6,7 +6,7 @@ import { LocalStorage } from '../../servises/LocalStorage.service';
   imports: [],
   providers: [],
   template: `
-    <header class="th-background bg-primary d-flex p-2 gap-2">
+    <header class="th-primmary d-flex p-2 gap-2">
       <div class="me-auto position-relative">
         <button class="btn btn-secondary" [disabled]="IsLoading" (click)="setDefaultData()" style="width: 15rem;">
           @if(IsLoading){<span class="spinner-border spinner-border-sm"></span>} @else{Установить тестовые данные}
