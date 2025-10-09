@@ -1,9 +1,9 @@
-import { Component, input, computed, Input, effect, viewChild, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, input, computed, viewChild} from '@angular/core';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { Table } from '../table/table.component';
 import { Modal } from '../../../shared/ui/modal/modal';
 import { Form } from '../../form/form.component';
-import { ICategory, IOperation } from '../../../models/dataTypes.model';
+import { IOperation } from '../../../models/dataTypes.model';
 import { Filter } from '../../../servises/filter.service';
 
 @Component({
@@ -12,15 +12,14 @@ import { Filter } from '../../../servises/filter.service';
   imports: [Table, Modal, Form],
 })
 export class CrudTableComponent {
-
-  dataType = input<string>("");
+  dataType = input<string>('');
 
   //////////////////////////////////////////////////////////////
 
   public loadModal: boolean = false;
   public loadTable = input<boolean>(true);
 
-  selectedOperations: IOperation[] = [];
+  public selectedOperations: IOperation[] = [];
 
   //////////////////////////////////////////////////////////////
 
@@ -35,8 +34,7 @@ export class CrudTableComponent {
 
   private tmpEditOperationKey: number | undefined = undefined;
 
-  constructor(protected localStorage: LocalStorage, public filter: Filter) { }
-
+  constructor(protected localStorage: LocalStorage, public filter: Filter) {}
 
   /////////////////////////////////////////////////////////////
 
@@ -47,21 +45,20 @@ export class CrudTableComponent {
   /////////////////////////////////////////////////////////////
 
   get tableTitleRu(): string {
-    if (this.dataType() == "income") { return "Доходы"; }
-    else if (this.dataType() == "expens") { return "Расходы"; }
-    else { return "Неопределенно"; }
+    if (this.dataType() == 'income') { return 'Доходы'; } 
+    else if (this.dataType() == 'expens') { return 'Расходы'; } 
+    else { return 'Неопределенно'; }
   }
 
   get modalTypeRu(): string {
-    if (this.dataType() == "income") { return "доход"; }
-    else if (this.dataType() == "expens") { return "расход"; }
-    else { return "Неопределенно"; }
+    if (this.dataType() == 'income') { return 'доход'; } 
+    else if (this.dataType() == 'expens') { return 'расход'; } 
+    else { return 'Неопределенно'; }
   }
 
   /////////////////////////////////////////////////////////////
 
-
-  async createOperation({ value, category, date }: { value: number, category: string, date: Date }) {
+  async createOperation({ value, category, date}: { value: number; category: string; date: Date; }): Promise<void>  {
     this.loadModal = true;
     const type = this.dataType();
     await this.localStorage.createOperation({ type, value, category, date });
@@ -69,13 +66,13 @@ export class CrudTableComponent {
     this.ELEMENT_MODAL_CREATE().hide();
   }
 
-  async updateOperation({ value, category, date }: { value: number, category: string, date: Date }) {
+  async updateOperation({ value, category, date, }: { value: number; category: string; date: Date; }): Promise<void>  {
     this.loadModal = true;
     const type = this.dataType();
     if (this.tmpEditOperationKey == undefined) {
-      alert("Произошла ошибка, попробуйте удалить виндовс");
+      alert('Произошла ошибка, попробуйте удалить виндовс');
       this.ELEMENT_MODAL_UPDATE().hide();
-      return
+      return;
     }
     const id = <number>this.tmpEditOperationKey;
     await this.localStorage.updateOperation({ id, type, value, category, date });
@@ -91,19 +88,22 @@ export class CrudTableComponent {
     this.ELEMENT_MODAL_DELETE().hide();
   }
 
-
   openUpdateForm(operation: IOperation): void {
     this.ELEMENT_MODAL_UPDATE().show();
     this.ELEMENT_FORM_UPDATE().setValue(operation.value);
     this.ELEMENT_FORM_UPDATE().setCategory(operation.category);
     this.ELEMENT_FORM_UPDATE().setDate(operation.date);
-    this.tmpEditOperationKey = operation.id
+    this.tmpEditOperationKey = operation.id;
+    this.clearSelectedOperations();
   }
 
-  openCreateForm() {
+  openCreateForm(): void {
     this.ELEMENT_MODAL_CREATE().show();
     this.ELEMENT_FORM_CREATE().setDefault();
+    this.clearSelectedOperations();
   }
 
-
+  clearSelectedOperations(): void {
+    this.selectedOperations = [];
+  }
 }

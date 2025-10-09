@@ -23,13 +23,11 @@ export class MainPage {
   protected readonly title = signal('fms-angular-app');
   operationsLoaded = false;
 
-  constructor(protected localStorage: LocalStorage) {
-    localStorage.setCategories();
-    localStorage.setDaefaultData();
-  }
+  constructor(protected localStorage: LocalStorage) {}
 
   async ngOnInit() {
     this.operationsLoaded = true;
+    await this.localStorage.setCategories();
     await this.localStorage.setOperations();
     this.operationsLoaded = false;
   }

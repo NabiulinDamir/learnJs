@@ -1,5 +1,5 @@
-import { Injectable, EventEmitter, signal, computed} from '@angular/core';
-import { IOperation, ICategory, IFilterOption } from '../models/dataTypes.model';
+import { Injectable, signal, computed } from '@angular/core';
+import { IOperation, ICategory } from '../models/dataTypes.model';
 import localDB from './indexDB.service';
 import { Filter } from './filter.service';
 
@@ -17,28 +17,24 @@ export class LocalStorage {
 
   filterOperations = computed((): IOperation[] => {
     return this._filter.filter(this._operations());
-  })
+  });
 
   allOperations = computed((): IOperation[] => {
     return this._operations();
-  })
-  
-  getOperationsByType(type: string): IOperation[]{
+  });
+
+  getOperationsByType(type: string): IOperation[] {
     return this.filterOperations().filter((obj) => obj.type === type) || [];
   }
 
-  getCategoriesByType(type: string): ICategory[]{
+  getCategoriesByType(type: string): ICategory[] {
     return this._categories().filter((obj) => obj.type === type) || [];
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
-  async setDaefaultData(): Promise<void> {
-    // await this._localDb.setDefaultData();
-  }
-
   async setOperations(): Promise<void> {
-    const newData = await this._localDb.getAllOperations()
+    const newData = await this._localDb.getAllOperations();
     this._operations.set(newData);
     // this.onOperationsChanged.emit(this._operations());
   }
@@ -48,14 +44,18 @@ export class LocalStorage {
     this._categories.set(newData);
     // this.onCategoriesChanged.emit(this._categories());
   }
+
+  async setDaefaultData(): Promise<void> {//!!!странности!!!
+    await this._localDb.setDefaultData();
+    // await this.setOperations();
+    // await this.setCategories();
+    location.reload();
+    // console.log(this._operations());
+  }
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Создатторы
 
-  async createOperation(newOperation: {
-    type: string;
-    value: number;
-    category: string;
-    date: Date;
-  }): Promise<void> {
+  async createOperation(newOperation: { type: string; value: number; category: string; date: Date; }): Promise<void> {
     await this._localDb.createOperation(newOperation);
     await this.setOperations();
     await this.setCategories();
@@ -77,6 +77,4 @@ export class LocalStorage {
     }
     await this.setOperations();
   }
-
-
 }

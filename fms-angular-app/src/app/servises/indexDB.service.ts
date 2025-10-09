@@ -149,15 +149,9 @@ export default class localDB {
     return result;
   }
 
-  public async createOperation(newObj: {
-    type: string;
-    value: number;
-    category: string;
-    date: Date;
-  }) {
+  public async createOperation(newObj: { type: string; value: number; category: string; date: Date; }) {
     console.log('--Создание операции');
     await new Promise((resolve) => setTimeout(resolve, this._timeDelay));
-    ///Как обрабатывать создание? что возвращать? и.т.д
     let result: any;
     try {
       if (!(await this.keyOf('categories', newObj.category))) {
@@ -235,7 +229,7 @@ export default class localDB {
     return result;
   }
 
-  public async updateCategoryByKey(itemKey: string, newObj: ICategory) {
+  public async updateCategoryByKey(newObj: ICategory) {
     console.log('--Обновление категории');
     await new Promise((resolve) => setTimeout(resolve, this._timeDelay));
     let result: any;
@@ -249,7 +243,7 @@ export default class localDB {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////Установка дефолтных значений
 
-  public async setDefaultData() {
+  public async setDefaultData(): Promise<void> {
     await this.clear('operations');
     await this.clear('categories');
 
@@ -266,5 +260,6 @@ export default class localDB {
       }
       await this.add('operations', newObj);
     }
+    return;
   }
 }
