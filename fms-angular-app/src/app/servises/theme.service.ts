@@ -19,4 +19,14 @@ export class Theme {
     this.darkTheme.set(!this.darkTheme());
     this.document.body.classList.toggle('dark-theme');
   }
+
+  public setDarkTheme(): void {
+    this.darkTheme.set(true);
+    this.document.body.classList.add('dark-theme');
+  }
+
+  public setWhiteTheme(): void {
+    this.darkTheme.set(false);
+    this.document.body.classList.remove('dark-theme');
+  }
 }

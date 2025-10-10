@@ -10,11 +10,11 @@ import { Theme } from '../../../servises/theme.service';
   selector: 'my-chart-negative',
   providers: [DatePipe],
   template: `
-    <div class="position-relative w-100 d-flex justify-content-around">
+    <div class="position-relative w-100 d-flex justify-content-around h-100 ">
       <div
         id="chart-negative-container"
         [class.opacity-50]="!hasData"
-        style="width: 70rem; height: 350px; max-width: 100vw;"
+        style="width: 70rem; max-width: 100vw;"
       ></div>
       @if(!hasData){
       <div
@@ -51,7 +51,7 @@ export class ChartWithNegative implements OnDestroy {
   }
 
   option = computed(() => {
-    const data = this.format(this.localStorage.filterOperations());
+    const data = this.format(this.localStorage.filter(this.localStorage.allOperations()));
     return {
       backgroundColor: 'transparent',
       tooltip: {
@@ -213,6 +213,6 @@ export class ChartWithNegative implements OnDestroy {
   }
 
   get hasData(): boolean {
-    return this.localStorage.filterOperations().length > 0;
+    return this.localStorage.filter(this.localStorage.allOperations()).length > 0;
   }
 }

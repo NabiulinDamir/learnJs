@@ -14,14 +14,14 @@ body {
   --bg-second-color: #e1e4e7;
   --primmary-color: #0d6efd;
   --text-color: black;
-  --icon-filter: invert(1);
+  --icon-filter: invert(0);
 }
 
 .dark-theme {
   --bg-color: #1e1e1e;
   --text-color: white;
   --bg-second-color: #292d31;
-  --icon-filter: invert(0);
+  --icon-filter: invert(1);
 }
 
 .th-background {
@@ -71,6 +71,13 @@ h1 {
   width: 5rem;
 }
 
+.h-25rem {
+  height: 22rem;
+}
+
+.h-screen{
+  height: 100vw;
+}
 /* //////////////////////////////////////////////////////////////////////// */
 
 .h-1-rem {
@@ -88,3 +95,5 @@ h1 {
 .h-2-rem {
   height: 2rem;
 }
+
+

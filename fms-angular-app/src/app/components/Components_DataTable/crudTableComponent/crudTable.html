@@ -5,11 +5,11 @@
             <button type="button" class="btn btn-secondary btn-sm " (click)="table.clearSelectedData()"> Сбросить </button>
             <button type="button" class="btn btn-danger btn-sm " (click)="modal_delete.show()"> Удалить </button>
         }
-        <button type="button" class="btn btn-primary btn-sm" [class.disabled]="loadTable()" (click)="openCreateForm()">
+        <button type="button" class="btn btn-primary btn-sm" [class.disabled]="localStorage.loadOperationsStatus()" (click)="openCreateForm()">
             Добавить </button>
     </div>
     <my-table class="w-100" #table [inputData]="operations()" [(selectedData)]="selectedOperations"
-        (onEditDataClick)="openUpdateForm($event)" [isLoaded]="loadTable()">
+        (onEditDataClick)="openUpdateForm($event)" [isLoaded]="localStorage.loadOperationsStatus()">
     </my-table>
 </div>
 

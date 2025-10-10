@@ -1,4 +1,12 @@
-import { Component, OnDestroy, ElementRef, HostListener, computed, effect, signal }from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  ElementRef,
+  HostListener,
+  computed,
+  effect,
+  signal,
+} from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
@@ -9,14 +17,16 @@ import { Theme } from '../../../servises/theme.service';
   selector: 'my-chart-dataset',
   providers: [DatePipe],
   template: `
-    <div class="position-relative w-100 d-flex justify-content-around">
+    <div class="position-relative w-100 d-flex justify-content-around h-100 ">
       <div
         id="chart-container"
         [class.opacity-50]="!hasData"
-        style="width: 70rem; height: 350px; max-width: 100vw;"
+        style="width: 70rem; max-width: 100vw;"
       ></div>
       @if(!hasData){
-      <div class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center">
+      <div
+        class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center"
+      >
         Нет данных
       </div>
       }
@@ -36,20 +46,28 @@ export class ChartDataset implements OnDestroy {
     public theme: Theme
   ) {
     effect(() => {
-      if (!this._isVisible()) return;
-      const chartDom = document.getElementById('chart-container');
-      chartDom?.removeAttribute('_echarts_instance_');
-      this._chart = echarts.init(chartDom, theme.darkTheme() ? 'dark' : '');
-      this._chart.setOption(this.option());
-      this._chart.off('click');
-      this._chart.on('click', (params: any) => {
-        this.clickToChart(params);
-      });
+      this.setOption();
     });
   }
 
-  option = computed(() => {
-    const data = this.format(this.localStorage.filterOperations());
+  public setOption(): void {
+    const data = this.getOption((this.localStorage.filter(this.localStorage.allOperations())));
+    this._chart?.setOption(data);
+  }
+
+  public init(): void {
+    const chartDom = document.getElementById('chart-container');
+    chartDom?.removeAttribute('_echarts_instance_');
+    this._chart = echarts.init(chartDom, this.theme.darkTheme() ? 'dark' : '');
+    this._chart.off('click');
+    this._chart.on('click', (params: any) => {
+      this.clickToChart(params);
+    });
+    this.setOption();
+  }
+
+  getOption(data: IOperation[]){
+    const formattedData = this.format(data)
     return {
       backgroundColor: 'transparent',
       tooltip: { trigger: 'axis' },
@@ -62,7 +80,7 @@ export class ChartDataset implements OnDestroy {
         position: 'top',
       },
       dataset: {
-        source: data,
+        source: formattedData,
       },
       grid: {
         top: '12%',
@@ -97,7 +115,7 @@ export class ChartDataset implements OnDestroy {
         },
       ],
     };
-  });
+  };
 
   format(data: IOperation[]): { name: string; income: number; expens: number; date: Date }[] {
     const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -175,16 +193,11 @@ export class ChartDataset implements OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.observer = new IntersectionObserver(([entry]) => {
-      this._isVisible.set(entry.isIntersecting);
-    });
-
-    this.observer.observe(this.element.nativeElement);
+    this.init();
   }
 
   ngOnDestroy() {
     this._chart?.dispose();
-    this.observer?.disconnect();
   }
 
   @HostListener('window:resize')
@@ -195,6 +208,6 @@ export class ChartDataset implements OnDestroy {
   }
 
   get hasData(): boolean {
-    return this.localStorage.filterOperations().length > 0;
+    return this.localStorage.filter(this.localStorage.allOperations()).length > 0;
   }
 }

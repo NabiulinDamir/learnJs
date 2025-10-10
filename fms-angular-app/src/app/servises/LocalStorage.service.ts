@@ -8,6 +8,8 @@ export class LocalStorage {
   private _operations = signal<IOperation[]>([]);
   private _categories = signal<ICategory[]>([]);
 
+  public loadOperationsStatus = signal<boolean>(false)
+  public loadCategoriesStatus = signal<boolean>(false)
   // onOperationsChanged = new EventEmitter<IOperation[]>();
   // onCategoriesChanged = new EventEmitter<ICategory[]>();
 
@@ -15,16 +17,16 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
 
-  filterOperations = computed((): IOperation[] => {
-    return this._filter.filter(this._operations());
-  });
+  public filter(arr: IOperation[]): IOperation[] {
+    return this._filter.filter(arr);
+  };
 
   allOperations = computed((): IOperation[] => {
     return this._operations();
   });
 
   getOperationsByType(type: string): IOperation[] {
-    return this.filterOperations().filter((obj) => obj.type === type) || [];
+    return this.allOperations().filter((obj) => obj.type === type) || [];
   }
 
   getCategoriesByType(type: string): ICategory[] {
@@ -34,14 +36,18 @@ export class LocalStorage {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
   async setOperations(): Promise<void> {
+    this.loadOperationsStatus.set(true);
     const newData = await this._localDb.getAllOperations();
     this._operations.set(newData);
+    this.loadOperationsStatus.set(false);
     // this.onOperationsChanged.emit(this._operations());
   }
 
   async setCategories(): Promise<void> {
+    this.loadCategoriesStatus.set(true);
     const newData = await this._localDb.getAllCategories();
     this._categories.set(newData);
+    this.loadCategoriesStatus.set(false);
     // this.onCategoriesChanged.emit(this._categories());
   }
 

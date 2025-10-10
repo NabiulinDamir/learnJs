@@ -6,4 +6,9 @@ export const routes: Routes = [
     title: 'MainPage',
     component: MainPage,
   },
+  {
+    path: 'charts',
+    title: 'ChartsPage',
+    loadComponent: () => import('./pages/chartsPage.component').then((m) => m.ChartsPage),
+  }
 ];

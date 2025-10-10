@@ -17,7 +17,6 @@ export class CrudTableComponent {
   //////////////////////////////////////////////////////////////
 
   public loadModal: boolean = false;
-  public loadTable = input<boolean>(true);
 
   public selectedOperations: IOperation[] = [];
 
@@ -38,7 +37,7 @@ export class CrudTableComponent {
 
   /////////////////////////////////////////////////////////////
 
-  operations = computed((): IOperation[] => this.localStorage.getOperationsByType(this.dataType()));
+  operations = computed((): IOperation[] => this.localStorage.filter(this.localStorage.getOperationsByType(this.dataType())));
 
   categoriesStringArr = computed((): string[] => this.localStorage.getCategoriesByType(this.dataType()).map((a) => a.name));
 

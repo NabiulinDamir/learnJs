@@ -15,21 +15,22 @@ import { DatePipe } from '@angular/common';
 import { Filter } from '../../../servises/filter.service';
 import { IOperation } from '../../../models/dataTypes.model';
 import { Theme } from '../../../servises/theme.service';
+import { init } from 'echarts/types/src/echarts.all.js';
 
 @Component({
   selector: 'my-chart-two-rounded',
   providers: [DatePipe],
   template: `
-    <div class="position-relative w-100 d-flex justify-content-around">
+    <div class="position-relative h-100 w-100 d-flex justify-content-around">
       <div
         id="my-chart-rounded-income"
         [class.opacity-50]="!hasData"
-        style="width: 30rem; height: 350px; max-width: 40vw;"
+        style="width: 30rem; max-width: 40vw;"
       ></div>
       <div
         id="my-chart-rounded-expens"
         [class.opacity-50]="!hasData"
-        style="width: 30rem; height: 350px; max-width: 40vw;"
+        style="width: 30rem; max-width: 40vw;"
       ></div>
       @if(!hasData){
       <div
@@ -44,30 +45,35 @@ import { Theme } from '../../../servises/theme.service';
 export class ChartTwoRounded implements OnDestroy {
   private _incomeChart: echarts.ECharts | undefined = undefined;
   private _expensChart: echarts.ECharts | undefined = undefined;
-  private observer!: IntersectionObserver;
-  private _isVisible = signal<boolean>(false);
   constructor(
     private localStorage: LocalStorage,
     private datePipe: DatePipe,
-    private element: ElementRef,
     public filter: Filter,
-    theme: Theme
+    public theme: Theme
   ) {
     effect(() => {
-      if (!this._isVisible()) return;
-      const chartDomIncome = document.getElementById('my-chart-rounded-income');
-      const chartDomExpens = document.getElementById('my-chart-rounded-expens');
-      chartDomIncome?.removeAttribute('_echarts_instance_');
-      chartDomExpens?.removeAttribute('_echarts_instance_');
-      this._incomeChart = echarts.init(chartDomIncome, theme.darkTheme() ? 'dark' : '');
-      this._expensChart = echarts.init(chartDomExpens, theme.darkTheme() ? 'dark' : '');
-      this._incomeChart.setOption(this.getOption('income'));
-      this._expensChart.setOption(this.getOption('expens'));
+      this.setOption();
     });
   }
 
-  getOption(type: string) {
-    const data = this.localStorage.getOperationsByType(type);
+  public setOption(): void {
+    const incomeData = this.localStorage.filter(this.localStorage.getOperationsByType('income'));
+    const expensData = this.localStorage.filter(this.localStorage.getOperationsByType('expens'));
+    this._incomeChart?.setOption(this.getOption(incomeData, 'Доходы'));
+    this._expensChart?.setOption(this.getOption(expensData, 'Расходы'));
+  }
+
+  public init(): void {
+    const chartDomIncome = document.getElementById('my-chart-rounded-income');
+    const chartDomExpens = document.getElementById('my-chart-rounded-expens');
+    chartDomIncome?.removeAttribute('_echarts_instance_');
+    chartDomExpens?.removeAttribute('_echarts_instance_');
+    this._incomeChart = echarts.init(chartDomIncome, this.theme.darkTheme() ? 'dark' : '');
+    this._expensChart = echarts.init(chartDomExpens, this.theme.darkTheme() ? 'dark' : '');
+    this.setOption();
+  }
+
+  getOption(data: IOperation[], title?: string) {
     const formatData = this.format(data);
     return {
       backgroundColor: 'transparent',
@@ -75,7 +81,7 @@ export class ChartTwoRounded implements OnDestroy {
         trigger: 'item',
       },
       title: {
-        text: `${type === 'income' ? 'Доходы' : 'Расходы'}: ${data.reduce(
+        text: `${title}: ${data.reduce(
           (sum, item) => (sum += item.value),
           0
         )} руб.`,
@@ -138,17 +144,12 @@ export class ChartTwoRounded implements OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.observer = new IntersectionObserver(([entry]) => {
-      this._isVisible.set(entry.isIntersecting);
-    });
-
-    this.observer.observe(this.element.nativeElement);
+    this.init();
   }
 
   ngOnDestroy() {
     this._incomeChart?.dispose();
     this._expensChart?.dispose();
-    this.observer?.disconnect();
   }
 
   @HostListener('window:resize')
@@ -162,6 +163,6 @@ export class ChartTwoRounded implements OnDestroy {
   }
 
   get hasData(): boolean {
-    return this.localStorage.filterOperations().length > 0;
+    return this.localStorage.filter(this.localStorage.allOperations()).length > 0;
   }
 }
