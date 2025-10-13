@@ -1,12 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  ElementRef,
-  HostListener,
-  computed,
-  effect,
-  signal,
-} from '@angular/core';
+import { Component, OnDestroy, HostListener, effect } from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
@@ -21,14 +13,12 @@ import { Theme } from '../../../servises/theme.service';
     <div class="position-relative d-flex justify-content-around h-25rem">
       <div
         id="chart-container"
-        class=" w-100"
+        class="w-100"
         [class.opacity-50]="!hasData"
         style="height: 800px; max-width: 100vw;"
       ></div>
       @if(!hasData){
-      <div
-        class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center"
-      >
+      <div class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center" >
         Нет данных
       </div>
       }
@@ -254,7 +244,7 @@ export class ChartMega implements OnDestroy {
     let currentDate = new Date(this.filter.startYearInteval);
     let endDate = new Date(this.filter.endYearInteval);
     do {
-      const key = this.datePipe.transform(currentDate, 'MMMM');
+      const key = this.datePipe.transform(isNaN(currentDate.getTime()) ? new Date() : currentDate, 'MMMM');
       resultMap.set(key, { name: key, value: 0 });
       currentDate.setMonth(currentDate.getMonth() + 1);
     } while (currentDate <= endDate);
@@ -285,6 +275,7 @@ export class ChartMega implements OnDestroy {
     const res = Array.from(resultMap.values());
     return res;
   }
+
 
   ngAfterViewInit() {
     this.init();
