@@ -22,12 +22,15 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+        working-directory:  ./fms-angular-app 
         
       - name: Build Angular
-        run: npm run build -- --configuration production --base-href /fms-angular-app/
+        run: npm run build -- --configuration production --base-href ./
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./fms-angular-app/dist/fms-angular-app/browser
+      - name: List files
+        run: ls ./dist/fms-angular-app/browser

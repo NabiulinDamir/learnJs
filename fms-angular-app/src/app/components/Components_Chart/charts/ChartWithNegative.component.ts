@@ -1,4 +1,12 @@
-import { Component, OnDestroy, ElementRef, HostListener, computed, effect, signal } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  ElementRef,
+  HostListener,
+  computed,
+  effect,
+  signal,
+} from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
@@ -28,31 +36,45 @@ import { Theme } from '../../../servises/theme.service';
 })
 export class ChartWithNegative implements OnDestroy {
   private _chart: echarts.ECharts | undefined = undefined;
-  private observer!: IntersectionObserver;
-  private _isVisible = signal<boolean>(false);
+  private _option: any | undefined = undefined;
   constructor(
     private localStorage: LocalStorage,
     private datePipe: DatePipe,
-    private element: ElementRef,
     public filter: Filter,
-    theme: Theme
+    public theme: Theme
   ) {
     effect(() => {
-      if (!this._isVisible()) return;
-      const chartDom = document.getElementById('chart-negative-container');
-      chartDom?.removeAttribute('_echarts_instance_');
-      this._chart = echarts.init(chartDom, theme.darkTheme() ? 'dark' : '');
-      this._chart.setOption(this.option());
-      this._chart.off('click');
-      this._chart.on('click', (params: any) => {
-        this.clickToChart(params);
-      });
+      this.updateOption();
+      this.setOption();
+    });
+    effect(() => {
+      this.init();
+      this.setOption();
     });
   }
 
-  option = computed(() => {
+  init(): void {
+    const theme = this.theme.darkTheme() ? 'dark' : '';
+    const chartDom = document.getElementById('chart-negative-container');
+    chartDom?.removeAttribute('_echarts_instance_');
+    if (!chartDom?.clientHeight) {
+      return;
+    }
+
+    this._chart = echarts.init(chartDom, theme);
+    this._chart.off('click');
+    this._chart.on('click', (params: any) => {
+      this.clickToChart(params);
+    });
+  }
+
+  setOption(): void {
+    this._chart?.setOption(this._option);
+  }
+
+  updateOption(): void {
     const data = this.format(this.localStorage.filter(this.localStorage.allOperations()));
-    return {
+    this._option = {
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'axis',
@@ -121,7 +143,7 @@ export class ChartWithNegative implements OnDestroy {
         },
       ],
     };
-  });
+  }
 
   format(data: IOperation[]): { name: string; value: number; date: Date }[] {
     const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -192,17 +214,10 @@ export class ChartWithNegative implements OnDestroy {
     return this.datePipe.transform(date, pattern());
   }
 
-  ngAfterViewInit() {
-    this.observer = new IntersectionObserver(([entry]) => {
-      this._isVisible.set(entry.isIntersecting);
-    });
-
-    this.observer.observe(this.element.nativeElement);
-  }
+  ngAfterViewInit() {}
 
   ngOnDestroy() {
     this._chart?.dispose();
-    this.observer?.disconnect();
   }
 
   @HostListener('window:resize')

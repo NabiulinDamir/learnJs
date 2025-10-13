@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { Filter } from '../../../servises/filter.service';
 import { IOperation } from '../../../models/dataTypes.model';
 import { Theme } from '../../../servises/theme.service';
+
 @Component({
   selector: 'my-chart-mega',
   providers: [DatePipe],
@@ -36,49 +37,70 @@ import { Theme } from '../../../servises/theme.service';
 })
 export class ChartMega implements OnDestroy {
   private _chart: echarts.ECharts | undefined = undefined;
-  private observer!: IntersectionObserver;
-  private _isVisible = signal<boolean>(false);
-
+  private _option: any | undefined = undefined;
   constructor(
     private localStorage: LocalStorage,
     private datePipe: DatePipe,
-    private element: ElementRef,
     public filter: Filter,
     public theme: Theme
   ) {
     effect(() => {
-      if (!this._isVisible()) return;
-      const chartDom = document.getElementById('chart-container');
-      chartDom?.removeAttribute('_echarts_instance_');
-      if (!chartDom || chartDom.clientWidth === 0) return;
-      this._chart = echarts.init(chartDom, theme.darkTheme() ? 'dark' : '');
-      this._chart.setOption(this.option());
+      this.updateOption();
+      this.setOption();
+    });
+    effect(() => {
+      this.init();
+      this.setOption();
     });
   }
 
-  option = computed(() => {
+  setOption() {
+    this._chart?.setOption(this._option);
+  }
 
-    const incomeOperationsFormat =  this.formatToMonth(this.localStorage.getOperationsByType('income'));
-    const expensOperationsFormat =  this.formatToMonth(this.localStorage.getOperationsByType('expens'));
+  init(): void {
+    const theme = this.theme.darkTheme() ? 'dark' : '';
+    const chartDom = document.getElementById('chart-container');
+    chartDom?.removeAttribute('_echarts_instance_');
+    if (chartDom?.clientHeight === 0) return;
+    this._chart = echarts.init(chartDom, theme);
+  }
 
-    const incomeCategoriesFormat = this.formatToCategory(this.localStorage.getOperationsByType('income'))
-    const expensCategoriesFormat = this.formatToCategory(this.localStorage.getOperationsByType('expens'))
+  updateOption() {
+    const incomeOperationsFormat = this.formatToMonth(
+      this.localStorage.getOperationsByType('income')
+    );
+    const expensOperationsFormat = this.formatToMonth(
+      this.localStorage.getOperationsByType('expens')
+    );
 
-    //страшный мапинг :(
-    const incomeValues = incomeOperationsFormat.map(a => a.value).sort((a, b) => a - b);
-    const expensValues = expensOperationsFormat.map(a => a.value).sort((a, b) => a - b);
-    const incomeMonthsArr = incomeOperationsFormat.sort((a, b) => a.value - b.value).map(a => a.name);
-    const expensMonthsArr = expensOperationsFormat.sort((a, b) => a.value - b.value).map(a => a.name);
-    const maxCount = Math.max(...incomeValues.concat(expensValues))
-    const summIncome = incomeValues ? incomeValues.reduce((summ, a) => a + summ) : 0;
-    const summExpens = expensValues ? expensValues.reduce((summ, a) => a + summ) : 0;
-    const reverseIncomeValue = incomeValues.map((a) => maxCount - a)
-    const reverseExpensValue = expensValues.map((a) => maxCount - a)
-    
-    const bestCategoryIncomeName = incomeCategoriesFormat.length ? incomeCategoriesFormat.reduce((max, a) => a.value > max.value ? a : max).name : '...';
-    const bestCategoryExpensName = expensCategoriesFormat.length ? expensCategoriesFormat.reduce((max, a) => a.value > max.value ? a : max).name : '...';
+    const incomeCategoriesFormat = this.formatToCategory(
+      this.localStorage.getOperationsByType('income')
+    );
+    const expensCategoriesFormat = this.formatToCategory(
+      this.localStorage.getOperationsByType('expens')
+    );
 
-    return {
+    const sortedIncome = [...incomeOperationsFormat].sort((a, b) => a.value - b.value);
+    const sortedExpens = [...expensOperationsFormat].sort((a, b) => a.value - b.value);
+
+    const incomeValues = sortedIncome.map(a => a.value);
+    const expensValues = sortedExpens.map(a => a.value);
+
+    const maxCount = Math.max(...incomeValues, ...expensValues);
+
+    const summIncome = incomeValues.reduce((sum, a) => sum + a, 0);
+    const summExpens = expensValues.reduce((sum, a) => sum + a, 0);
+
+    const incomeMonthsArr = sortedIncome.map(a => a.name);
+    const expensMonthsArr = sortedExpens.map(a => a.name);
+    const reverseIncomeValue = incomeValues.map(a => maxCount - a);
+    const reverseExpensValue = expensValues.map(a => maxCount - a);
+
+    const bestCategoryIncomeName = incomeCategoriesFormat[0]?.name || '...';
+    const bestCategoryExpensName = expensCategoriesFormat[0]?.name || '...';
+
+    this._option = {
       backgroundColor: 'transparent',
       tooltip: {},
       title: [
@@ -90,7 +112,7 @@ export class ChartMega implements OnDestroy {
         },
         {
           text: 'Категории доходов',
-          subtext: "Больше всего доходов: " + bestCategoryIncomeName,
+          subtext: 'Больше всего доходов: ' + bestCategoryIncomeName,
           left: '75%',
           textAlign: 'center',
         },
@@ -103,7 +125,7 @@ export class ChartMega implements OnDestroy {
         },
         {
           text: 'Категории расходов',
-          subtext: "Больше всего трат: " + bestCategoryExpensName,
+          subtext: 'Больше всего трат: ' + bestCategoryExpensName,
           left: '75%',
           top: '50%',
           textAlign: 'center',
@@ -214,19 +236,19 @@ export class ChartMega implements OnDestroy {
           type: 'pie',
           radius: [0, '30%'],
           center: ['75%', '25%'],
-          data: incomeCategoriesFormat
+          data: incomeCategoriesFormat,
         },
         {
           type: 'pie',
           radius: [0, '30%'],
           center: ['75%', '75%'],
-          data: expensCategoriesFormat
+          data: expensCategoriesFormat,
         },
       ],
     };
-  });
+  }
 
-  formatToMonth(data: IOperation[]): { name: string; value: number;}[] {
+  formatToMonth(data: IOperation[]): { name: string; value: number }[] {
     const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
     const resultMap = new Map();
     let currentDate = new Date(this.filter.startYearInteval);
@@ -250,8 +272,6 @@ export class ChartMega implements OnDestroy {
     return res;
   }
 
-
-
   formatToCategory(data: IOperation[]): { name: string; value: number }[] {
     const resultMap = new Map();
     data.forEach((item) => {
@@ -265,29 +285,14 @@ export class ChartMega implements OnDestroy {
     const res = Array.from(resultMap.values());
     return res;
   }
-  ////////////////////////////////////////////////////////////////////////////////
-
-  // clickToChart(params: any): void {
-  //   if (params.componentType === 'series') {
-  //     this.filter.downInterval();
-  //     setTimeout(() => this.filter.setDate(params.data.date), 100);
-  //   }
-  // }
-
-  ////////////////////////////////////////////////////////////////////////////////
-
 
   ngAfterViewInit() {
-    this.observer = new IntersectionObserver(([entry]) => {
-      this._isVisible.set(entry.isIntersecting);
-    });
-
-    this.observer.observe(this.element.nativeElement);
+    this.init();
+    this.setOption();
   }
 
   ngOnDestroy() {
     this._chart?.dispose();
-    this.observer?.disconnect();
   }
 
   @HostListener('window:resize')

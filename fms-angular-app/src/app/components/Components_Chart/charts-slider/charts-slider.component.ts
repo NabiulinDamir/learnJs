@@ -52,7 +52,6 @@ export class ChartsSlider {
     carousel?.addEventListener('slid.bs.carousel', (event: any) => {
       this.activeSlide.set(event.to);
     });
-
   }
 
   isActiveSlide(index: number): boolean {

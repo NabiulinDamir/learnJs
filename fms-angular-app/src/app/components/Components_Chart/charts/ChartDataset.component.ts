@@ -35,40 +35,43 @@ import { Theme } from '../../../servises/theme.service';
 })
 export class ChartDataset implements OnDestroy {
   private _chart: echarts.ECharts | undefined = undefined;
-  private observer!: IntersectionObserver;
-  private _isVisible = signal<boolean>(false);
-
+  private _option: any | undefined = undefined;
   constructor(
     private localStorage: LocalStorage,
     private datePipe: DatePipe,
-    private element: ElementRef,
     public filter: Filter,
     public theme: Theme
   ) {
     effect(() => {
+      this.updateOption();
       this.setOption();
     });
+    effect(() => {
+      this.init();
+      this.setOption();
+    })
   }
 
   public setOption(): void {
-    const data = this.getOption((this.localStorage.filter(this.localStorage.allOperations())));
-    this._chart?.setOption(data);
+    if(this._option) { this._chart?.setOption(this._option) }
   }
 
   public init(): void {
+    const theme = this.theme.darkTheme() ? 'dark' : '';
     const chartDom = document.getElementById('chart-container');
+    if(!chartDom?.clientHeight){ return };
     chartDom?.removeAttribute('_echarts_instance_');
-    this._chart = echarts.init(chartDom, this.theme.darkTheme() ? 'dark' : '');
+    this._chart = echarts.init(chartDom, theme);
     this._chart.off('click');
     this._chart.on('click', (params: any) => {
       this.clickToChart(params);
     });
-    this.setOption();
   }
 
-  getOption(data: IOperation[]){
+  updateOption(){
+    const data = this.localStorage.filter(this.localStorage.allOperations());
     const formattedData = this.format(data)
-    return {
+    this._option = {
       backgroundColor: 'transparent',
       tooltip: { trigger: 'axis' },
       legend: {
@@ -194,6 +197,7 @@ export class ChartDataset implements OnDestroy {
 
   ngAfterViewInit() {
     this.init();
+    this.setOption();
   }
 
   ngOnDestroy() {

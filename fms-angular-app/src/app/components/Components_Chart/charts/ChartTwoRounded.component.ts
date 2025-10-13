@@ -45,6 +45,9 @@ import { init } from 'echarts/types/src/echarts.all.js';
 export class ChartTwoRounded implements OnDestroy {
   private _incomeChart: echarts.ECharts | undefined = undefined;
   private _expensChart: echarts.ECharts | undefined = undefined;
+  private _incomeOption: any | undefined = undefined;
+  private _expensOption: any | undefined = undefined;
+
   constructor(
     private localStorage: LocalStorage,
     private datePipe: DatePipe,
@@ -52,25 +55,42 @@ export class ChartTwoRounded implements OnDestroy {
     public theme: Theme
   ) {
     effect(() => {
+      this.updateIncomeOption();
+      this.updateExpensOption();
+      this.setOption();
+    });
+    effect(() => {
+      this.init();
       this.setOption();
     });
   }
 
   public setOption(): void {
-    const incomeData = this.localStorage.filter(this.localStorage.getOperationsByType('income'));
-    const expensData = this.localStorage.filter(this.localStorage.getOperationsByType('expens'));
-    this._incomeChart?.setOption(this.getOption(incomeData, 'Доходы'));
-    this._expensChart?.setOption(this.getOption(expensData, 'Расходы'));
+    this._incomeChart?.setOption(this._incomeOption);
+    this._expensChart?.setOption(this._expensOption);
   }
 
   public init(): void {
+    const theme = this.theme.darkTheme() ? 'dark' : '';
     const chartDomIncome = document.getElementById('my-chart-rounded-income');
     const chartDomExpens = document.getElementById('my-chart-rounded-expens');
+    if (!chartDomIncome?.clientHeight || !chartDomExpens?.clientHeight) {
+      return;
+    }
     chartDomIncome?.removeAttribute('_echarts_instance_');
     chartDomExpens?.removeAttribute('_echarts_instance_');
-    this._incomeChart = echarts.init(chartDomIncome, this.theme.darkTheme() ? 'dark' : '');
-    this._expensChart = echarts.init(chartDomExpens, this.theme.darkTheme() ? 'dark' : '');
-    this.setOption();
+    this._incomeChart = echarts.init(chartDomIncome, theme);
+    this._expensChart = echarts.init(chartDomExpens, theme);
+  }
+
+  updateIncomeOption(): void {
+    const incomeData = this.localStorage.filter(this.localStorage.getOperationsByType('income'));
+    this._incomeOption = this.getOption(incomeData, 'Доходы');
+  }
+
+  updateExpensOption(): void {
+    const expensData = this.localStorage.filter(this.localStorage.getOperationsByType('expens'));
+    this._expensOption = this.getOption(expensData, 'Доходы');
   }
 
   getOption(data: IOperation[], title?: string) {
@@ -81,10 +101,7 @@ export class ChartTwoRounded implements OnDestroy {
         trigger: 'item',
       },
       title: {
-        text: `${title}: ${data.reduce(
-          (sum, item) => (sum += item.value),
-          0
-        )} руб.`,
+        text: `${title}: ${data.reduce((sum, item) => (sum += item.value), 0)} руб.`,
         position: 'top',
       },
 
@@ -145,6 +162,7 @@ export class ChartTwoRounded implements OnDestroy {
 
   ngAfterViewInit() {
     this.init();
+    this.setOption();
   }
 
   ngOnDestroy() {
