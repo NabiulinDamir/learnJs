@@ -163,7 +163,6 @@ export class ChartDataset implements OnDestroy {
         });
       }
     }
-
     const res = Array.from(resultMap.values());
     return res;
   }

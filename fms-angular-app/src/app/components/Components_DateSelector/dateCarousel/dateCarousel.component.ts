@@ -18,7 +18,7 @@ import { Filter } from '../../../servises/filter.service';
       >
         @for(item of allDatesArray; track $index){
         <li
-          class=" rounded-3 d-flex justify-content-center th-background-second th-text"
+          class="rounded-3 d-flex justify-content-center th-background-second th-text"
           [style.width]="calcWidth(item.name.length)"
           (click)="selectDate(item.date)"
           selectable
@@ -49,10 +49,9 @@ export class DateCarousel {
       this.interval = filter.interval();
       this.setAllDatesArray();
       this.setDefaultItem();
-    });
-    effect(() => {
-      const currentDate = this.filter.date();
-      setTimeout(() => this.navigateToItem(currentDate), 100);
+      setTimeout(() => {
+        this.navigateToItem(this.filter.date());
+      }, 200);
     });
   }
 
@@ -88,6 +87,7 @@ export class DateCarousel {
 
   navigateToItem(currentDate: Date) {
     const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
+    // console.log(children)
     Array.from(children).forEach((child: unknown) => {
       const element = child as HTMLElement;
       const text = element.textContent?.trim();
@@ -96,12 +96,14 @@ export class DateCarousel {
         const containerCenter = containerWidth / 2;
         const elemCenter = element.offsetLeft + element.offsetWidth / 2;
         this.position = containerCenter - elemCenter;
+        // console.log(this.position)
       }
     });
   }
 
   selectDate(newDate: Date): void {
     this.filter.setDate(newDate);
+    this.navigateToItem(newDate);
   }
 
   isSelectedDate(date: Date): boolean {

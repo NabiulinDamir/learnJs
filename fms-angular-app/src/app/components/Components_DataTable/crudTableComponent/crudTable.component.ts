@@ -1,4 +1,4 @@
-import { Component, input, computed, viewChild} from '@angular/core';
+import { Component, input, computed, viewChild, effect} from '@angular/core';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { Table } from '../table/table.component';
 import { Modal } from '../../../shared/ui/modal/modal';
@@ -22,6 +22,8 @@ export class CrudTableComponent {
 
   //////////////////////////////////////////////////////////////
 
+  private ELEMENT_TABLE = viewChild<any>('table');
+
   private ELEMENT_MODAL_CREATE = viewChild<any>('modal_create');
   private ELEMENT_MODAL_UPDATE = viewChild<any>('modal_update');
   private ELEMENT_MODAL_DELETE = viewChild<any>('modal_delete');
@@ -33,7 +35,12 @@ export class CrudTableComponent {
 
   private tmpEditOperationKey: number | undefined = undefined;
 
-  constructor(protected localStorage: LocalStorage, public filter: Filter) {}
+  constructor(protected localStorage: LocalStorage, public filter: Filter) {
+    effect(() => {
+      const changeElem = filter.date();
+      this.ELEMENT_TABLE().clearSelectedData();
+    })
+  }
 
   /////////////////////////////////////////////////////////////
 

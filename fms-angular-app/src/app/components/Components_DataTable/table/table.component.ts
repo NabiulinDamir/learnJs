@@ -1,9 +1,8 @@
-import { Component, input, output, computed, model, effect, OnInit, SimpleChanges, Input } from '@angular/core';
-import { ICategory, IOperation } from '../../../models/dataTypes.model';
-import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
+import { Component, input, output, computed, model } from '@angular/core';
+import { IOperation } from '../../../models/dataTypes.model';
+import { DatePipe } from '@angular/common';
 import { SelectableDirective } from '../../../directives/selectable.directive';
 import { Sort } from './sort.service';
-import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { Theme } from '../../../servises/theme.service';
 
 
@@ -35,7 +34,7 @@ export class Table {
     });
   }
 
-  clearSelectedData(): void {
+  public clearSelectedData(): void {
     this.selectedData.update((current) => []);
   }
 

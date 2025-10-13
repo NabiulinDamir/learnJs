@@ -19,9 +19,6 @@ export default class localDB {
         if (!db.objectStoreNames.contains('categories')) {
           db.createObjectStore('categories', { keyPath: 'name' });
         }
-        if (!db.objectStoreNames.contains('sortOption')) {
-          db.createObjectStore('sortOption', { keyPath: 'name' });
-        }
       };
 
       openRequest.onsuccess = () => {
