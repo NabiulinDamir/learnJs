@@ -1,10 +1,11 @@
-import { Component, effect, viewChild, HostListener } from '@angular/core';
+import { Component, effect, viewChild, HostListener, untracked } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { SelectableDirective } from '../../../directives/selectable.directive';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { MovableDirective } from '../../../directives/movable.directive';
 import { PointnerDirective } from '../../../directives/pointner.directive';
 import { Filter } from '../../../servises/filter.service';
+import { IOperation } from '../../../models/dataTypes.model';
 
 @Component({
   selector: 'my-date-carousel',
@@ -19,11 +20,11 @@ import { Filter } from '../../../servises/filter.service';
         @for(item of allDatesArray; track $index){
         <li
           class="rounded-3 d-flex justify-content-center th-background-second th-text"
-          [style.width]="calcWidth(item.name.length)"
+          [style.width]="buttonsWidth + 'px'"
           (click)="selectDate(item.date)"
           selectable
           pointner
-          [class.th-primmary]="isSelectedDate(item.date)"
+          [class.th-primmary]="item.name === formatSelectedDay"
         >
           {{ item.name }}
         </li>
@@ -37,29 +38,37 @@ import { Filter } from '../../../servises/filter.service';
 export class DateCarousel {
   public position: number = 0;
   public allDatesArray: { name: string; date: Date }[] = [];
-  public interval: string = '';
   private ELEMENT_LIST_PARRENT = viewChild<any>('option_list');
 
+  public interval: string = '';
+
+  /////Вынес в переменные/////
+  public buttonsWidth: number = 0;
+  public formatSelectedDay: string = '';
+  /////Вынес в переменные/////
+
   constructor(
-    public localStorage: LocalStorage,
-    private datePipe: DatePipe,
+    localStorage: LocalStorage,
+    public datePipe: DatePipe,
     public filter: Filter
   ) {
     effect(() => {
+      const allOperations = localStorage.allOperations();
       this.interval = filter.interval();
-      this.setAllDatesArray();
+      this.setAllDatesArray(allOperations);
       this.setDefaultItem();
-      setTimeout(() => {
-        this.navigateToItem(this.filter.date());
-      }, 200);
+      this.calcWidth(this.interval);
     });
+    effect(() => {
+      const filterSelectedDate = filter.date();
+      this.setFormatSelectedDate(filterSelectedDate);
+      setTimeout(() => { this.navigateToItem(filterSelectedDate) }, 200);
+    })
   }
 
-  setAllDatesArray() {
+  setAllDatesArray(allOperations: IOperation[]) {
     this.allDatesArray = [];
-    const allOperations = this.localStorage
-      .allOperations()
-      .sort((a, b) => a.date.getTime() - b.date.getTime());
+    allOperations.sort((a, b) => a.date.getTime() - b.date.getTime());
     for (const operation of allOperations) {
       const name = <string>this.datePipe.transform(operation.date, this.datePattern);
       if (this.allDatesArray.map((a) => a.name).includes(name)) {
@@ -71,23 +80,37 @@ export class DateCarousel {
 
   setDefaultItem() {
     const today: Date = new Date();
-    const todayFormat = <string>this.datePipe.transform(today, this.datePattern);
-    if (this.allDatesArray.find((a) => a.name === todayFormat)) {
+    if (this.allDatesArray.find((a) => a.name === this.datePipe.transform(today, this.datePattern))) {
       this.filter.setDate(today);
     } else {
-      this.filter.setDate(this.allDatesArray[this.allDatesArray.length - 1]?.date);
+      const lastDate = this.allDatesArray[this.allDatesArray.length - 1]?.date
+      this.filter.setDate(lastDate);
     }
   }
 
   ///////////////////////////////////////////////////////////////////////
 
-  calcWidth(length: number) {
-    return (11 - length) * 100 + 'px';
+  calcWidth(filterInterval: string) {
+    let result = 0;
+    switch(filterInterval){
+      case 'day': 
+        result = 100;
+        break;
+      case 'month':
+        result = 350;
+        break;
+      case 'year': 
+        result = 500;
+        break;
+      default: 
+        result = 200;
+        break;
+    }
+    this.buttonsWidth = result;
   }
 
   navigateToItem(currentDate: Date) {
     const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
-    // console.log(children)
     Array.from(children).forEach((child: unknown) => {
       const element = child as HTMLElement;
       const text = element.textContent?.trim();
@@ -96,7 +119,6 @@ export class DateCarousel {
         const containerCenter = containerWidth / 2;
         const elemCenter = element.offsetLeft + element.offsetWidth / 2;
         this.position = containerCenter - elemCenter;
-        // console.log(this.position)
       }
     });
   }
@@ -106,15 +128,10 @@ export class DateCarousel {
     this.navigateToItem(newDate);
   }
 
-  isSelectedDate(date: Date): boolean {
-    const currentDate = <string>this.datePipe.transform(date, this.datePattern);
-    const filterDate = <string>this.datePipe.transform(this.filter.date(), this.datePattern);
-    return currentDate === filterDate;
+  setFormatSelectedDate(filterDate: Date): void {
+    this.formatSelectedDay = <string>this.datePipe.transform(filterDate, this.datePattern);
   }
 
-  isSameDay(date1: Date, date2: Date): boolean {
-    return date1.getTime() === date2.getTime();
-  }
 
   @HostListener('window:resize')
   onWindowResize() {

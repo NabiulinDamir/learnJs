@@ -57,7 +57,7 @@ export class ChartDataset implements OnDestroy {
     const theme = this.theme.darkTheme() ? 'dark' : '';
     const chartDom = document.getElementById('chart-container');
     if(!chartDom?.clientHeight){ return };
-    chartDom?.removeAttribute('_echarts_instance_');
+    this._chart?.dispose();
     this._chart = echarts.init(chartDom, theme);
     this._chart.off('click');
     this._chart.on('click', (params: any) => {

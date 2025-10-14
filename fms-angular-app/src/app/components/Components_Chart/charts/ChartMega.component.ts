@@ -51,7 +51,7 @@ export class ChartMega implements OnDestroy {
   init(): void {
     const theme = this.theme.darkTheme() ? 'dark' : '';
     const chartDom = document.getElementById('chart-container');
-    chartDom?.removeAttribute('_echarts_instance_');
+    this._chart?.dispose();
     if (chartDom?.clientHeight === 0) return;
     this._chart = echarts.init(chartDom, theme);
   }

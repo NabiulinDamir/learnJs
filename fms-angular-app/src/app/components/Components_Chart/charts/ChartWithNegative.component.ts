@@ -56,7 +56,7 @@ export class ChartWithNegative implements OnDestroy {
   init(): void {
     const theme = this.theme.darkTheme() ? 'dark' : '';
     const chartDom = document.getElementById('chart-negative-container');
-    chartDom?.removeAttribute('_echarts_instance_');
+    this._chart?.dispose();
     if (!chartDom?.clientHeight) {
       return;
     }

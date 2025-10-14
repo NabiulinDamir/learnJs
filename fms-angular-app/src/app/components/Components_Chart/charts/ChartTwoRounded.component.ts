@@ -71,8 +71,8 @@ export class ChartTwoRounded implements OnDestroy {
     if (!chartDomIncome?.clientHeight || !chartDomExpens?.clientHeight) {
       return;
     }
-    chartDomIncome?.removeAttribute('_echarts_instance_');
-    chartDomExpens?.removeAttribute('_echarts_instance_');
+    this._incomeChart?.dispose();
+    this._expensChart?.dispose();
     this._incomeChart = echarts.init(chartDomIncome, theme);
     this._expensChart = echarts.init(chartDomExpens, theme);
   }
