@@ -15,7 +15,7 @@ import { Filter } from '../../../servises/filter.service';
             class="nav-link w-5-rem d-flex justify-content-center p-1 "
             pointner
             aria-current="page"
-            [class.active]="filter.interval() === 'day'"
+            [class.active]="interval === 'day'"
             (click)="filter.setIntervalDay(); onIntervalChange.emit();"
             >День</a
           >
@@ -25,7 +25,7 @@ import { Filter } from '../../../servises/filter.service';
             class="nav-link w-5-rem d-flex justify-content-center p-1"
             pointner
             aria-current="page"
-            [class.active]="filter.interval() === 'month'"
+            [class.active]="interval === 'month'"
             (click)="filter.setIntervalMonth(); onIntervalChange.emit();"
             >Месяц</a
           >
@@ -35,7 +35,7 @@ import { Filter } from '../../../servises/filter.service';
             class="nav-link w-5-rem d-flex justify-content-center p-1"
             pointner
             aria-current="page"
-            [class.active]="filter.interval() === 'year'"
+            [class.active]="interval === 'year'"
             (click)="filter.setIntervalYear(); onIntervalChange.emit();"
             >Год</a
           >
@@ -47,6 +47,11 @@ import { Filter } from '../../../servises/filter.service';
   providers: [],
 })
 export class IntervalSelector {
-    onIntervalChange = output<void>();
-  constructor(public filter: Filter) {}
+  onIntervalChange = output<void>();
+  public interval: string = '';
+  constructor(public filter: Filter) {
+    effect(() => {
+      this.interval = filter.interval();
+    })
+  }
 }

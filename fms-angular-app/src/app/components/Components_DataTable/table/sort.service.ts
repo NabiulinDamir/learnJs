@@ -1,4 +1,4 @@
-import { Injectable, input, signal } from '@angular/core';
+import { Injectable, input, signal, computed } from '@angular/core';
 import { IOperation } from '../../../models/dataTypes.model';
 
 @Injectable()
@@ -6,7 +6,7 @@ export class Sort {
   private _option = signal<string>('date');
   private _increasing = signal<boolean>(false);
 
-  public setOption(optionName: string): void {
+  public set option(optionName: string) {
     if (optionName !== this._option()) {
       this._option.set(optionName);
       this._increasing.set(false);
@@ -20,20 +20,15 @@ export class Sort {
     this._increasing.set(false);
   }
 
-  public getMarker(option: string): string {
-    if (option !== this._option()) {
-      return '';
-    }
-    if (this._increasing()) {
-      return ' ᨈ';
-    }
-    return ' ᨆ';
+  public get option():string{
+    return this._option();
   }
 
+  public marker = computed(() => this._increasing() ? ' ᨈ' : ' ᨆ' )
+
   public sort(array: IOperation[]): IOperation[] {
-    //!!!Оптимизация не мертва ура!!!
     let result: IOperation[] = [];
-    // console.log('Сортировка');
+    //console.log('Сортировка');
     const koef = this._increasing() ? -1 : 1;
     switch (this._option()) {
       case 'value':

@@ -21,7 +21,7 @@ import { Filter } from '../../servises/filter.service';
                 <a class="nav-link " routerLink="/" [class.active]="router.url === '/' ? 'page' : null">Главная</a>
               </li>
               <li class="nav-item ">
-                <a class="nav-link" routerLink="charts" [class.active]="router.url === '/charts' ? 'page' : null">Статистика {{ filter.date()?.getFullYear() }}</a>
+                <a class="nav-link" routerLink="charts" [class.active]="router.url === '/charts' ? 'page' : null">Статистика {{ statisticYear }}</a>
               </li>
             </ul>
             <ul class="navbar-nav mb-2 mb-lg-0 d-flex">
@@ -47,8 +47,11 @@ import { Filter } from '../../servises/filter.service';
 export class Header {
   public IsLoading: boolean = false;
   public imagePath = computed(() => this.theme.darkTheme() ? 'assets/images/moon.svg' : 'assets/images/sun.svg')
+  public statisticYear: number = 2025;
   
-  constructor(public theme: Theme, public localStorage: LocalStorage, public router: Router, public filter: Filter) {}
+  constructor(public theme: Theme, public localStorage: LocalStorage, public router: Router, public filter: Filter) {
+    this.statisticYear = filter.date()?.getFullYear();
+  }
 
   public async setDefaultData(): Promise<void> {
     this.IsLoading = true;
