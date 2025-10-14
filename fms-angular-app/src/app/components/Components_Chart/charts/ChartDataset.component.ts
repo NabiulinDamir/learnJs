@@ -1,11 +1,8 @@
 import {
   Component,
   OnDestroy,
-  ElementRef,
   HostListener,
-  computed,
   effect,
-  signal,
 } from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../servises/LocalStorage.service';

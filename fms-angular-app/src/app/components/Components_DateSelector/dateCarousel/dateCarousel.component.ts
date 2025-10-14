@@ -1,4 +1,4 @@
-import { Component, effect, viewChild } from '@angular/core';
+import { Component, effect, viewChild, HostListener } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { SelectableDirective } from '../../../directives/selectable.directive';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
@@ -114,6 +114,11 @@ export class DateCarousel {
 
   isSameDay(date1: Date, date2: Date): boolean {
     return date1.getTime() === date2.getTime();
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.navigateToItem(this.filter.date());
   }
 
   public get datePattern(): string {
