@@ -1,38 +1,15 @@
-import {
-  Component,
-  OnDestroy,
-  ElementRef,
-  HostListener,
-  computed,
-  effect,
-  signal,
-} from '@angular/core';
+import { Component, OnDestroy, HostListener, effect } from '@angular/core';
 import * as echarts from 'echarts';
-import { LocalStorage } from '../../../servises/LocalStorage.service';
+import { LocalStorage } from '../../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
-import { Filter } from '../../../servises/filter.service';
-import { IOperation } from '../../../models/dataTypes.model';
-import { Theme } from '../../../servises/theme.service';
+import { Filter } from '../../../../servises/filter.service';
+import { IOperation } from '../../../../models/dataTypes.model';
+import { Theme } from '../../../../servises/theme.service';
 
 @Component({
   selector: 'my-chart-negative',
   providers: [DatePipe],
-  template: `
-    <div class="position-relative w-100 d-flex justify-content-around h-100 ">
-      <div
-        id="chart-negative-container"
-        [class.opacity-50]="!hasData"
-        style="width: 70rem; max-width: 100vw;"
-      ></div>
-      @if(!hasData){
-      <div
-        class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center"
-      >
-        Нет данных
-      </div>
-      }
-    </div>
-  `,
+  templateUrl: './chartWithNegative.html',
 })
 export class ChartWithNegative implements OnDestroy {
   private _chart: echarts.ECharts | undefined = undefined;

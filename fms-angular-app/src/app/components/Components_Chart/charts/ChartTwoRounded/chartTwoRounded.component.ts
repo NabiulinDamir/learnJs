@@ -5,36 +5,16 @@ import {
   effect,
 } from '@angular/core';
 import * as echarts from 'echarts';
-import { LocalStorage } from '../../../servises/LocalStorage.service';
+import { LocalStorage } from '../../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
-import { Filter } from '../../../servises/filter.service';
-import { IOperation } from '../../../models/dataTypes.model';
-import { Theme } from '../../../servises/theme.service';
+import { Filter } from '../../../../servises/filter.service';
+import { IOperation } from '../../../../models/dataTypes.model';
+import { Theme } from '../../../../servises/theme.service';
 
 @Component({
   selector: 'my-chart-two-rounded',
   providers: [DatePipe],
-  template: `
-    <div class="position-relative h-100 w-100 d-flex justify-content-around">
-      <div
-        id="my-chart-rounded-income"
-        [class.opacity-50]="!hasData"
-        style="width: 30rem; max-width: 40vw;"
-      ></div>
-      <div
-        id="my-chart-rounded-expens"
-        [class.opacity-50]="!hasData"
-        style="width: 30rem; max-width: 40vw;"
-      ></div>
-      @if(!hasData){
-      <div
-        class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center"
-      >
-        Нет данных
-      </div>
-      }
-    </div>
-  `,
+  templateUrl: './chartTwoRounded.html',
 })
 export class ChartTwoRounded implements OnDestroy {
   private _incomeChart: echarts.ECharts | undefined = undefined;

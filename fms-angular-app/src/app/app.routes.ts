@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { MainPage } from './pages/mainPage.component';
+import { MainPage } from './pages/mainPage/mainPage.component';
 export const routes: Routes = [
   {
     path: '',
@@ -9,6 +9,6 @@ export const routes: Routes = [
   {
     path: 'charts',
     title: 'ChartsPage',
-    loadComponent: () => import('./pages/chartsPage.component').then((m) => m.ChartsPage),
+    loadComponent: () => import('./pages/chartPage/chartPage.component').then((m) => m.ChartsPage),
   }
 ];

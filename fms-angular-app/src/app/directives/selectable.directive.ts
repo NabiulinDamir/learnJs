@@ -1,11 +1,4 @@
-import {
-  Directive,
-  HostListener,
-  Input,
-  ElementRef,
-  Renderer2,
-  SimpleChanges,
-} from '@angular/core';
+import { Directive, HostListener, Input, ElementRef, Renderer2, SimpleChanges } from '@angular/core';
 
 @Directive({
   selector: '[selectable]',

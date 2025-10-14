@@ -9,29 +9,7 @@ import { IOperation } from '../../../models/dataTypes.model';
 
 @Component({
   selector: 'my-date-carousel',
-  template: `
-    <div class="position-relative h-2-rem overflow-x-hidden">
-      <ul
-        #option_list
-        class="nav position-absolute p-1 h-100 d-flex flex-nowrap gap-2"
-        movable
-        [left]="position"
-      >
-        @for(item of allDatesArray; track $index){
-        <li
-          class="rounded-3 d-flex justify-content-center th-background-second th-text"
-          [style.width]="buttonsWidth + 'px'"
-          (click)="selectDate(item.date)"
-          selectable
-          pointner
-          [class.th-primmary]="item.name === formatSelectedDay"
-        >
-          {{ item.name }}
-        </li>
-        }
-      </ul>
-    </div>
-  `,
+  templateUrl: './dateCarousel.html',
   imports: [MovableDirective, SelectableDirective, PointnerDirective],
   providers: [DatePipe],
 })
