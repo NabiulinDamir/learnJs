@@ -7,7 +7,7 @@ export default class localDB {
   private _timeDelay = 200;
   private open(): Promise<IDBDatabase> {
     return new Promise((resolve, reject) => {
-      const openRequest = indexedDB.open('localDB', 1);
+      const openRequest = indexedDB.open('localDB', 3);
 
       openRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
         const target = event.target as IDBOpenDBRequest;
