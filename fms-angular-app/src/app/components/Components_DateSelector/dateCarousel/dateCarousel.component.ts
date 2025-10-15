@@ -1,4 +1,4 @@
-import { Component, effect, viewChild, HostListener, untracked } from '@angular/core';
+import { Component, effect, viewChild, HostListener, untracked, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { SelectableDirective } from '../../../directives/selectable.directive';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
@@ -14,110 +14,70 @@ import { IOperation } from '../../../models/dataTypes.model';
   providers: [DatePipe],
 })
 export class DateCarousel {
-  public position: number = 0;
-  public allDatesArray: { name: string; date: Date }[] = [];
+  public slidePosition: number = 0;
+  
   private ELEMENT_LIST_PARRENT = viewChild<any>('option_list');
 
-  public interval: string = '';
-
-  /////Вынес в переменные/////
-  public buttonsWidth: number = 0;
-  public formatSelectedDay: string = '';
-  /////Вынес в переменные/////
-
-  constructor(
-    localStorage: LocalStorage,
-    public datePipe: DatePipe,
-    public filter: Filter
-  ) {
-    effect(() => {
-      const allOperations = localStorage.allOperations();
-      this.interval = filter.interval();
-      this.setAllDatesArray(allOperations);
-      this.setDefaultItem();
-      this.calcWidth(this.interval);
-    });
-    effect(() => {
-      const filterSelectedDate = filter.date();
-      this.setFormatSelectedDate(filterSelectedDate);
-      setTimeout(() => { this.navigateToItem(filterSelectedDate) }, 200);
-    })
+  constructor(public localStorage: LocalStorage, public datePipe: DatePipe, public filter: Filter) {
+    effect(() => this.navigateToItem())
   }
 
-  setAllDatesArray(allOperations: IOperation[]) {
-    this.allDatesArray = [];
-    allOperations.sort((a, b) => a.date.getTime() - b.date.getTime());
-    for (const operation of allOperations) {
-      const name = <string>this.datePipe.transform(operation.date, this.datePattern);
-      if (this.allDatesArray.map((a) => a.name).includes(name)) {
-        continue;
-      }
-      this.allDatesArray.push({ name: name, date: operation.date });
-    }
-  }
-
-  setDefaultItem() {
+  public setDefaultItem = effect(() => {
+    // console.log('Дефолт');
+    const dates = this.allDatesArray();
+    const pattern = this.datePattern();
     const today: Date = new Date();
-    if (this.allDatesArray.find((a) => a.name === this.datePipe.transform(today, this.datePattern))) {
+
+    if (dates.find((a) => a.name === this.datePipe.transform(today, pattern))) {
       this.filter.setDate(today);
     } else {
-      const lastDate = this.allDatesArray[this.allDatesArray.length - 1]?.date
+      const lastDate = dates[dates.length - 1]?.date;
       this.filter.setDate(lastDate);
     }
-  }
+  })
 
-  ///////////////////////////////////////////////////////////////////////
-
-  calcWidth(filterInterval: string) {
-    let result = 0;
-    switch(filterInterval){
-      case 'day': 
-        result = 100;
-        break;
-      case 'month':
-        result = 350;
-        break;
-      case 'year': 
-        result = 500;
-        break;
-      default: 
-        result = 200;
-        break;
-    }
-    this.buttonsWidth = result;
-  }
-
-  navigateToItem(currentDate: Date) {
-    const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
-    Array.from(children).forEach((child: unknown) => {
-      const element = child as HTMLElement;
-      const text = element.textContent?.trim();
-      if (text === this.datePipe.transform(currentDate, this.datePattern)) {
-        const containerWidth = window.innerWidth;
-        const containerCenter = containerWidth / 2;
-        const elemCenter = element.offsetLeft + element.offsetWidth / 2;
-        this.position = containerCenter - elemCenter;
+  public allDatesArray = computed(() => {
+    // console.log('Операции');
+    const pattern = this.datePattern();
+    let allDates = structuredClone(this.localStorage.allOperations());
+    let result: { name: string; date: Date }[] = [];
+    allDates.sort((a, b) => a.date.getTime() - b.date.getTime());
+    for (const operation of allDates) {
+      const name = <string>this.datePipe.transform(operation.date, pattern);
+      if (result.map((a) => a.name).includes(name)) {
+        continue;
       }
-    });
-  }
+      result.push({ name: name, date: operation.date });
+    }
+    return result;
+  });
 
-  selectDate(newDate: Date): void {
-    this.filter.setDate(newDate);
-    this.navigateToItem(newDate);
-  }
+  public buttonsWidth = computed(() => {
+    //console.log('ширина');
+    const interval = this.filter.interval();
+    switch (interval) {
+      case 'day':
+        return 100;
+      case 'month':
+        return 350;
+      case 'year':
+        return 500;
+      default:
+        return 200;
+    }
+  });
 
-  setFormatSelectedDate(filterDate: Date): void {
-    this.formatSelectedDay = <string>this.datePipe.transform(filterDate, this.datePattern);
-  }
+  public formatSelectedDate = computed(() => {
+    //console.log('Формат');
+    const pattern = this.datePattern();
+    const date = this.filter.date();
+    return <string>this.datePipe.transform(date, pattern);
+  });
 
-
-  @HostListener('window:resize')
-  onWindowResize() {
-    this.navigateToItem(this.filter.date());
-  }
-
-  public get datePattern(): string {
-    switch (this.interval) {
+  public datePattern = computed(() => {
+    //console.log('паттерн');
+    const interval = this.filter.interval()
+    switch (interval) {
       case 'day':
         return 'dd.MM.yyyy';
       case 'month':
@@ -127,5 +87,36 @@ export class DateCarousel {
       default:
         return 'dd.MM.yyyy';
     }
+  });
+
+  public navigateToItem(){
+    const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
+    const pattern = this.datePattern();
+    const date = this.filter.date();
+    setTimeout(() => {
+      //console.log('Навигация');
+      Array.from(children).forEach((child: unknown) => {
+        const element = child as HTMLElement;
+        const text = element.textContent?.trim();
+        if (text === this.datePipe.transform(date, pattern)) {
+          const containerWidth = window.innerWidth;
+          const containerCenter = containerWidth / 2;
+          const elemCenter = element.offsetLeft + element.offsetWidth / 2;
+          this.slidePosition = containerCenter - elemCenter;
+        }
+      });
+    }, 100);
   }
+
+  selectDate(newDate: Date): void {
+    //console.log('Выбор даты');
+    this.filter.setDate(newDate);
+  }
+
+  @HostListener('window:resize')
+  onWindowResize() {
+    this.navigateToItem();
+  }
+
+
 }

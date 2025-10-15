@@ -1,4 +1,4 @@
-import { Component, input, computed, viewChild, effect} from '@angular/core';
+import { Component, input, computed, viewChild, effect, signal} from '@angular/core';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { Table } from '../table/table.component';
 import { Modal } from '../../../shared/ui/modal/modal';
@@ -12,16 +12,11 @@ import { Filter } from '../../../servises/filter.service';
   imports: [Table, Modal, Form],
 })
 export class CrudTableComponent {
-  dataType = input<string>('');
-
-  //////////////////////////////////////////////////////////////
-
-  public loadModal: boolean = false;
-
+  public dataType = input<string>('');
+  public loadModal = signal(false);
   public selectedOperations: IOperation[] = [];
 
-  //////////////////////////////////////////////////////////////
-
+  private tmpEditOperationKey: number | undefined = undefined;
   private ELEMENT_TABLE = viewChild<any>('table');
 
   private ELEMENT_MODAL_CREATE = viewChild<any>('modal_create');
@@ -30,10 +25,6 @@ export class CrudTableComponent {
 
   private ELEMENT_FORM_UPDATE = viewChild<any>('form_update');
   private ELEMENT_FORM_CREATE = viewChild<any>('form_create');
-
-  /////////////////////////////////////////////////////////////
-
-  private tmpEditOperationKey: number | undefined = undefined;
 
   constructor(protected localStorage: LocalStorage, public filter: Filter) {
     effect(() => {
@@ -44,36 +35,41 @@ export class CrudTableComponent {
 
   /////////////////////////////////////////////////////////////
 
-  operations = computed((): IOperation[] => this.localStorage.filter(this.localStorage.getOperationsByType(this.dataType())));
+  operations = computed((): IOperation[] => {
+    const dataType = this.dataType(); 
+    return this.localStorage.filter(this.localStorage.getOperationsByType(dataType))
+  });
 
   categoriesStringArr = computed((): string[] => this.localStorage.getCategoriesByType(this.dataType()).map((a) => a.name));
 
   /////////////////////////////////////////////////////////////
 
-  get tableTitleRu(): string {
-    if (this.dataType() == 'income') { return 'Доходы'; } 
-    else if (this.dataType() == 'expens') { return 'Расходы'; } 
+  public tableTitleRu = computed((): string => {
+    const dataType = this.dataType();
+    if (dataType == 'income') { return 'Доходы'; } 
+    else if (dataType == 'expens') { return 'Расходы'; } 
     else { return 'Неопределенно'; }
-  }
+  })
 
-  get modalTypeRu(): string {
-    if (this.dataType() == 'income') { return 'доход'; } 
-    else if (this.dataType() == 'expens') { return 'расход'; } 
+  public modalTypeRu = computed((): string => {
+    const dataType = this.dataType();
+    if (dataType == 'income') { return 'доход'; } 
+    else if (dataType == 'expens') { return 'расход'; } 
     else { return 'Неопределенно'; }
-  }
+  })
 
   /////////////////////////////////////////////////////////////
 
   async createOperation({ value, category, date}: { value: number; category: string; date: Date; }): Promise<void>  {
-    this.loadModal = true;
+    this.loadModal.set(true);
     const type = this.dataType();
     await this.localStorage.createOperation({ type, value, category, date });
-    this.loadModal = false;
+    this.loadModal.set(false);
     this.ELEMENT_MODAL_CREATE().hide();
   }
 
   async updateOperation({ value, category, date, }: { value: number; category: string; date: Date; }): Promise<void>  {
-    this.loadModal = true;
+    this.loadModal.set(true);
     const type = this.dataType();
     if (this.tmpEditOperationKey == undefined) {
       alert('Произошла ошибка, попробуйте удалить виндовс');
@@ -82,14 +78,14 @@ export class CrudTableComponent {
     }
     const id = <number>this.tmpEditOperationKey;
     await this.localStorage.updateOperation({ id, type, value, category, date });
-    this.loadModal = false;
+    this.loadModal.set(false);
     this.ELEMENT_MODAL_UPDATE().hide();
   }
 
   async deleteSelectedOperations(): Promise<void> {
-    this.loadModal = true;
+    this.loadModal.set(true);
     await this.localStorage.deleteOperations(this.selectedOperations);
-    this.loadModal = false;
+    this.loadModal.set(false);
     this.selectedOperations = [];
     this.ELEMENT_MODAL_DELETE().hide();
   }

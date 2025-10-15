@@ -13,10 +13,5 @@ import { Filter } from '../../../servises/filter.service';
 })
 export class IntervalSelector {
   onIntervalChange = output<void>();
-  public interval: string = '';
-  constructor(public filter: Filter) {
-    effect(() => {
-      this.interval = filter.interval();
-    })
-  }
+  constructor(public filter: Filter) {}
 }

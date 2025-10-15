@@ -53,6 +53,7 @@ export class ChartDataset implements OnDestroy {
   updateOption(){
     const data = this.localStorage.filter(this.localStorage.allOperations());
     const formattedData = this.format(data)
+    const intervalLocaleRu = this.filter.intervalLocale()
     this._option = {
       backgroundColor: 'transparent',
       tooltip: { trigger: 'axis' },
@@ -61,7 +62,7 @@ export class ChartDataset implements OnDestroy {
         itemGap: 5,
       },
       title: {
-        text: `Операции за ${this.filter.intervalLocale}`,
+        text: `Операции за ${intervalLocaleRu}`,
         position: 'top',
       },
       dataset: {
@@ -104,11 +105,10 @@ export class ChartDataset implements OnDestroy {
 
   format(data: IOperation[]): { name: string; income: number; expens: number; date: Date }[] {
     const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
-
     const resultMap = new Map();
 
-    let currentDate = new Date(this.filter.startInterval);
-    let endDate = new Date(this.filter.endInterval);
+    let currentDate = new Date(this.filter.startInterval());
+    let endDate = new Date(this.filter.endInterval());
 
     do {
       const key = this.formatDate(currentDate);

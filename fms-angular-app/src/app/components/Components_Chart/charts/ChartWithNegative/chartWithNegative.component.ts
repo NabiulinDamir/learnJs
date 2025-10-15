@@ -51,6 +51,7 @@ export class ChartWithNegative implements OnDestroy {
 
   updateOption(): void {
     const data = this.format(this.localStorage.filter(this.localStorage.allOperations()));
+    const intervalLocaleRu = this.filter.intervalLocale()
     this._option = {
       backgroundColor: 'transparent',
       tooltip: {
@@ -60,7 +61,7 @@ export class ChartWithNegative implements OnDestroy {
         },
       },
       title: {
-        text: `Орерации за ${this.filter.intervalLocale}`,
+        text: `Орерации за ${intervalLocaleRu}`,
         position: 'top',
       },
       grid: {
@@ -127,8 +128,8 @@ export class ChartWithNegative implements OnDestroy {
 
     const resultMap = new Map();
 
-    let currentDate = new Date(this.filter.startInterval);
-    let endDate = new Date(this.filter.endInterval);
+    let currentDate = new Date(this.filter.startInterval());
+    let endDate = new Date(this.filter.endInterval());
 
     do {
       const key = this.formatDate(currentDate);

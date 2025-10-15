@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, signal } from '@angular/core';
+import { Injectable, EventEmitter, signal, computed } from '@angular/core';
 import { IOperation, ICategory, IFilterOption } from '../models/dataTypes.model';
 import localDB from './indexDB.service';
 
@@ -11,7 +11,7 @@ export class Filter {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
 
-  public get intervalLocale(): string {
+  public intervalLocale = computed((): string => {
     switch (this.interval()) {
       case 'day':
         return 'день';
@@ -22,40 +22,42 @@ export class Filter {
       default:
         return 'пасхалка';
     }
-  }
+  })
 
-  public get startInterval(): Date {
+  public startInterval = computed((): Date => {
+    const interval = this.interval();
     const result = new Date(this.date());
     if (!this.date()) { return new Date(); }
     result.setHours(0, 0, 0);
-    if (this.interval() === 'month') { result.setDate(1); }
-    if (this.interval() === 'year') { result.setDate(1); result.setMonth(0); }
+    if (interval === 'month') { result.setDate(1); }
+    if (interval === 'year') { result.setDate(1); result.setMonth(0); }
     return result;
-  }
+  })
 
-  public get endInterval(): Date {
+  public endInterval = computed((): Date => {
+    const interval = this.interval();
     const result = new Date(this.date());
     if (!this.date()) { return new Date() }
     result.setHours(23, 59, 59);
-    if (this.interval() === 'month') { result.setMonth(result.getMonth() + 1, 0); }
-    if (this.interval() === 'year') { result.setMonth(11, 31); }
+    if (interval === 'month') { result.setMonth(result.getMonth() + 1, 0); }
+    if (interval === 'year') { result.setMonth(11, 31); }
     return result;
-  }
+  })
 
-  public get startYearInteval(): Date {
+  public startYearInteval = computed((): Date => {
     const result = new Date(this.date());
     result.setHours(0, 0, 0);
     result.setDate(1);
     result.setMonth(0);
     return result;
-  }
+  })
 
-  public get endYearInteval(): Date {
+  public endYearInteval = computed((): Date => {
     const result = new Date(this.date());
     result.setHours(23, 59, 59);
     result.setMonth(11, 31);
     return result;
-  }
+  })
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
@@ -98,8 +100,8 @@ export class Filter {
     if (!this.date()) {
       return [];
     }
-    const startInterval = this.startInterval;
-    const endInterval = this.endInterval;
+    const startInterval = this.startInterval();
+    const endInterval = this.endInterval();
     return array.filter((a) => a.date >= startInterval && a.date <= endInterval);
   }
 }

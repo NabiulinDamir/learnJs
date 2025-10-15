@@ -17,11 +17,7 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
 
-  public filter(arr: IOperation[]): IOperation[] {
-    return this._filter.filter(arr);
-  };
-
-  allOperations = computed((): IOperation[] => {
+  public allOperations = computed((): IOperation[] => {
     return this._operations();
   });
 
@@ -32,6 +28,10 @@ export class LocalStorage {
   getCategoriesByType(type: string): ICategory[] {
     return this._categories().filter((obj) => obj.type === type) || [];
   }
+
+  public filter(arr: IOperation[]): IOperation[] {
+    return this._filter.filter(arr);
+  };
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 

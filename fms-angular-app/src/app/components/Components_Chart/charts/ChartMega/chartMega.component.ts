@@ -227,8 +227,8 @@ export class ChartMega implements OnDestroy {
   formatToMonth(data: IOperation[]): { name: string; value: number }[] {
     const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
     const resultMap = new Map();
-    let currentDate = new Date(this.filter.startYearInteval);
-    let endDate = new Date(this.filter.endYearInteval);
+    let currentDate = new Date(this.filter.startYearInteval());
+    let endDate = new Date(this.filter.endYearInteval());
     do {
       const key = this.datePipe.transform(isNaN(currentDate.getTime()) ? new Date() : currentDate, 'MMMM');
       resultMap.set(key, { name: key, value: 0 });
