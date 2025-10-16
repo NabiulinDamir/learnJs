@@ -16,4 +16,3 @@ export interface IFilterOption {
   length: string;               // 'day' || 'month' || 'year'
   date: Date;                   // {dateObject}- выбранный день-месяц-год
 }
-

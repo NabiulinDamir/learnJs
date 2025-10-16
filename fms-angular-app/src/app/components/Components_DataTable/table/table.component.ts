@@ -46,19 +46,19 @@ export class Table {
   ///////////////////////////////////////////////////////////////////////
 
   public setFilterOptionValue(): void {
-    this.sortService.option = ('value');
+    this.sortService.setValue();
   }
 
   public setFilterOptionCategory(): void {
-    this.sortService.option = ('category');
+    this.sortService.setCategory();
   }
 
   public setFilterOptionDate(): void {
-    this.sortService.option = ('date');
+    this.sortService.setDate();
   }
 
   public setFilterOptionTime(): void {
-    this.sortService.option = ('time');
+    this.sortService.setTime();
   }
   ///////////////////////////////////////////////////////////////////////
 

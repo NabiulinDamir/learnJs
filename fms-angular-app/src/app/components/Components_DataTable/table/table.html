@@ -3,16 +3,16 @@
         <thead>
             <tr class="h-3-rem align-middle ">
                 <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionCategory()">
-                    Категория{{ sortService.option === 'category' ? sortService.marker() : ""  }}
+                    Категория{{ sortService.isCategory ? sortService.marker() : "" }}
                 </th>
                 <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionValue()">
-                    Сумма{{ sortService.option === 'value' ? sortService.marker() : "" }}
+                    Сумма{{ sortService.isValue ? sortService.marker() : "" }}
                 </th>
                 <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionDate()">
-                    Дата{{ sortService.option === 'date' ? sortService.marker() : "" }}
+                    Дата{{ sortService.isDate ? sortService.marker() : "" }}
                 </th>
                 <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionTime()">
-                    Время{{ sortService.option === 'time' ? sortService.marker() : "" }}
+                    Время{{ sortService.isTime ? sortService.marker() : "" }}
                 </th>
                 <th class="bg-primary text-color-light user-select-none"></th>
             </tr>

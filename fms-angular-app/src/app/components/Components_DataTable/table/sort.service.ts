@@ -1,14 +1,23 @@
 import { Injectable, input, signal, computed } from '@angular/core';
 import { IOperation } from '../../../models/dataTypes.model';
 
+enum SortOption {
+  DATE,
+  VALUE,
+  TIME,
+  CATEGORY,
+}
+
 @Injectable()
 export class Sort {
-  private _option = signal<string>('date');
+
+
+  private _option = signal<SortOption>(SortOption.DATE);
   private _increasing = signal<boolean>(false);
 
-  public set option(optionName: string) {
-    if (optionName !== this._option()) {
-      this._option.set(optionName);
+  private set option(option: SortOption) {
+    if (option !== this._option()) {
+      this._option.set(option);
       this._increasing.set(false);
       return;
     }
@@ -16,44 +25,54 @@ export class Sort {
       this._increasing.set(true);
       return;
     }
-    this._option.set('date');
+    this._option.set(SortOption.DATE);
     this._increasing.set(false);
   }
 
-  public get option(): string{
-    return this._option();
-  }
+  public marker = computed(() => {
+    if (this._option() === SortOption.DATE && !this._increasing()) return ""
+    return this._increasing() ? ' ᨈ' : ' ᨆ'
+  })
 
-  public marker = computed(() => this._increasing() ? ' ᨈ' : ' ᨆ' )
-
-  public sort(array: IOperation[]): IOperation[] {
-    let result: IOperation[] = [];
+  public sort(array: IOperation[]) {
     //console.log('Сортировка');
     const koef = this._increasing() ? -1 : 1;
     switch (this._option()) {
-      case 'value':
-        result = array.sort((a, b) => (b.value - a.value) * koef);
-        break;
-      case 'date':
-        result = array.sort((a, b) => (b.date.getTime() - a.date.getTime()) * koef);
-        break;
-      case 'time':
-        result = array.sort(
+      case SortOption.VALUE:
+        return array.sort((a, b) => (b.value - a.value) * koef);
+      case SortOption.DATE:
+        return array.sort((a, b) => (b.date.getTime() - a.date.getTime()) * koef);
+      case SortOption.TIME:
+        return array.sort(
           (a, b) =>
             (b.date.getHours() - a.date.getHours() ||
               b.date.getMinutes() - a.date.getMinutes() ||
               b.date.getSeconds() - a.date.getSeconds()) * koef
         );
-        break;
-      case 'category':
-        result = array.sort((a, b) => {
+      case SortOption.CATEGORY:
+        return array.sort((a, b) => {
           return b.category.localeCompare(a.category) * koef;
         });
-        break;
       default:
-        result = array;
-        break;
+        return array;
+
     }
-    return result;
   }
+
+  public get isValue(): boolean { return this._option() === SortOption.VALUE; }
+
+  public get isDate(): boolean { return this._option() === SortOption.DATE; }
+
+  public get isTime(): boolean { return this._option() === SortOption.TIME; }
+
+  public get isCategory(): boolean { return this._option() === SortOption.CATEGORY; }
+
+  public setValue(): void { this.option = SortOption.VALUE; }
+
+  public setDate(): void { this.option = SortOption.DATE; }
+
+  public setTime(): void { this.option = SortOption.TIME; }
+
+  public setCategory(): void { this.option = SortOption.CATEGORY; }
 }
+
