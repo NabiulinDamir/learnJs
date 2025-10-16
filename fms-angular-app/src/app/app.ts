@@ -6,11 +6,7 @@ import { LocalStorage } from './servises/LocalStorage.service';
   selector: 'app-root',
   imports: [RouterOutlet, Header],
   providers: [LocalStorage],
-  template: `
-  <main class="main">
-    <my-header/>
-    <router-outlet />
-  </main>`,
+  templateUrl: './app.html',
 })
 export class App {
   protected readonly title = signal('fms-angular-app');

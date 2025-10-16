@@ -83,7 +83,7 @@ export default class localDB {
   }
 
   //Редактировать/заменить/добавить по ключу
-  private async set(storeKey: string, newObj: IOperation | ICategory) {
+  private async setByObject(storeKey: string, newObj: IOperation | ICategory) {
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
@@ -110,7 +110,7 @@ export default class localDB {
   }
 
   //отчистить поле по ключу
-  private async clear(storeKey: string) {
+  private async clearStore(storeKey: string) {
     const db = await this.open();
     const transaction = db.transaction(storeKey, 'readwrite');
     const store = transaction.objectStore(storeKey);
@@ -181,7 +181,7 @@ export default class localDB {
       if (!(await this.keyOf('categories', newObj.category))) {
         await this.createCategory({ name: newObj.category, type: newObj.type });
       }
-      result = await this.set('operations', newObj);
+      result = await this.setByObject('operations', newObj);
     } catch (error) {
       console.error('Ошибка в обновлении оперпции: ', error);
     }
@@ -231,7 +231,7 @@ export default class localDB {
     await new Promise((resolve) => setTimeout(resolve, this._timeDelay));
     let result: any;
     try {
-      result = await this.set('categories', newObj);
+      result = await this.setByObject('categories', newObj);
     } catch (error) {
       console.error('Ошибка в обновлении категории: ', error);
     }
@@ -241,8 +241,8 @@ export default class localDB {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////Установка дефолтных значений
 
   public async setDefaultData(): Promise<void> {
-    await this.clear('operations');
-    await this.clear('categories');
+    await this.clearStore('operations');
+    await this.clearStore('categories');
 
     for (const element of testData.operations) {
       const newObj = {

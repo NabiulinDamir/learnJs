@@ -1,7 +1,4 @@
-import { Component, input, output, computed, model, effect } from '@angular/core';
-import { DecimalPipe, DatePipe, CurrencyPipe } from '@angular/common';
-import { SelectableDirective } from '../../../directives/selectable.directive';
-import { LocalStorage } from '../../../servises/LocalStorage.service';
+import { Component, output } from '@angular/core';
 import { PointnerDirective } from '../../../directives/pointner.directive';
 import { Filter } from '../../../servises/filter.service';
 

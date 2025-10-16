@@ -21,21 +21,17 @@ export class LocalStorage {
     return this._operations();
   });
 
-  getOperationsByType(type: string): IOperation[] {
+  public getOperationsByType(type: string): IOperation[] {
     return this.allOperations().filter((obj) => obj.type === type) || [];
   }
 
-  getCategoriesByType(type: string): ICategory[] {
+  public getCategoriesByType(type: string): ICategory[] {
     return this._categories().filter((obj) => obj.type === type) || [];
   }
 
-  public filter(arr: IOperation[]): IOperation[] {
-    return this._filter.filter(arr);
-  };
-
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
-  async setOperations(): Promise<void> {
+  public async setOperations(): Promise<void> {
     this.loadOperationsStatus.set(true);
     const newData = await this._localDb.getAllOperations();
     this._operations.set(newData);
@@ -43,7 +39,7 @@ export class LocalStorage {
     // this.onOperationsChanged.emit(this._operations());
   }
 
-  async setCategories(): Promise<void> {
+  public async setCategories(): Promise<void> {
     this.loadCategoriesStatus.set(true);
     const newData = await this._localDb.getAllCategories();
     this._categories.set(newData);
@@ -51,7 +47,7 @@ export class LocalStorage {
     // this.onCategoriesChanged.emit(this._categories());
   }
 
-  async setDaefaultData(): Promise<void> {//!!!странности!!!
+  public async setDaefaultData(): Promise<void> {//!!!странности!!!
     await this._localDb.setDefaultData();
     // await this.setOperations();
     // await this.setCategories();
@@ -61,7 +57,7 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Создатторы
 
-  async createOperation(newOperation: { type: string; value: number; category: string; date: Date; }): Promise<void> {
+  public async createOperation(newOperation: { type: string; value: number; category: string; date: Date; }): Promise<void> {
     await this._localDb.createOperation(newOperation);
     await this.setOperations();
     await this.setCategories();
@@ -69,7 +65,7 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Обновлятторы
 
-  async updateOperation(operation: IOperation): Promise<void> {
+  public async updateOperation(operation: IOperation): Promise<void> {
     await this._localDb.updateOperation(operation);
     await this.setCategories();
     await this.setOperations();
@@ -77,10 +73,16 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Удалятторы
 
-  async deleteOperations(operationsArray: IOperation[]): Promise<void> {
+  public async deleteOperations(operationsArray: IOperation[]): Promise<void> {
     for (const obj of operationsArray) {
       await this._localDb.deleteOperationByKey(<number>obj.id);
     }
     await this.setOperations();
   }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public filter(arr: IOperation[]): IOperation[] {
+    return this._filter.filter(arr);
+  };
 }

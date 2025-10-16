@@ -1,13 +1,4 @@
-import {
-  Injectable,
-  EventEmitter,
-  signal,
-  Renderer2,
-  Inject,
-  DOCUMENT,
-  effect,
-  afterNextRender,
-} from '@angular/core';
+import { Injectable, signal, Inject, DOCUMENT } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class Theme {

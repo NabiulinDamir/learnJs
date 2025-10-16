@@ -1,6 +1,5 @@
-import { Injectable, EventEmitter, signal, computed } from '@angular/core';
-import { IOperation, ICategory, IFilterOption } from '../models/dataTypes.model';
-import localDB from './indexDB.service';
+import { Injectable, signal, computed } from '@angular/core';
+import { IOperation } from '../models/dataTypes.model';
 
 @Injectable({ providedIn: 'root' })
 export class Filter {
@@ -61,27 +60,27 @@ export class Filter {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
-  public setDate(newValue: Date) {
+  public setDate(newValue: Date): void {
     // console.log("Установить дату: " + newValue)
     this.date.set(newValue);
   }
 
-  public setIntervalDay() {
+  public setIntervalDay(): void {
     // console.log("Установить интервал дня")
     this.interval.set('day');
   }
 
-  public setIntervalMonth() {
+  public setIntervalMonth(): void {
     // console.log("Установить интервал месяца")
     this.interval.set('month');
   }
 
-  public setIntervalYear() {
+  public setIntervalYear(): void {
     // console.log("Установить интервал года")
     this.interval.set('year');
   }
 
-  public downInterval() {
+  public downInterval(): void {
     if (this.interval() === 'day') {
       return;
     } else if (this.interval() === 'month') {

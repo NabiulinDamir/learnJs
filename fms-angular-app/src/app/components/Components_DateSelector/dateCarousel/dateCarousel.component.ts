@@ -1,11 +1,10 @@
-import { Component, effect, viewChild, HostListener, untracked, computed } from '@angular/core';
+import { Component, effect, viewChild, HostListener, computed } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { SelectableDirective } from '../../../directives/selectable.directive';
 import { LocalStorage } from '../../../servises/LocalStorage.service';
 import { MovableDirective } from '../../../directives/movable.directive';
 import { PointnerDirective } from '../../../directives/pointner.directive';
 import { Filter } from '../../../servises/filter.service';
-import { IOperation } from '../../../models/dataTypes.model';
 
 @Component({
   selector: 'my-date-carousel',
@@ -18,12 +17,11 @@ export class DateCarousel {
   
   private ELEMENT_LIST_PARRENT = viewChild<any>('option_list');
 
-  constructor(public localStorage: LocalStorage, public datePipe: DatePipe, public filter: Filter) {
-    effect(() => this.navigateToItem())
-  }
+  constructor(public localStorage: LocalStorage, public datePipe: DatePipe, public filter: Filter) {}
+
+  public navigateElem = effect(() => this.navigateToItem())
 
   public setDefaultItem = effect(() => {
-    // console.log('Дефолт');
     const dates = this.allDatesArray();
     const pattern = this.datePattern();
     const today: Date = new Date();
@@ -37,7 +35,6 @@ export class DateCarousel {
   })
 
   public allDatesArray = computed(() => {
-    // console.log('Операции');
     const pattern = this.datePattern();
     let allDates = structuredClone(this.localStorage.allOperations());
     let result: { name: string; date: Date }[] = [];
@@ -53,7 +50,6 @@ export class DateCarousel {
   });
 
   public buttonsWidth = computed(() => {
-    //console.log('ширина');
     const interval = this.filter.interval();
     switch (interval) {
       case 'day':
@@ -67,15 +63,13 @@ export class DateCarousel {
     }
   });
 
-  public formatSelectedDate = computed(() => {
-    //console.log('Формат');
+  public formatSelectedDate = computed((): string => {
     const pattern = this.datePattern();
     const date = this.filter.date();
     return <string>this.datePipe.transform(date, pattern);
   });
 
-  public datePattern = computed(() => {
-    //console.log('паттерн');
+  public datePattern = computed((): string => {
     const interval = this.filter.interval()
     switch (interval) {
       case 'day':
@@ -94,7 +88,6 @@ export class DateCarousel {
     const pattern = this.datePattern();
     const date = this.filter.date();
     setTimeout(() => {
-      //console.log('Навигация');
       Array.from(children).forEach((child: unknown) => {
         const element = child as HTMLElement;
         const text = element.textContent?.trim();
@@ -109,7 +102,6 @@ export class DateCarousel {
   }
 
   selectDate(newDate: Date): void {
-    //console.log('Выбор даты');
     this.filter.setDate(newDate);
   }
 

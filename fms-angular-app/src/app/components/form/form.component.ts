@@ -8,45 +8,45 @@ import { CustomValidators } from './validator';
   imports: [ReactiveFormsModule],
 })
 export class Form {
-  number = input<number>(0);
-  selectorItems = input<string[]>();
-  date = new Date();
-  onSubmit = output<{ value: number; category: string; date: Date }>({});
+  public number = input<number>(0);
+  public selectorItems = input<string[]>();
+  public tmpDate = new Date();
+  public onSubmit = output<{ value: number; category: string; date: Date }>({});
 
-  myForm = new FormGroup({
+  public myForm = new FormGroup({
     value: new FormControl(this.number(), [
       CustomValidators.required,
       CustomValidators.positiveNumber,
       CustomValidators.notNull,
     ]),
     category: new FormControl('', [CustomValidators.required, CustomValidators.minLength]),
-    date: new FormControl(this.formatDateToString(this.date), [
+    date: new FormControl(this.formatDateToString(this.tmpDate), [
       CustomValidators.required,
       Validators.maxLength(10),
     ]),
   });
 
-  public submit(): void {
+  public  submit(): void {
     this.myForm.markAllAsTouched();
     if (!this.myForm.valid) return;
     this.onSubmit.emit({
       value: <number>this.myForm.value.value,
       date: new Date(
         new Date(<string>this.myForm.value.date).setHours(
-          this.date.getHours(),
-          this.date.getMinutes(),
-          this.date.getSeconds()
+          this.tmpDate.getHours(),
+          this.tmpDate.getMinutes(),
+          this.tmpDate.getSeconds()
         )
       ),
       category: <string>this.myForm.value.category,
     });
   }
 
-  clear(): void {
+  public clear(): void {
     this.myForm.reset({}, { emitEvent: false });
   }
 
-  setDefault(): void {
+  public setDefault(): void {
     this.myForm.patchValue({
       value: 0,
       category: '',
@@ -56,20 +56,20 @@ export class Form {
 
   ////////////////////////////////////////////////////////////////////////
 
-  setValue(newValue: number): void {
+  public setValue(newValue: number): void {
     this.myForm.patchValue({
       value: newValue,
     });
   }
 
-  setDate(newDate: Date): void {
-    this.date = newDate;
+  public setDate(newDate: Date): void {
+    this.tmpDate = newDate;
     this.myForm.patchValue({
       date: this.formatDateToString(newDate),
     });
   }
 
-  setCategory(newCategoiry: string): void {
+  public setCategory(newCategoiry: string): void {
     this.myForm.patchValue({
       category: newCategoiry,
     });
@@ -77,7 +77,7 @@ export class Form {
 
   ////////////////////////////////////////////////////////////////////////
 
-  formatDateToString(date: Date = new Date()) {
+  public formatDateToString(date: Date = new Date()): string {
     return date.toISOString().split('T')[0];
   }
 }

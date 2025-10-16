@@ -20,7 +20,7 @@ export class Sort {
     this._increasing.set(false);
   }
 
-  public get option():string{
+  public get option(): string{
     return this._option();
   }
 

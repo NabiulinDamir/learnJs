@@ -7,6 +7,7 @@ import { DateCarousel } from '../../components/Components_DateSelector/dateCarou
   selector: 'my-app-main-page',
   imports: [ CrudTableComponent, IntervalSelector, DateCarousel, ChartsSlider],
   providers: [],
+  standalone: true,
   templateUrl: './mainPage.html',
 })
 export class MainPage {

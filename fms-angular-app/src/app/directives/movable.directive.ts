@@ -10,10 +10,9 @@ export class MovableDirective {
   constructor(private element: ElementRef, private renderer: Renderer2) {
     this.renderer.setStyle(this.element.nativeElement, 'transition', 'left 200ms ease-in-out');
     this.renderer.setStyle(this.element.nativeElement, 'position', 'relative');
-    this.renderer.setStyle(this.element.nativeElement, 'left', `${this.left}rem`);
   }
 
-  move(num?: number) {
+  move() {
     this.renderer.setStyle(this.element.nativeElement, 'left', `${this.left}px`);
   }
 

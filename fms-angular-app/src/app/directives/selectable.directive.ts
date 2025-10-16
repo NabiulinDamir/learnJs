@@ -19,7 +19,7 @@ export class SelectableDirective {
     );
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges) {
     if (changes['selected']) {
       if (this.selected) {
         this.setBrightness(-10);
@@ -31,7 +31,7 @@ export class SelectableDirective {
     }
   }
 
-  setBrightness(value: number): void {
+  private setBrightness(value: number): void {
     this._brightness += value;
     this.renderer.setStyle(
       this.element.nativeElement,

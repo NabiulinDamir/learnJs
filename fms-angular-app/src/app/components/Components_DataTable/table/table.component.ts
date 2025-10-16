@@ -20,11 +20,11 @@ export class Table {
 
   constructor(protected sortService: Sort, public theme: Theme) { }
 
-  sortedData = computed(() => this.sortService.sort(this.inputData()));
+  public sortedData = computed((): IOperation[] => this.sortService.sort(this.inputData()));
 
   ///////////////////////////////////////////////////////////////////////
 
-  toggleData(data: IOperation): void {
+  public toggleData(data: IOperation): void {
     this.selectedData.update((current) => {
       if (!current.includes(data)) {
         return [...current, data];
@@ -38,31 +38,31 @@ export class Table {
     this.selectedData.update((current) => []);
   }
 
-  isNotLastChildElement(event: MouseEvent) {
+  public isNotLastChildElement(event: MouseEvent) {
     const target = event.target as HTMLElement;
     return target.closest('td:last-child')
   }
 
   ///////////////////////////////////////////////////////////////////////
 
-  setFilterOptionValue(): void {
+  public setFilterOptionValue(): void {
     this.sortService.option = ('value');
   }
 
-  setFilterOptionCategory(): void {
+  public setFilterOptionCategory(): void {
     this.sortService.option = ('category');
   }
 
-  setFilterOptionDate(): void {
+  public setFilterOptionDate(): void {
     this.sortService.option = ('date');
   }
 
-  setFilterOptionTime(): void {
+  public setFilterOptionTime(): void {
     this.sortService.option = ('time');
   }
   ///////////////////////////////////////////////////////////////////////
 
-  editData(data: IOperation) {
+  public editData(data: IOperation): void {
     this.onEditDataClick.emit(data)
   }
 

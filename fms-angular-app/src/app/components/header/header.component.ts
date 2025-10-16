@@ -1,5 +1,5 @@
-import { Component, signal, computed } from '@angular/core';
-import {NgOptimizedImage} from '@angular/common';
+import { Component, computed } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { Theme } from '../../servises/theme.service';
 import { LocalStorage } from '../../servises/LocalStorage.service';
 import { RouterLink, Router } from '@angular/router';

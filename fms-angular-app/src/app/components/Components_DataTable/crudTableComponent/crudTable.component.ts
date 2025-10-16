@@ -26,21 +26,21 @@ export class CrudTableComponent {
   private ELEMENT_FORM_UPDATE = viewChild<any>('form_update');
   private ELEMENT_FORM_CREATE = viewChild<any>('form_create');
 
-  constructor(protected localStorage: LocalStorage, public filter: Filter) {
-    effect(() => {
-      const changeElem = filter.date();
-      this.ELEMENT_TABLE().clearSelectedData();
-    })
-  }
+  constructor(protected localStorage: LocalStorage, public filter: Filter) {}
 
   /////////////////////////////////////////////////////////////
 
-  operations = computed((): IOperation[] => {
+  public clearSelectedData = effect(() => {
+    const changeElem = this.filter.date();
+    this.ELEMENT_TABLE().clearSelectedData();
+  })
+
+  public operations = computed((): IOperation[] => {
     const dataType = this.dataType(); 
     return this.localStorage.filter(this.localStorage.getOperationsByType(dataType))
   });
 
-  categoriesStringArr = computed((): string[] => this.localStorage.getCategoriesByType(this.dataType()).map((a) => a.name));
+  public categoriesStringArr = computed((): string[] => this.localStorage.getCategoriesByType(this.dataType()).map((a) => a.name));
 
   /////////////////////////////////////////////////////////////
 
@@ -60,7 +60,7 @@ export class CrudTableComponent {
 
   /////////////////////////////////////////////////////////////
 
-  async createOperation({ value, category, date}: { value: number; category: string; date: Date; }): Promise<void>  {
+  public async createOperation({ value, category, date}: { value: number; category: string; date: Date; }): Promise<void>  {
     this.loadModal.set(true);
     const type = this.dataType();
     await this.localStorage.createOperation({ type, value, category, date });
@@ -68,7 +68,7 @@ export class CrudTableComponent {
     this.ELEMENT_MODAL_CREATE().hide();
   }
 
-  async updateOperation({ value, category, date, }: { value: number; category: string; date: Date; }): Promise<void>  {
+  public async updateOperation({ value, category, date, }: { value: number; category: string; date: Date; }): Promise<void>  {
     this.loadModal.set(true);
     const type = this.dataType();
     if (this.tmpEditOperationKey == undefined) {
@@ -82,7 +82,7 @@ export class CrudTableComponent {
     this.ELEMENT_MODAL_UPDATE().hide();
   }
 
-  async deleteSelectedOperations(): Promise<void> {
+  public async deleteSelectedOperations(): Promise<void> {
     this.loadModal.set(true);
     await this.localStorage.deleteOperations(this.selectedOperations);
     this.loadModal.set(false);
@@ -90,7 +90,7 @@ export class CrudTableComponent {
     this.ELEMENT_MODAL_DELETE().hide();
   }
 
-  openUpdateForm(operation: IOperation): void {
+  public openUpdateForm(operation: IOperation): void {
     this.ELEMENT_MODAL_UPDATE().show();
     this.ELEMENT_FORM_UPDATE().setValue(operation.value);
     this.ELEMENT_FORM_UPDATE().setCategory(operation.category);
@@ -99,13 +99,13 @@ export class CrudTableComponent {
     this.clearSelectedOperations();
   }
 
-  openCreateForm(): void {
+  public openCreateForm(): void {
     this.ELEMENT_MODAL_CREATE().show();
     this.ELEMENT_FORM_CREATE().setDefault();
     this.clearSelectedOperations();
   }
 
-  clearSelectedOperations(): void {
+  public clearSelectedOperations(): void {
     this.selectedOperations = [];
   }
 }

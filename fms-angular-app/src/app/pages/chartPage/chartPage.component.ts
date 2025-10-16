@@ -4,7 +4,6 @@ import { ChartMega } from '../../components/Components_Chart/charts/ChartMega/ch
   selector: 'my-app-main-page',
   imports: [ChartMega],
   standalone: true,
-  providers: [],
   templateUrl: './chartPage.html',
 })
 export class ChartsPage {
