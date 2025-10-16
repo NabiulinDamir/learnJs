@@ -243,7 +243,6 @@ export default class localDB {
   public async setDefaultData(): Promise<void> {
     await this.clearStore('operations');
     await this.clearStore('categories');
-
     for (const element of testData.operations) {
       const newObj = {
         type: element.type,

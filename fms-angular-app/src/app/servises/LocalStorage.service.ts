@@ -52,6 +52,7 @@ export class LocalStorage {
     // await this.setOperations();
     // await this.setCategories();
     location.reload();
+    console.warn("Test data set")
     // console.log(this._operations());
   }
 
