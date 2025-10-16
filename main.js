@@ -7823,12 +7823,19 @@ var SelectableDirective = class _SelectableDirective {
 })();
 
 // src/app/components/Components_DataTable/table/sort.service.ts
+var SortOption;
+(function(SortOption2) {
+  SortOption2[SortOption2["DATE"] = 0] = "DATE";
+  SortOption2[SortOption2["VALUE"] = 1] = "VALUE";
+  SortOption2[SortOption2["TIME"] = 2] = "TIME";
+  SortOption2[SortOption2["CATEGORY"] = 3] = "CATEGORY";
+})(SortOption || (SortOption = {}));
 var Sort = class _Sort {
-  _option = signal("date", ...ngDevMode ? [{ debugName: "_option" }] : []);
+  _option = signal(SortOption.DATE, ...ngDevMode ? [{ debugName: "_option" }] : []);
   _increasing = signal(false, ...ngDevMode ? [{ debugName: "_increasing" }] : []);
-  set option(optionName) {
-    if (optionName !== this._option()) {
-      this._option.set(optionName);
+  set option(option) {
+    if (option !== this._option()) {
+      this._option.set(option);
       this._increasing.set(false);
       return;
     }
@@ -7836,36 +7843,54 @@ var Sort = class _Sort {
       this._increasing.set(true);
       return;
     }
-    this._option.set("date");
+    this._option.set(SortOption.DATE);
     this._increasing.set(false);
   }
-  get option() {
-    return this._option();
-  }
-  marker = computed(() => this._increasing() ? " \u1A08" : " \u1A06", ...ngDevMode ? [{ debugName: "marker" }] : []);
+  marker = computed(() => {
+    if (this._option() === SortOption.DATE && !this._increasing())
+      return "";
+    return this._increasing() ? " \u1A08" : " \u1A06";
+  }, ...ngDevMode ? [{ debugName: "marker" }] : []);
   sort(array) {
-    let result = [];
     const koef = this._increasing() ? -1 : 1;
     switch (this._option()) {
-      case "value":
-        result = array.sort((a, b) => (b.value - a.value) * koef);
-        break;
-      case "date":
-        result = array.sort((a, b) => (b.date.getTime() - a.date.getTime()) * koef);
-        break;
-      case "time":
-        result = array.sort((a, b) => (b.date.getHours() - a.date.getHours() || b.date.getMinutes() - a.date.getMinutes() || b.date.getSeconds() - a.date.getSeconds()) * koef);
-        break;
-      case "category":
-        result = array.sort((a, b) => {
+      case SortOption.VALUE:
+        return array.sort((a, b) => (b.value - a.value) * koef);
+      case SortOption.DATE:
+        return array.sort((a, b) => (b.date.getTime() - a.date.getTime()) * koef);
+      case SortOption.TIME:
+        return array.sort((a, b) => (b.date.getHours() - a.date.getHours() || b.date.getMinutes() - a.date.getMinutes() || b.date.getSeconds() - a.date.getSeconds()) * koef);
+      case SortOption.CATEGORY:
+        return array.sort((a, b) => {
           return b.category.localeCompare(a.category) * koef;
         });
-        break;
       default:
-        result = array;
-        break;
+        return array;
     }
-    return result;
+  }
+  get isValue() {
+    return this._option() === SortOption.VALUE;
+  }
+  get isDate() {
+    return this._option() === SortOption.DATE;
+  }
+  get isTime() {
+    return this._option() === SortOption.TIME;
+  }
+  get isCategory() {
+    return this._option() === SortOption.CATEGORY;
+  }
+  setValue() {
+    this.option = SortOption.VALUE;
+  }
+  setDate() {
+    this.option = SortOption.DATE;
+  }
+  setTime() {
+    this.option = SortOption.TIME;
+  }
+  setCategory() {
+    this.option = SortOption.CATEGORY;
   }
   static \u0275fac = function Sort_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _Sort)();
@@ -7993,16 +8018,16 @@ var Table = class _Table {
   }
   ///////////////////////////////////////////////////////////////////////
   setFilterOptionValue() {
-    this.sortService.option = "value";
+    this.sortService.setValue();
   }
   setFilterOptionCategory() {
-    this.sortService.option = "category";
+    this.sortService.setCategory();
   }
   setFilterOptionDate() {
-    this.sortService.option = "date";
+    this.sortService.setDate();
   }
   setFilterOptionTime() {
-    this.sortService.option = "time";
+    this.sortService.setTime();
   }
   ///////////////////////////////////////////////////////////////////////
   editData(data) {
@@ -8047,13 +8072,13 @@ var Table = class _Table {
     if (rf & 2) {
       \u0275\u0275attribute("data-bs-theme", ctx.theme.darkTheme() ? "dark" : null);
       \u0275\u0275advance(4);
-      \u0275\u0275textInterpolate1(" \u041A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F", ctx.sortService.option === "category" ? ctx.sortService.marker() : "", " ");
+      \u0275\u0275textInterpolate1(" \u041A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F", ctx.sortService.isCategory ? ctx.sortService.marker() : "", " ");
       \u0275\u0275advance(2);
-      \u0275\u0275textInterpolate1(" \u0421\u0443\u043C\u043C\u0430", ctx.sortService.option === "value" ? ctx.sortService.marker() : "", " ");
+      \u0275\u0275textInterpolate1(" \u0421\u0443\u043C\u043C\u0430", ctx.sortService.isValue ? ctx.sortService.marker() : "", " ");
       \u0275\u0275advance(2);
-      \u0275\u0275textInterpolate1(" \u0414\u0430\u0442\u0430", ctx.sortService.option === "date" ? ctx.sortService.marker() : "", " ");
+      \u0275\u0275textInterpolate1(" \u0414\u0430\u0442\u0430", ctx.sortService.isDate ? ctx.sortService.marker() : "", " ");
       \u0275\u0275advance(2);
-      \u0275\u0275textInterpolate1(" \u0412\u0440\u0435\u043C\u044F", ctx.sortService.option === "time" ? ctx.sortService.marker() : "", " ");
+      \u0275\u0275textInterpolate1(" \u0412\u0440\u0435\u043C\u044F", ctx.sortService.isTime ? ctx.sortService.marker() : "", " ");
       \u0275\u0275advance(3);
       \u0275\u0275conditional(!ctx.isLoaded() ? 13 : -1);
       \u0275\u0275advance();
@@ -8069,16 +8094,16 @@ var Table = class _Table {
         <thead>
             <tr class="h-3-rem align-middle ">
                 <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionCategory()">
-                    \u041A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F{{ sortService.option === 'category' ? sortService.marker() : ""  }}
+                    \u041A\u0430\u0442\u0435\u0433\u043E\u0440\u0438\u044F{{ sortService.isCategory ? sortService.marker() : "" }}
                 </th>
                 <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionValue()">
-                    \u0421\u0443\u043C\u043C\u0430{{ sortService.option === 'value' ? sortService.marker() : "" }}
+                    \u0421\u0443\u043C\u043C\u0430{{ sortService.isValue ? sortService.marker() : "" }}
                 </th>
                 <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionDate()">
-                    \u0414\u0430\u0442\u0430{{ sortService.option === 'date' ? sortService.marker() : "" }}
+                    \u0414\u0430\u0442\u0430{{ sortService.isDate ? sortService.marker() : "" }}
                 </th>
                 <th class="bg-primary text-color-light user-select-none w-23" (click)="setFilterOptionTime()">
-                    \u0412\u0440\u0435\u043C\u044F{{ sortService.option === 'time' ? sortService.marker() : "" }}
+                    \u0412\u0440\u0435\u043C\u044F{{ sortService.isTime ? sortService.marker() : "" }}
                 </th>
                 <th class="bg-primary text-color-light user-select-none"></th>
             </tr>
