@@ -8552,7 +8552,18 @@ var DateCarousel = class _DateCarousel {
   localStorage;
   datePipe;
   filter;
-  slidePosition = 0;
+  _slidePosition = 0;
+  set slidePosition(newPosition) {
+    const element = this.ELEMENT_LIST_PARRENT();
+    if (newPosition + element.nativeElement.clientWidth - this.buttonsWidth() / 2 < window.innerWidth / 2)
+      return;
+    else if (newPosition > (window.innerWidth - this.buttonsWidth()) / 2)
+      return;
+    this._slidePosition = newPosition;
+  }
+  get slidePosition() {
+    return this._slidePosition;
+  }
   ELEMENT_LIST_PARRENT = viewChild("option_list", ...ngDevMode ? [{ debugName: "ELEMENT_LIST_PARRENT" }] : []);
   constructor(localStorage, datePipe, filter) {
     this.localStorage = localStorage;
@@ -8636,6 +8647,10 @@ var DateCarousel = class _DateCarousel {
   onWindowResize() {
     this.navigateToItem();
   }
+  onWheel(event) {
+    event.preventDefault();
+    this.slidePosition += event.deltaY / 2;
+  }
   static \u0275fac = function DateCarousel_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _DateCarousel)(\u0275\u0275directiveInject(LocalStorage), \u0275\u0275directiveInject(DatePipe), \u0275\u0275directiveInject(Filter));
   };
@@ -8650,7 +8665,9 @@ var DateCarousel = class _DateCarousel {
     if (rf & 1) {
       \u0275\u0275listener("resize", function DateCarousel_resize_HostBindingHandler() {
         return ctx.onWindowResize();
-      }, \u0275\u0275resolveWindow);
+      }, \u0275\u0275resolveWindow)("wheel", function DateCarousel_wheel_HostBindingHandler($event) {
+        return ctx.onWheel($event);
+      });
     }
   }, features: [\u0275\u0275ProvidersFeature([DatePipe])], decls: 5, vars: 1, consts: [["option_list", ""], [1, "position-relative", "h-2-rem", "overflow-x-hidden"], ["movable", "", 1, "nav", "position-absolute", "p-1", "h-100", "d-flex", "flex-nowrap", "gap-2", 3, "left"], ["selectable", "", "pointner", "", 1, "rounded-3", "d-flex", "justify-content-center", "th-background-second", "th-text", 3, "width", "th-primmary"], ["selectable", "", "pointner", "", 1, "rounded-3", "d-flex", "justify-content-center", "th-background-second", "th-text", 3, "click"]], template: function DateCarousel_Template(rf, ctx) {
     if (rf & 1) {
@@ -8682,6 +8699,9 @@ var DateCarousel = class _DateCarousel {
   }], () => [{ type: LocalStorage }, { type: DatePipe }, { type: Filter }], { onWindowResize: [{
     type: HostListener,
     args: ["window:resize"]
+  }], onWheel: [{
+    type: HostListener,
+    args: ["wheel", ["$event"]]
   }] });
 })();
 (() => {
@@ -8729,4 +8749,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-6JV7MLW6.js.map
+//# sourceMappingURL=chunk-TE3S2DVB.js.map

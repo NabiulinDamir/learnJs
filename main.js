@@ -7722,7 +7722,7 @@ var routes = [
   {
     path: "",
     title: "MainPage",
-    loadComponent: () => import("./chunk-6JV7MLW6.js").then((m) => m.MainPage)
+    loadComponent: () => import("./chunk-TE3S2DVB.js").then((m) => m.MainPage)
   },
   {
     path: "charts",
