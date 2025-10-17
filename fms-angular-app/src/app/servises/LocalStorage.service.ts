@@ -41,7 +41,6 @@ export class LocalStorage {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
   public async setOperations(): Promise<void> {
-    console.log("Данные обновились")
     this.loadOperationsStatus.set(true);
     const newData = await this._localDb.getAllOperations();
     this._operations.set(newData);

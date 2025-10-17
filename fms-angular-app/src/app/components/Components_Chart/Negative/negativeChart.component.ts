@@ -1,58 +1,21 @@
-import { Component, OnDestroy, HostListener, effect, computed } from '@angular/core';
-import * as echarts from 'echarts';
-import { LocalStorage } from '../../../../servises/LocalStorage.service';
-import { DatePipe } from '@angular/common';
-import { Filter } from '../../../../servises/filter.service';
-import { IOperation } from '../../../../models/dataTypes.model';
-import { Theme } from '../../../../servises/theme.service';
-
+import { Component, computed } from '@angular/core';
+import { Chart } from '../chart/chart.component';
+import { LocalStorage } from '../../../servises/LocalStorage.service';
+import { Filter } from '../../../servises/filter.service';
 @Component({
-  selector: 'my-chart-negative',
-  providers: [DatePipe],
-  templateUrl: './chartWithNegative.html',
+  selector: 'my-negative-chart',
+  templateUrl: './negativeChart.html',
+  imports: [ Chart ],
 })
-export class ChartWithNegative implements OnDestroy {
-  private _chart: echarts.ECharts | undefined = undefined;
-  private _option: any | undefined = undefined;
-  constructor(
-    private localStorage: LocalStorage,
-    private datePipe: DatePipe,
-    public filterService: Filter,
-    public theme: Theme
-  ) {
-    effect(() => {
-      this.updateOption();
-      this.setOption();
-    });
-    effect(() => {
-      this.init();
-      this.setOption();
-    });
+export class NegativeChart {
+
+  constructor(public localStorege: LocalStorage, public filterService: Filter) {
+
   }
 
-  init(): void {
-    const theme = this.theme.darkTheme() ? 'dark' : '';
-    const chartDom = document.getElementById('chart-negative-container');
-    this._chart?.dispose();
-    if (!chartDom?.clientHeight) {
-      return;
-    }
-
-    this._chart = echarts.init(chartDom, theme);
-    this._chart.off('click');
-    this._chart.on('click', (params: any) => {
-      this.clickToChart(params);
-    });
-  }
-
-  setOption(): void {
-    this._chart?.setOption(this._option);
-  }
-
-  updateOption(): void {
-    const data = this.format(this.localStorage.getFilteredOperations());
-    const intervalLocaleRu = this.filterService.intervalLocale()
-    this._option = {
+  public option = computed(() => {
+    const data = this.formattedData();
+    return {
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'axis',
@@ -61,7 +24,7 @@ export class ChartWithNegative implements OnDestroy {
         },
       },
       title: {
-        text: `Орерации за ${intervalLocaleRu}`,
+        text: `Орерации за ${this.filterService.intervalLocale()}`,
         position: 'top',
       },
       grid: {
@@ -121,10 +84,10 @@ export class ChartWithNegative implements OnDestroy {
         },
       ],
     };
-  }
+  });
 
-  format(data: IOperation[]): { name: string; value: number; date: Date }[] {
-    const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
+  private formattedData = computed(():  { name: string; value: number; date: Date }[] => {
+    const allOperations = this.localStorege.getFilteredOperations().sort((a, b) => a.date.getTime() - b.date.getTime());
 
     const resultMap = new Map();
 
@@ -163,49 +126,19 @@ export class ChartWithNegative implements OnDestroy {
 
     const res = Array.from(resultMap.values());
     return res;
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////
-
-  clickToChart(params: any): void {
-    if (params.componentType === 'series') {
-      this.filterService.downInterval();
-      setTimeout(() => this.filterService.setDate(params.data.date), 100);
-    }
-  }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////
-
-  formatDate(date: Date): string | null {
-    const pattern = () => {
-      switch (this.filterService.interval()) {
-        case 'day':
-          return 'H';
-        case 'month':
-          return 'dd';
-        case 'year':
-          return 'MMMM';
-        default:
-          return 'dd.MM.yyyy';
-      }
-    };
-    return this.datePipe.transform(date, pattern());
-  }
-
-  ngAfterViewInit() {}
-
-  ngOnDestroy() {
-    this._chart?.dispose();
-  }
-
-  @HostListener('window:resize')
-  onWindowResize() {
-    if (this._chart) {
-      this._chart.resize();
-    }
-  }
-
-  public hasData = computed(() => {
-    return this.localStorage.getFilteredOperations().length > 0;
   })
+
+  private formatDate(date: Date): string | null {
+    switch (this.filterService.interval()) {
+      case 'day':
+        return date.getHours().toString();
+      case 'month':
+        return date.getDate().toString();
+      case 'year':
+        return date.getMonth().toString();
+      default:
+        return 'dd.MM.yyyy';
+    }
+  }
+
 }

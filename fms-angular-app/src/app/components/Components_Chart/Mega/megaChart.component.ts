@@ -1,64 +1,23 @@
-import { Component, OnDestroy, HostListener, effect , computed} from '@angular/core';
-import * as echarts from 'echarts';
-import { LocalStorage } from '../../../../servises/LocalStorage.service';
-import { DatePipe } from '@angular/common';
-import { Filter } from '../../../../servises/filter.service';
-import { IOperation } from '../../../../models/dataTypes.model';
-import { Theme } from '../../../../servises/theme.service';
-
+import { Component, computed } from '@angular/core';
+import { Chart } from '../chart/chart.component';
+import { IOperation } from '../../../models/dataTypes.model';
+import { LocalStorage } from '../../../servises/LocalStorage.service';
+import { Filter } from '../../../servises/filter.service';
+import { Theme } from '../../../servises/theme.service';
 @Component({
-  selector: 'my-chart-mega',
-  providers: [DatePipe],
-  templateUrl: './chartMega.html',
+  selector: 'my-mega-chart',
+  templateUrl: './megaChart.html',
+  imports: [Chart],
 })
-export class ChartMega implements OnDestroy {
-  private _chart: echarts.ECharts | undefined = undefined;
-  private _option: any | undefined = undefined;
-  constructor(
-    private localStorage: LocalStorage,
-    private datePipe: DatePipe,
-    public filterService: Filter,
-    public theme: Theme
-  ) {
-    effect(() => {
-      this.updateOption();
-      this.setOption();
-    });
-    effect(() => {
-      this.init();
-      this.setOption();
-    });
+export class MegaChart {
+
+  constructor(public localStorage: LocalStorage, public filterService: Filter, public theme: Theme) {
+
   }
 
-  setOption() {
-    this._chart?.setOption(this._option);
-  }
-
-  init(): void {
-    const theme = this.theme.darkTheme() ? 'dark' : '';
-    const chartDom = document.getElementById('chart-container');
-    this._chart?.dispose();
-    if (chartDom?.clientHeight === 0) return;
-    this._chart = echarts.init(chartDom, theme);
-  }
-
-  updateOption() {
-    const incomeOperationsFormat = this.formatToMonth(
-      this.localStorage.getAllOperationsByType('income')
-    );
-    const expensOperationsFormat = this.formatToMonth(
-      this.localStorage.getAllOperationsByType('expens')
-    );
-
-    const incomeCategoriesFormat = this.formatToCategory(
-      this.localStorage.getAllOperationsByType('income')
-    );
-    const expensCategoriesFormat = this.formatToCategory(
-      this.localStorage.getAllOperationsByType('expens')
-    );
-
-    const sortedIncome = [...incomeOperationsFormat].sort((a, b) => a.value - b.value);
-    const sortedExpens = [...expensOperationsFormat].sort((a, b) => a.value - b.value);
+  public option = computed(() => {
+    const sortedIncome = [...this.incomeOperationsToMonth()].sort((a, b) => a.value - b.value);
+    const sortedExpens = [...this.expensOperationsToMonth()].sort((a, b) => a.value - b.value);
 
     const incomeValues = sortedIncome.map(a => a.value);
     const expensValues = sortedExpens.map(a => a.value);
@@ -73,10 +32,10 @@ export class ChartMega implements OnDestroy {
     const reverseIncomeValue = incomeValues.map(a => maxCount - a);
     const reverseExpensValue = expensValues.map(a => maxCount - a);
 
-    const bestCategoryIncomeName = incomeCategoriesFormat[0]?.name || '...';
-    const bestCategoryExpensName = expensCategoriesFormat[0]?.name || '...';
+    const bestCategoryIncomeName = this.incomeOperationsToCategory()[0]?.name || '...';
+    const bestCategoryExpensName = this.expensOperationsToCategory()[0]?.name || '...';
 
-    this._option = {
+    return {
       backgroundColor: 'transparent',
       tooltip: {},
       title: [
@@ -212,31 +171,48 @@ export class ChartMega implements OnDestroy {
           type: 'pie',
           radius: [0, '30%'],
           center: ['75%', '25%'],
-          data: incomeCategoriesFormat,
+          data: this.incomeOperationsToCategory(),
         },
         {
           type: 'pie',
           radius: [0, '30%'],
           center: ['75%', '75%'],
-          data: expensCategoriesFormat,
+          data: this.expensOperationsToCategory(),
         },
       ],
     };
-  }
+  });
 
-  formatToMonth(data: IOperation[]): { name: string; value: number }[] {
+  private incomeOperationsToMonth = computed((): { name: string; value: number }[] =>
+    this.formatToMonth(this.localStorage.getAllOperationsByType('income'))
+  )
+
+  private expensOperationsToMonth = computed((): { name: string; value: number }[] =>
+    this.formatToMonth(this.localStorage.getAllOperationsByType('expens'))
+  )
+
+  private incomeOperationsToCategory = computed((): { name: string; value: number }[] => 
+    this.formattToCategory(this.localStorage.getAllOperationsByType('income'))
+  )
+
+  private expensOperationsToCategory = computed((): { name: string; value: number }[] => 
+    this.formattToCategory(this.localStorage.getAllOperationsByType('expens'))
+  )
+
+  private formatToMonth(data: IOperation[]): { name: string; value: number }[] {
+
     const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
     const resultMap = new Map();
     let currentDate = new Date(this.filterService.startYearInteval());
     let endDate = new Date(this.filterService.endYearInteval());
     do {
-      const key = this.datePipe.transform(isNaN(currentDate.getTime()) ? new Date() : currentDate, 'MMMM');
+      const key = this.formatDate(currentDate);
       resultMap.set(key, { name: key, value: 0 });
       currentDate.setMonth(currentDate.getMonth() + 1);
     } while (currentDate <= endDate);
 
     for (const operation of allOperations) {
-      const key = this.datePipe.transform(operation.date, 'MMMM');
+      const key = this.formatDate(operation.date);
       const mapElemet = resultMap.get(key);
       resultMap.set(key, {
         name: key,
@@ -248,7 +224,8 @@ export class ChartMega implements OnDestroy {
     return res;
   }
 
-  formatToCategory(data: IOperation[]): { name: string; value: number }[] {
+  private formattToCategory(data: IOperation[]): { name: string; value: number }[] {
+
     const resultMap = new Map();
     data.forEach((item) => {
       const category = item.category;
@@ -262,24 +239,9 @@ export class ChartMega implements OnDestroy {
     return res;
   }
 
-
-  ngAfterViewInit() {
-    this.init();
-    this.setOption();
+  private formatDate(date: Date): string | null {
+    const MONTHS = [ 'Январь',  'Февраль',  'Март',  'Апрель',  'Май',  'Июнь',  'Июль',  'Август',  'Сентябрь',  'Октябрь',  'Ноябрь',  'Декабрь'];
+    return MONTHS[date.getMonth()];
   }
 
-  ngOnDestroy() {
-    this._chart?.dispose();
-  }
-
-  @HostListener('window:resize')
-  onWindowResize() {
-    if (this._chart) {
-      this._chart.resize();
-    }
-  }
-
-  public hasData = computed(() => {
-    return this.localStorage.getFilteredOperations().length > 0;
-  })
 }

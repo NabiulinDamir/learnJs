@@ -1,21 +1,21 @@
 import { Component, signal,Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChartTwoRounded } from '../charts/ChartTwoRounded/chartTwoRounded.component';
-import { ChartDataset } from '../charts/ChartDataset/chartDataset.component';
-import { ChartWithNegative } from '../charts/ChartWithNegative/chartWithNegative.component';
-import { Chart } from '../charts/chart/chart.component';
-import { ChartOptions } from '../charts/chart/chartOptions.service';
+import { Chart } from '../chart/chart.component';
+
+import { DatasetChart } from '../Dataset/datasetChart.component';
+import { RoundedChart } from '../Rounded/roundedChart.component';
+import { NegativeChart } from '../Negative/negativeChart.component';
 @Component({
   selector: 'my-charts-slider',
   standalone: true,
-  imports: [CommonModule, Chart],
-  providers: [ChartOptions],
+  imports: [CommonModule, DatasetChart, RoundedChart, NegativeChart],
+  providers: [],
   templateUrl: './charts-slider.html',
 })
 export class ChartsSlider {
   activeSlide = signal(0);
 
-  constructor(@Inject(ChartOptions) public chartOptions: ChartOptions){}
+  constructor(){}
 
   ngAfterViewInit() {
     const carousel = document.getElementById('carouselExampleIndicators');

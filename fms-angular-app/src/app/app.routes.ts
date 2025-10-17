@@ -1,10 +1,9 @@
 import { Routes } from '@angular/router';
-import { MainPage } from './pages/mainPage/mainPage.component';
 export const routes: Routes = [
   {
     path: '',
     title: 'MainPage',
-    component: MainPage,
+    loadComponent: () => import('./pages/mainPage/mainPage.component').then((m) => m.MainPage),
   },
   {
     path: 'charts',

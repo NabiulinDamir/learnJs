@@ -1,6 +1,6 @@
 import { Component, OnDestroy, HostListener, effect, input, output, computed, untracked } from '@angular/core';
 import * as echarts from 'echarts';
-import { Theme } from '../../../../servises/theme.service';
+import { Theme } from '../../../servises/theme.service';
 @Component({
   selector: 'my-chart',
   templateUrl: './chart.html',
@@ -36,7 +36,6 @@ export class Chart implements OnDestroy {
 
   public init(): void {
     const chartDom = document.getElementById(`chart-container-${this.name()}`);
-    console.log("init: " + this.name() + " " + chartDom?.clientHeight)
     if(!chartDom?.clientHeight){ return };
     
     this._chart?.dispose();
@@ -52,7 +51,6 @@ export class Chart implements OnDestroy {
   ngAfterViewInit() {
     this.init();
     this.setOption();
-    console.log("Автер инит")
   }
 
   ngOnDestroy() {
@@ -63,7 +61,7 @@ export class Chart implements OnDestroy {
 
   @HostListener('window:resize')
   onWindowResize() {
-    if (this._chart && this.visible()) {
+    if (this._chart) {
       this._chart.resize();
     }
   }
