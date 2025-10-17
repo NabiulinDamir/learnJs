@@ -13,11 +13,22 @@ import { Filter } from '../../../servises/filter.service';
   providers: [DatePipe],
 })
 export class DateCarousel {
-  public slidePosition: number = 0;
-  
+  private _slidePosition: number = 0;
+
+  public set slidePosition(newPosition: number){
+    const element = this.ELEMENT_LIST_PARRENT();
+    if(newPosition + element.nativeElement.clientWidth - this.buttonsWidth() / 2 < window.innerWidth / 2 ) return
+    else if(newPosition > (window.innerWidth - this.buttonsWidth()) / 2) return
+    this._slidePosition = newPosition;
+  }
+
+  public get slidePosition(): number {
+    return this._slidePosition;
+  }
+
   private ELEMENT_LIST_PARRENT = viewChild<any>('option_list');
 
-  constructor(public localStorage: LocalStorage, public datePipe: DatePipe, public filter: Filter) {}
+  constructor(public localStorage: LocalStorage, public datePipe: DatePipe, public filter: Filter) { }
 
   public navigateElem = effect(() => this.navigateToItem())
 
@@ -66,7 +77,7 @@ export class DateCarousel {
   });
 
 
-  public navigateToItem(){
+  public navigateToItem() {
     const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
     const date = this.filter.date();
     setTimeout(() => {
@@ -83,7 +94,7 @@ export class DateCarousel {
     }, 100);
   }
 
-  public format(date: Date): string{
+  public format(date: Date): string {
     const pattern = () => {
       switch (this.filter.interval()) {
         case 'day':
@@ -108,5 +119,40 @@ export class DateCarousel {
     this.navigateToItem();
   }
 
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent) {
+    event.preventDefault();
+    this.slidePosition += event.deltaY / 2
+  }
+
+  // private isDragging = false;
+  // private startX = 0;
+  // private startPosition = 0;
+
+  // @HostListener('mousedown', ['$event'])
+  // onMouseDown(event: MouseEvent) {
+  //   this.isDragging = true;
+  //   this.startX = event.clientX;
+  //   this.startPosition = this.slidePosition;
+  //   event.preventDefault();
+  // }
+
+  // @HostListener('mousemove', ['$event'])
+  // onMouseMove(event: MouseEvent) {
+  // if (!this.isDragging) return;
+  //   const deltaX = event.clientX - this.startX;
+  //   this.slidePosition = this.startPosition + deltaX;
+  // }
+
+  // @HostListener('mouseup')
+  // onMouseUp() {
+  //   this.isDragging = false;
+  // }
 
 }
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { Directive, Input, ElementRef, Renderer2, SimpleChanges } from '@angular/core';
+import { Directive, Input, ElementRef, Renderer2, SimpleChanges, HostListener } from '@angular/core';
 
 @Directive({
   selector: '[movable]',
@@ -21,4 +21,6 @@ export class MovableDirective {
       this.move();
     }
   }
+
+
 }
