@@ -8486,7 +8486,7 @@ var ChartsSlider = class _ChartsSlider {
   }], () => [], null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ChartsSlider, { className: "ChartsSlider", filePath: "src/app/components/Components_Chart/charts-slider/charts-slider.component.ts", lineNumber: 15 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(ChartsSlider, { className: "ChartsSlider", filePath: "src/app/components/Components_Chart/charts-slider/charts-slider.component.ts", lineNumber: 13 });
 })();
 
 // src/app/directives/movable.directive.ts
@@ -8562,9 +8562,8 @@ var DateCarousel = class _DateCarousel {
   navigateElem = effect(() => this.navigateToItem(), ...ngDevMode ? [{ debugName: "navigateElem" }] : []);
   setDefaultItem = effect(() => {
     const dates = this.allDatesArray();
-    const pattern = this.datePattern();
     const today = /* @__PURE__ */ new Date();
-    if (dates.find((a) => a.name === this.datePipe.transform(today, pattern))) {
+    if (dates.find((a) => a.name === this.format(today))) {
       this.filter.setDate(today);
     } else {
       const lastDate = dates[dates.length - 1]?.date;
@@ -8572,12 +8571,11 @@ var DateCarousel = class _DateCarousel {
     }
   }, ...ngDevMode ? [{ debugName: "setDefaultItem" }] : []);
   allDatesArray = computed(() => {
-    const pattern = this.datePattern();
     let allDates = structuredClone(this.localStorage.allOperations());
     let result = [];
     allDates.sort((a, b) => a.date.getTime() - b.date.getTime());
     for (const operation of allDates) {
-      const name = this.datePipe.transform(operation.date, pattern);
+      const name = this.format(operation.date);
       if (result.map((a) => a.name).includes(name)) {
         continue;
       }
@@ -8599,32 +8597,16 @@ var DateCarousel = class _DateCarousel {
     }
   }, ...ngDevMode ? [{ debugName: "buttonsWidth" }] : []);
   formatSelectedDate = computed(() => {
-    const pattern = this.datePattern();
-    const date = this.filter.date();
-    return this.datePipe.transform(date, pattern);
+    return this.format(this.filter.date());
   }, ...ngDevMode ? [{ debugName: "formatSelectedDate" }] : []);
-  datePattern = computed(() => {
-    const interval = this.filter.interval();
-    switch (interval) {
-      case "day":
-        return "dd.MM.yyyy";
-      case "month":
-        return "MM.yyyy";
-      case "year":
-        return "yyyy";
-      default:
-        return "dd.MM.yyyy";
-    }
-  }, ...ngDevMode ? [{ debugName: "datePattern" }] : []);
   navigateToItem() {
     const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
-    const pattern = this.datePattern();
     const date = this.filter.date();
     setTimeout(() => {
       Array.from(children).forEach((child) => {
         const element = child;
         const text = element.textContent?.trim();
-        if (text === this.datePipe.transform(date, pattern)) {
+        if (text === this.format(date)) {
           const containerWidth = window.innerWidth;
           const containerCenter = containerWidth / 2;
           const elemCenter = element.offsetLeft + element.offsetWidth / 2;
@@ -8632,6 +8614,21 @@ var DateCarousel = class _DateCarousel {
         }
       });
     }, 100);
+  }
+  format(date) {
+    const pattern = () => {
+      switch (this.filter.interval()) {
+        case "day":
+          return "dd.MM.yyyy";
+        case "month":
+          return "MM.yyyy";
+        case "year":
+          return "yyyy";
+        default:
+          return "dd.MM.yyyy";
+      }
+    };
+    return this.datePipe.transform(date ?? /* @__PURE__ */ new Date(), pattern());
   }
   selectDate(newDate) {
     this.filter.setDate(newDate);
@@ -8732,4 +8729,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-VZRM4JJG.js.map
+//# sourceMappingURL=chunk-6JV7MLW6.js.map
