@@ -95,12 +95,10 @@ export class Filter {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Фильтрация
 
   public filter(array: IOperation[]): IOperation[] {
-    // console.log("Отфильтровать")
-    if (!this.date()) {
-      return [];
-    }
+    const result = structuredClone(array);
     const startInterval = this.startInterval();
+
     const endInterval = this.endInterval();
-    return array.filter((a) => a.date >= startInterval && a.date <= endInterval);
+    return result.filter((a) => a.date >= startInterval && a.date <= endInterval);
   }
 }

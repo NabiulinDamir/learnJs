@@ -2,7 +2,7 @@ import {
   Component,
   OnDestroy,
   HostListener,
-  effect,
+  effect, computed
 } from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../../servises/LocalStorage.service';
@@ -25,7 +25,7 @@ export class ChartTwoRounded implements OnDestroy {
   constructor(
     private localStorage: LocalStorage,
     private datePipe: DatePipe,
-    public filter: Filter,
+    public filterService: Filter,
     public theme: Theme
   ) {
     effect(() => {
@@ -58,12 +58,12 @@ export class ChartTwoRounded implements OnDestroy {
   }
 
   updateIncomeOption(): void {
-    const incomeData = this.localStorage.filter(this.localStorage.getOperationsByType('income'));
+    const incomeData = this.localStorage.getFilteredOperationsByType('income');
     this._incomeOption = this.getOption(incomeData, 'Доходы');
   }
 
   updateExpensOption(): void {
-    const expensData = this.localStorage.filter(this.localStorage.getOperationsByType('expens'));
+    const expensData = this.localStorage.getFilteredOperationsByType('expens');
     this._expensOption = this.getOption(expensData, 'Доходы');
   }
 
@@ -120,7 +120,7 @@ export class ChartTwoRounded implements OnDestroy {
 
   formatDate(date: Date): string | null {
     const pattern = () => {
-      switch (this.filter.interval()) {
+      switch (this.filterService.interval()) {
         case 'day':
           return 'H';
         case 'month':
@@ -154,7 +154,7 @@ export class ChartTwoRounded implements OnDestroy {
     }
   }
 
-  get hasData(): boolean {
-    return this.localStorage.filter(this.localStorage.allOperations()).length > 0;
-  }
+  public hasData = computed(() => {
+    return this.localStorage.getFilteredOperations().length > 0;
+  })
 }

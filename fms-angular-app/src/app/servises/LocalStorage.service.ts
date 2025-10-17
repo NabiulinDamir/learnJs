@@ -1,4 +1,4 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable,inject,  signal, computed, effect } from '@angular/core';
 import { IOperation, ICategory } from '../models/dataTypes.model';
 import localDB from './indexDB.service';
 import { Filter } from './filter.service';
@@ -7,22 +7,31 @@ import { Filter } from './filter.service';
 export class LocalStorage {
   private _operations = signal<IOperation[]>([]);
   private _categories = signal<ICategory[]>([]);
-
   public loadOperationsStatus = signal<boolean>(false)
   public loadCategoriesStatus = signal<boolean>(false)
   // onOperationsChanged = new EventEmitter<IOperation[]>();
   // onCategoriesChanged = new EventEmitter<ICategory[]>();
-
-  constructor(private _localDb: localDB, private _filter: Filter) {}
+  private filterService = inject(Filter);
+  constructor(private _localDb: localDB) {}
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Геттеры
 
   public allOperations = computed((): IOperation[] => {
-    return this._operations();
+    return structuredClone(this._operations());
   });
 
-  public getOperationsByType(type: string): IOperation[] {
-    return this.allOperations().filter((obj) => obj.type === type) || [];
+  public getFilteredOperations(): IOperation[] {
+    const op = this._operations();
+    return this.filterService.filter(op)
+  }
+
+  public getFilteredOperationsByType(type: string): IOperation[] {
+    return this.getFilteredOperations().filter((obj) => obj.type === type) || [];
+  }
+
+  public getAllOperationsByType(type: string): IOperation[] {
+    const result = structuredClone(this._operations())
+    return result.filter((obj) => obj.type === type) || [];
   }
 
   public getCategoriesByType(type: string): ICategory[] {
@@ -32,6 +41,7 @@ export class LocalStorage {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////Сеттеры
 
   public async setOperations(): Promise<void> {
+    console.log("Данные обновились")
     this.loadOperationsStatus.set(true);
     const newData = await this._localDb.getAllOperations();
     this._operations.set(newData);
@@ -83,7 +93,8 @@ export class LocalStorage {
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public filter(arr: IOperation[]): IOperation[] {
-    return this._filter.filter(arr);
-  };
+  // public filter(arr: IOperation[]): IOperation[] {
+  //   console.log(arr)
+  //   return this._filter.filter(arr);
+  // };
 }

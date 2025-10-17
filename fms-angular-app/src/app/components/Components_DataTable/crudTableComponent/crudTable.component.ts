@@ -26,18 +26,18 @@ export class CrudTableComponent {
   private ELEMENT_FORM_UPDATE = viewChild<any>('form_update');
   private ELEMENT_FORM_CREATE = viewChild<any>('form_create');
 
-  constructor(protected localStorage: LocalStorage, public filter: Filter) {}
+  constructor(protected localStorage: LocalStorage, public filterService: Filter) {}
 
   /////////////////////////////////////////////////////////////
 
   public clearSelectedData = effect(() => {
-    const changeElem = this.filter.date();
+    const changeElem = this.filterService.date();
     this.ELEMENT_TABLE().clearSelectedData();
   })
 
   public operations = computed((): IOperation[] => {
     const dataType = this.dataType(); 
-    return this.localStorage.filter(this.localStorage.getOperationsByType(dataType))
+    return this.localStorage.getFilteredOperationsByType(dataType)
   });
 
   public categoriesStringArr = computed((): string[] => this.localStorage.getCategoriesByType(this.dataType()).map((a) => a.name));

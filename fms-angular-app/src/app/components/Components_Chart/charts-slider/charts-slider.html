@@ -7,17 +7,17 @@
   <div class="carousel-inner p-3 h-100">
     <div class="carousel-item active h-100">
       @defer (when isActiveSlide(0)) {
-        <my-chart-two-rounded />
+        <my-chart name="rounded" [option]="chartOptions.ROUNDED()"/>
       }
     </div>
     <div class="carousel-item h-100">
       @defer (when isActiveSlide(1)) {
-        <my-chart-dataset />
+        <my-chart name="dataset" [option]="chartOptions.DATASET()" />
       }
     </div>
     <div class="carousel-item h-100">
       @defer (when isActiveSlide(2)) {
-        <my-chart-negative />
+        <my-chart name="negative" [option]="chartOptions.NEGATIVE()"/>
       }
     </div>
   </div>

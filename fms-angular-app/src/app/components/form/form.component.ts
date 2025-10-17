@@ -14,13 +14,13 @@ export class Form {
   public onSubmit = output<{ value: number; category: string; date: Date }>({});
 
   public myForm = new FormGroup({
-    value: new FormControl(this.number(), [
+    value: new FormControl<number | undefined>(this.number(), [
       CustomValidators.required,
       CustomValidators.positiveNumber,
       CustomValidators.notNull,
     ]),
-    category: new FormControl('', [CustomValidators.required, CustomValidators.minLength]),
-    date: new FormControl(this.formatDateToString(this.tmpDate), [
+    category: new FormControl<string | undefined>('', [CustomValidators.required, CustomValidators.minLength]),
+    date: new FormControl<string | undefined>(this.formatDateToString(this.tmpDate), [
       CustomValidators.required,
       Validators.maxLength(10),
     ]),

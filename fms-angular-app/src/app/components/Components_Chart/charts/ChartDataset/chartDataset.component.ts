@@ -1,4 +1,4 @@
-import { Component, OnDestroy, HostListener, effect } from '@angular/core';
+import { Component, OnDestroy, HostListener, effect, computed } from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
@@ -16,7 +16,7 @@ export class ChartDataset implements OnDestroy {
   constructor(
     private localStorage: LocalStorage,
     private datePipe: DatePipe,
-    public filter: Filter,
+    public filterService: Filter,
     public theme: Theme
   ) {
     effect(() => {
@@ -46,9 +46,9 @@ export class ChartDataset implements OnDestroy {
   }
 
   updateOption(){
-    const data = this.localStorage.filter(this.localStorage.allOperations());
+    const data = this.localStorage.getFilteredOperations();
     const formattedData = this.format(data)
-    const intervalLocaleRu = this.filter.intervalLocale()
+    const intervalLocaleRu = this.filterService.intervalLocale()
     this._option = {
       backgroundColor: 'transparent',
       tooltip: { trigger: 'axis' },
@@ -102,17 +102,17 @@ export class ChartDataset implements OnDestroy {
     const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
     const resultMap = new Map();
 
-    let currentDate = new Date(this.filter.startInterval());
-    let endDate = new Date(this.filter.endInterval());
+    let currentDate = new Date(this.filterService.startInterval());
+    let endDate = new Date(this.filterService.endInterval());
 
     do {
       const key = this.formatDate(currentDate);
       resultMap.set(key, { name: key, income: 0, expens: 0 });
-      if (this.filter.interval() === 'day') {
+      if (this.filterService.interval() === 'day') {
         currentDate.setHours(currentDate.getHours() + 1);
-      } else if (this.filter.interval() === 'month') {
+      } else if (this.filterService.interval() === 'month') {
         currentDate.setDate(currentDate.getDate() + 1);
-      } else if (this.filter.interval() === 'year') {
+      } else if (this.filterService.interval() === 'year') {
         currentDate.setMonth(currentDate.getMonth() + 1);
       } else {
         currentDate.setDate(currentDate.getDate() + 1);
@@ -148,8 +148,8 @@ export class ChartDataset implements OnDestroy {
 
   clickToChart(params: any): void {
     if (params.componentType === 'series') {
-      this.filter.downInterval();
-      setTimeout(() => this.filter.setDate(params.data.date), 100);
+      this.filterService.downInterval();
+      setTimeout(() => this.filterService.setDate(params.data.date), 100);
     }
   }
 
@@ -157,7 +157,7 @@ export class ChartDataset implements OnDestroy {
 
   formatDate(date: Date): string | null {
     const pattern = () => {
-      switch (this.filter.interval()) {
+      switch (this.filterService.interval()) {
         case 'day':
           return 'H';
         case 'month':
@@ -187,7 +187,7 @@ export class ChartDataset implements OnDestroy {
     }
   }
 
-  get hasData(): boolean {
-    return this.localStorage.filter(this.localStorage.allOperations()).length > 0;
-  }
+  public hasData = computed(() => {
+    return this.localStorage.getFilteredOperations().length > 0;
+  })
 }

@@ -1,8 +1,8 @@
 <div class="position-relative w-100 d-flex justify-content-around h-100 ">
   <div
-    id="chart-container"
+    [id]="`chart-container-${name()}`"
     [class.opacity-50]="!hasData()"
-    style="width: 70rem; max-width: 100vw;"
+    style="width: 100%; height: 100%;"
   ></div>
   @if(!hasData()){
   <div

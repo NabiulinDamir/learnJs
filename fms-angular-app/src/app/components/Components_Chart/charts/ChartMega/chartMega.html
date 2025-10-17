@@ -2,10 +2,10 @@
   <div
     id="chart-container"
     class="w-100"
-    [class.opacity-50]="!hasData"
+    [class.opacity-50]="!hasData()"
     style="height: 800px; max-width: 100vw;"
   ></div>
-  @if(!hasData){
+  @if(!hasData()){
   <div class="position-absolute top-0 left-0 w-100 h-100 z-3 d-flex justify-content-center align-items-center" >
     Нет данных
   </div>

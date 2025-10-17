@@ -1,4 +1,4 @@
-import { Component, OnDestroy, HostListener, effect } from '@angular/core';
+import { Component, OnDestroy, HostListener, effect , computed} from '@angular/core';
 import * as echarts from 'echarts';
 import { LocalStorage } from '../../../../servises/LocalStorage.service';
 import { DatePipe } from '@angular/common';
@@ -17,7 +17,7 @@ export class ChartMega implements OnDestroy {
   constructor(
     private localStorage: LocalStorage,
     private datePipe: DatePipe,
-    public filter: Filter,
+    public filterService: Filter,
     public theme: Theme
   ) {
     effect(() => {
@@ -44,17 +44,17 @@ export class ChartMega implements OnDestroy {
 
   updateOption() {
     const incomeOperationsFormat = this.formatToMonth(
-      this.localStorage.getOperationsByType('income')
+      this.localStorage.getAllOperationsByType('income')
     );
     const expensOperationsFormat = this.formatToMonth(
-      this.localStorage.getOperationsByType('expens')
+      this.localStorage.getAllOperationsByType('expens')
     );
 
     const incomeCategoriesFormat = this.formatToCategory(
-      this.localStorage.getOperationsByType('income')
+      this.localStorage.getAllOperationsByType('income')
     );
     const expensCategoriesFormat = this.formatToCategory(
-      this.localStorage.getOperationsByType('expens')
+      this.localStorage.getAllOperationsByType('expens')
     );
 
     const sortedIncome = [...incomeOperationsFormat].sort((a, b) => a.value - b.value);
@@ -227,8 +227,8 @@ export class ChartMega implements OnDestroy {
   formatToMonth(data: IOperation[]): { name: string; value: number }[] {
     const allOperations = data.sort((a, b) => a.date.getTime() - b.date.getTime());
     const resultMap = new Map();
-    let currentDate = new Date(this.filter.startYearInteval());
-    let endDate = new Date(this.filter.endYearInteval());
+    let currentDate = new Date(this.filterService.startYearInteval());
+    let endDate = new Date(this.filterService.endYearInteval());
     do {
       const key = this.datePipe.transform(isNaN(currentDate.getTime()) ? new Date() : currentDate, 'MMMM');
       resultMap.set(key, { name: key, value: 0 });
@@ -279,7 +279,7 @@ export class ChartMega implements OnDestroy {
     }
   }
 
-  get hasData(): boolean {
-    return this.localStorage.allOperations().length > 0;
-  }
+  public hasData = computed(() => {
+    return this.localStorage.getFilteredOperations().length > 0;
+  })
 }
