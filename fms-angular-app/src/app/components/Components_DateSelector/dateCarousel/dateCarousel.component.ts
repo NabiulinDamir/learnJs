@@ -23,10 +23,9 @@ export class DateCarousel {
 
   public setDefaultItem = effect(() => {
     const dates = this.allDatesArray();
-    const pattern = this.datePattern();
     const today: Date = new Date();
 
-    if (dates.find((a) => a.name === this.datePipe.transform(today, pattern))) {
+    if (dates.find((a) => a.name === this.format(today))) {
       this.filter.setDate(today);
     } else {
       const lastDate = dates[dates.length - 1]?.date;
@@ -35,12 +34,11 @@ export class DateCarousel {
   })
 
   public allDatesArray = computed(() => {
-    const pattern = this.datePattern();
     let allDates = structuredClone(this.localStorage.allOperations());
     let result: { name: string; date: Date }[] = [];
     allDates.sort((a, b) => a.date.getTime() - b.date.getTime());
     for (const operation of allDates) {
-      const name = <string>this.datePipe.transform(operation.date, pattern);
+      const name = this.format(operation.date);
       if (result.map((a) => a.name).includes(name)) {
         continue;
       }
@@ -64,34 +62,18 @@ export class DateCarousel {
   });
 
   public formatSelectedDate = computed((): string => {
-    const pattern = this.datePattern();
-    const date = this.filter.date();
-    return <string>this.datePipe.transform(date, pattern);
+    return <string>this.format(this.filter.date());
   });
 
-  public datePattern = computed((): string => {
-    const interval = this.filter.interval()
-    switch (interval) {
-      case 'day':
-        return 'dd.MM.yyyy';
-      case 'month':
-        return 'MM.yyyy';
-      case 'year':
-        return 'yyyy';
-      default:
-        return 'dd.MM.yyyy';
-    }
-  });
 
   public navigateToItem(){
     const children = this.ELEMENT_LIST_PARRENT().nativeElement.children;
-    const pattern = this.datePattern();
     const date = this.filter.date();
     setTimeout(() => {
       Array.from(children).forEach((child: unknown) => {
         const element = child as HTMLElement;
         const text = element.textContent?.trim();
-        if (text === this.datePipe.transform(date, pattern)) {
+        if (text === this.format(date)) {
           const containerWidth = window.innerWidth;
           const containerCenter = containerWidth / 2;
           const elemCenter = element.offsetLeft + element.offsetWidth / 2;
@@ -99,6 +81,22 @@ export class DateCarousel {
         }
       });
     }, 100);
+  }
+
+  public format(date: Date): string{
+    const pattern = () => {
+      switch (this.filter.interval()) {
+        case 'day':
+          return 'dd.MM.yyyy';
+        case 'month':
+          return 'MM.yyyy';
+        case 'year':
+          return 'yyyy';
+        default:
+          return 'dd.MM.yyyy';
+      }
+    }
+    return <string>this.datePipe.transform(date ?? new Date, pattern());
   }
 
   selectDate(newDate: Date): void {

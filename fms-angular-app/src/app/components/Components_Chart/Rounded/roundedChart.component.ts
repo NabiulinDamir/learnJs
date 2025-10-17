@@ -1,4 +1,4 @@
-import { Component, OnDestroy, HostListener, effect, input, output, computed, untracked } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { Chart } from '../chart/chart.component';
 import { IOperation } from '../../../models/dataTypes.model';
 import { LocalStorage } from '../../../servises/LocalStorage.service';

@@ -1,4 +1,4 @@
-import { Injectable, input, signal, computed } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import { IOperation } from '../../../models/dataTypes.model';
 
 enum SortOption {

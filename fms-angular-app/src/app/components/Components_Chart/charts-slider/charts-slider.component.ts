@@ -1,7 +1,5 @@
 import { Component, signal,Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Chart } from '../chart/chart.component';
-
 import { DatasetChart } from '../Dataset/datasetChart.component';
 import { RoundedChart } from '../Rounded/roundedChart.component';
 import { NegativeChart } from '../Negative/negativeChart.component';
